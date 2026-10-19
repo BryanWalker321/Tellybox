@@ -1,0 +1,19 @@
+services:
+  tellybox:
+    build: .
+    ports:
+      - "127.0.0.1:4173:4173"
+    environment:
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://127.0.0.1:4173}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID:-}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET:-}
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL:-}
+      DISCORD_MODERATOR_IDS: ${DISCORD_MODERATOR_IDS:-}
+      CHAT_DAILY_LIMIT: ${CHAT_DAILY_LIMIT:-20}
+    volumes:
+      - media-data:/app/media
+      - community-data:/app/data
+    restart: unless-stopped
+volumes:
+  community-data:
+  media-data:

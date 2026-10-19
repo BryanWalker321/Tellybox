@@ -1,0 +1,10 @@
+media
+node_modules
+.git
+docs
+test
+*.log
+data
+.env
+.env.*
+*cookies*.txt

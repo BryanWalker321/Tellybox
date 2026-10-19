@@ -1,0 +1,27 @@
+.watch-iptv{margin:18px 0 24px}
+.watch-iptv button{border:0;border-radius:0;padding:4px 0;background:transparent;color:var(--network-highlight,#ffda43);font:700 15px/1.5 var(--mono);text-decoration:underline;text-underline-offset:4px;box-shadow:none}
+.watch-iptv button:hover{background:transparent;color:var(--network-link,#7fc3c3)}
+#iptv-help{width:min(840px,calc(100vw - 28px));max-width:840px;padding:0}
+#iptv-help .dialog-body{font:16px/1.65 var(--mono)}
+#iptv-help h2{margin:0 0 15px}
+.iptv-player-prompt{font-weight:bold;color:var(--network-highlight,#ffda43);margin:22px 0 10px}
+.iptv-player-choices{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px}
+#iptv-help .iptv-player-choices button{width:auto;flex:0 0 auto;margin:0;padding:9px 13px;border-radius:0;font:700 14px/1.4 var(--mono);border:2px solid;border-color:#617b77 #07141a #07141a #617b77;box-shadow:2px 2px #0006}
+#iptv-help .iptv-player-choices button[aria-selected=true]{background:var(--network-highlight,#ffda43);color:#07141a;border-color:#fff6a1 #927626 #927626 #fff6a1}
+#iptv-help .iptv-player-choices button:focus-visible{outline:3px solid var(--network-link,#7fc3c3);outline-offset:4px}
+.iptv-player-panel{border-top:1px solid #68827d;padding-top:18px}
+#iptv-help h3{font-size:20px;margin:0 0 5px}
+.iptv-player-devices{font-size:13px;color:var(--network-link,#7fc3c3);margin:0}
+.iptv-connection-details{border-top:1px solid #68827d;padding-top:20px;margin-top:24px}
+#iptv-help code{overflow-wrap:anywhere;color:var(--network-link,#7fc3c3)}
+.iptv-help-steps{padding-left:25px;margin:24px 0 0}
+.iptv-help-steps>li{padding-left:5px;margin-bottom:22px}
+.iptv-help-steps>li::marker{color:var(--network-highlight,#ffda43);font-weight:bold}
+.iptv-address-label{display:block;margin:12px 0 5px;font-size:13px}
+.iptv-address-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+#iptv-help .iptv-address-row input{width:100%;min-width:0;box-sizing:border-box;padding:11px;font:14px/1.5 var(--mono);border:1px solid #68827d;border-radius:0}
+#iptv-help .iptv-address-row button{white-space:nowrap;margin:0;padding:11px;font:bold 13px/1.5 var(--mono);border-radius:0;border:2px solid;border-color:#617b77 #07141a #07141a #617b77;box-shadow:2px 2px #0006}
+.iptv-help-note{border-left:3px solid var(--network-highlight,#ffda43);padding:12px 15px;background:#0002;font-size:14px}
+.iptv-copy-status{min-height:1.5em;color:#9ed2ae;font-size:14px}
+#iptv-help a{color:var(--network-link,#7fc3c3);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:600px){#iptv-help .dialog-body{padding:22px 18px;font-size:14px}.iptv-address-row{grid-template-columns:minmax(0,1fr)}#iptv-help .iptv-address-row button{justify-self:start}.watch-iptv button{font-size:14px}}

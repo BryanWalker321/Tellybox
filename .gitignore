@@ -1,0 +1,13 @@
+node_modules/
+.env
+media/*
+!media/.gitkeep
+*.log
+release/
+data/
+.env.*
+!.env.example
+
+.providers/
+__pycache__/
+*cookies*.txt

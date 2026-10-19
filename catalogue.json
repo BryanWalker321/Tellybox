@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "brand": {
+    "name": "Tellybox",
+    "tagline": "Your independent television network",
+    "description": "One demo channel. Two test transmissions. Make this network your own.",
+    "accent": "#226f79",
+    "kicker": "MADE TO BE YOURS",
+    "heroLine1": "Your network.",
+    "heroLine2": "On the air.",
+    "about": "This is a self-hosted television network. The example Tellybox name and logo should be replaced by the server owner in Settings.",
+    "logo": "/icon.svg",
+    "footerLine": "Your collection. Your channels. Your network.",
+    "serviceLine": "YOUR INDEPENDENT TELEVISION NETWORK",
+    "paperTitle": "Our Television Times",
+    "guideNote": "Example transmissions repeat until you replace them with your own programmes.",
+    "theme": {
+      "cabinet": "wood",
+      "crtDefault": true
+    }
+  },
+  "epoch": "2026-01-01T00:00:00Z",
+  "channels": [
+    {
+      "id": "demo",
+      "number": 1,
+      "name": "Demo Channel",
+      "category": "Replace with your own programmes",
+      "colour": "#ffda43",
+      "description": "Two generated test transmissions. Open Settings to give this network your own identity, channels and media.",
+      "programmes": [
+        {
+          "id": "demo-one",
+          "title": "Demo one · test transmission",
+          "duration": 20,
+          "url": "/media/demo-one.mp4",
+          "source": "Generated demonstration",
+          "rights": "Original generated test pattern; CC0."
+        },
+        {
+          "id": "demo-two",
+          "title": "Demo two · colour service",
+          "duration": 20,
+          "url": "/media/demo-two.mp4",
+          "source": "Generated demonstration",
+          "rights": "Original generated colour bars; CC0."
+        }
+      ]
+    }
+  ]
+}
