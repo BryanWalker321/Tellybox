@@ -11,7 +11,9 @@ The suite covers owner authentication/settings, media-folder confinement, schedu
 
 ## Release checks — 19 October 2026
 
-Windows: 81 tests, 79 passed, zero failed, two curated-edition skips. Linux, Docker and browser results are recorded in the release notes after verification.
+Windows (Node 24) and Linux Docker (Node 22): 81 tests each, 79 passed, zero failed and two curated-edition skips. Catalogue validation confirms one channel and two demos.
+
+A fresh Docker installation was checked for owner protection/setup, live HLS decoding, settings/media persistence after restart and the bundled Test Card F. Desktop screenshots use a 1920-pixel-wide browser. Owner sign-in and programme navigation also passed browser checks with no page errors; a 390-pixel mobile layout was inspected. GitHub CI checks Node 22 and 24.
 
 These checks do not guarantee every codec, player, router or remote provider. Before inviting viewers, use Guided station setup, verify playback and transitions in the browser/IPTV player, test another device/network and check startup after reboot. Check online sources from the actual server.
 
