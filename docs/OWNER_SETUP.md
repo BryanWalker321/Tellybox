@@ -14,7 +14,7 @@ Save your network name, tagline, logo and accent colour. Upload your own logo an
 
 ## Channels, programming and media
 
-Open Channels to see the station table and its Actions menus. Choose a channel, then use **Channel details**, **Programming**, **Schedule & repeat**, **Flex**, **Media library** or **Advanced**. Search programme titles/series and select a result to edit it; longer lists load 30 at a time. The save bar stays within reach and shows unsaved changes. Saving keeps your selected programme. Folder imports are under Media library. Unsaved catalogue edits trigger a warning when leaving the page; use Save or Discard before leaving. Control-room notifications fade after ten seconds.
+Open Channels to see the station table and its Actions menus. Choose a channel, then use **Channel details**, **Programming**, **Schedule & repeat**, **fillers**, **Media library** or **Advanced**. Search programme titles/series and select a result to edit it; longer lists load 30 at a time. The save bar stays within reach and shows unsaved changes. Saving keeps your selected programme. Folder imports are under Media library. Unsaved catalogue edits trigger a warning when leaving the page; use Save or Discard before leaving. Control-room notifications fade after ten seconds.
 
 Select or add channels, edit their names, numbers, descriptions and status, and choose back-to-back playback, clock-aligned starts or timed breaks. Add programmes with a title, original year, duration in seconds, direct media URL and optional source-credit URL. You can select an initial source offset for a reviewed file segment. Empty/offline channels show Test Card F.
 
