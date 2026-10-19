@@ -3,12 +3,12 @@ import { browserId } from './browser-id.mjs';
 import {createScheduleEditor} from './schedule-editor.mjs';
 import {createProgrammingWorkspace} from './programming-workspace.mjs';
 const $ = id => document.getElementById(id);
-export function createCatalogueEditor({ message,scan }) {
+export function createCatalogueEditor({ message,scan,browse }) {
   let draft, channelIndex = 0, programmeIndex = 0, workspace, baseline;
   const channel = () => draft?.channels[channelIndex];
   const programme = () => channel()?.programmes[programmeIndex];
   const sync = () => { $('owner-catalogue').value = JSON.stringify(draft, null, 2); workspace?.paint({dirty:JSON.stringify(draft)!==baseline}); };
-  const scheduler=createScheduleEditor({getChannel:channel,getDraft:()=>draft,sync,message,scan});
+  const scheduler=createScheduleEditor({getChannel:channel,getDraft:()=>draft,sync,message,scan,browse});
   $('edit-channel-align').parentElement.hidden=true;
   const seriesFields=document.createElement('div');seriesFields.className='owner-field-grid owner-wide';seriesFields.innerHTML='<label>Series name (optional)<input id="edit-programme-series"></label><label>Episode order within series<input id="edit-programme-episode-order" type="number" min="0" step="any"></label><div class="owner-actions"><button id="programme-up" type="button">Move programme up</button><button id="programme-down" type="button">Move programme down</button></div>';$('programme-fields').append(seriesFields);
   workspace=createProgrammingWorkspace({getChannel:channel,getDraft:()=>draft,selectChannel:index=>{channelIndex=index;programmeIndex=0;paint();},changed:()=>{sync();paintChannel();},message,getIndex:()=>programmeIndex,selectProgramme:index=>{programmeIndex=index;paintProgramme();}});

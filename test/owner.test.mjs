@@ -22,6 +22,7 @@ test('owner setup is protected; settings, catalogue and media persist without ex
     assert.equal((await call('session')).status, 200); assert.equal((await call('settings')).status, 401);
     assert.equal((await call('settings', 'PUT', {})).status, 401);
     assert.equal((await call('media-scan','POST',{folder:''})).status,401);
+    assert.equal((await call('media-folders')).status,401);
     assert.equal((await call('login', 'POST', { setupKey, password: 'test-only-owner-password' }, { Origin: 'https://elsewhere.example' })).status, 403);
     assert.equal((await call('login', 'POST', { setupKey: 'wrong', password: 'test-only-owner-password' })).status, 403);
     const login = await call('login', 'POST', { setupKey, password: 'test-only-owner-password' }); assert.equal(login.status, 200);
@@ -47,7 +48,10 @@ test('owner setup is protected; settings, catalogue and media persist without ex
     const upload = name => fetch(base + '/api/owner/media?name=' + encodeURIComponent(name), { method: 'PUT', headers: { Origin: base, Cookie: cookie, 'X-CSRF-Token': csrf }, body: 'test-video-content' });
     assert.equal((await upload('../escape.mp4')).status, 400); assert.equal((await upload('clip.mp4')).status, 200); assert.equal((await upload('clip.mp4')).status, 409);
     assert.equal(await readFile(path.join(mediaRoot, 'clip.mp4'), 'utf8'), 'test-video-content'); assert.equal((await (await call('media')).json()).files[0].url, '/media/clip.mp4');
-    await mkdir(path.join(mediaRoot,'adverts'));await copyFile('examples/demo/demo-one.mp4',path.join(mediaRoot,'adverts','demo.mp4'));
+    await mkdir(path.join(mediaRoot,'adverts'));
+    const folders=await (await call('media-folders')).json();assert.ok(folders.folders.some(f=>f.path==='adverts'));
+    assert.equal((await call('media-folders?folder=../')).status,400);
+    assert.equal((await call('media-folders?folder=missing')).status,400);await copyFile('examples/demo/demo-one.mp4',path.join(mediaRoot,'adverts','demo.mp4'));
     assert.equal((await call('media-scan','POST',{folder:'adverts'},{'X-CSRF-Token':''})).status,403);
     assert.equal((await call('media-scan','POST',{folder:'../'})).status,400);
     const scanned=await (await call('media-scan','POST',{folder:'adverts'})).json();assert.equal(scanned.files[0].url,'/media/adverts/demo.mp4');assert.ok(Math.abs(scanned.files[0].duration-20)<1);

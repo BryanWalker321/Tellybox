@@ -6,7 +6,7 @@ const $ = id => document.getElementById(id);
 export function createOwner({ onCatalogue }) {
   let csrf, catalogue, settings;
   const message = createOwnerNotice($('settings-status'));
-  const editor = createCatalogueEditor({ message,scan:folder=>api('media-scan',{method:'POST',body:JSON.stringify({folder})}) });
+  const editor = createCatalogueEditor({ message,browse:folder=>api('media-folders?folder='+encodeURIComponent(folder)),scan:folder=>api('media-scan',{method:'POST',body:JSON.stringify({folder})}) });
   const design = createDesign({ message, save: async brand => { const next = { ...catalogue, brand }; await put('catalogue', next); catalogue = next; fillCatalogue(); await onCatalogue(next); } });
   document.addEventListener('owner-upload-holding', async e => { try { if (e.detail.size > 2 * 1024 ** 2) throw Error('Maximum image size is 2 MB.'); const result = await api('logo', { method: 'PUT', body: e.detail, headers: { 'Content-Type': 'application/octet-stream' } }); $('owner-holding-url').value = result.url; message('Holding screen uploaded to draft. Save design & wording to apply.'); } catch (err) { message(err.message); } });
   async function api(route, options = {}) {
