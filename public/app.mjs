@@ -3,7 +3,6 @@ import { scheduleAt, programmesAt, listingsWindow, validateCatalogue } from '/li
 import { createBroadcastPlayer } from '/broadcast-player.mjs';
 import { createTelevisionGuide } from '/guide.mjs';
 import { createCommunity } from '/community.mjs';
-import { createOwner } from '/owner.mjs';
 import { createIptvHelp } from '/iptv-help.mjs';
 import { createProgrammeDescription } from '/programme-description.mjs';
 const $ = id => document.getElementById(id);
@@ -22,7 +21,7 @@ const esc = str => String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '
 const stored = (key, value) => { try { if (value === undefined) return localStorage.getItem(key); localStorage.setItem(key, value); } catch {} };
 function applyBranding(brand) {
   const logo = brand.logo || '/icon.svg';
-  for (const id of ['brand-logo', 'footer-logo', 'owner-logo-preview']) { $(id).src = logo; $(id).hidden = false; }
+  for (const id of ['brand-logo', 'footer-logo']) { $(id).src = logo; $(id).hidden = false; }
   $('brand-mark').hidden = true; $('footer-mark').hidden = true;
   $('receiver-name').textContent = brand.name.toUpperCase(); $('strip-mark').textContent = brand.name;
   $('paper-station-name').textContent = `THE ${brand.name.toUpperCase()} LISTINGS · COLOUR SERVICE`;
@@ -156,10 +155,7 @@ let lastView;
 function stopForHome(){playing=false;loadedKey='';clearTimeout(bufferTimer);broadcast.destroy();$('tuning-card').hidden=false;$('tuning-card').classList.remove('test-card-only');$('station-bug').hidden=true;$('player-message').textContent='A whole other time. Just one button away.';$('start').textContent='▶ Switch on the telly';}
 function showView() { const route=location.hash.slice(1);const requested=route.startsWith('channel/')?'channel':route;const view=['home','watch','guide','directory','channel','about','teletext','hosting'].includes(requested)&&$(requested+'-view')?requested:($('home-view')&&(!new URLSearchParams(location.search).has('channel')||new URLSearchParams(location.search).has('home'))?'home':'watch'); if(view==='home')stopForHome();const changed=view!==lastView;lastView=view; document.body.classList.toggle('home-active', view === 'home'); document.querySelectorAll('.view').forEach(el => el.hidden = el.id !== `${view}-view`); televisionGuide.setVisible(view === 'guide'); community.setView(view); document.querySelectorAll('nav [data-view]').forEach(el => { el.classList.toggle('active', el.dataset.view === view); if (el.dataset.view === view) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); }); if (config) { renderGuide(); renderTeletext(); if(view==='directory')directory.render();if(view==='channel')directory.showChannel(route.slice(8)); } if(changed)requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'})); }
 window.addEventListener('hashchange', showView); showView();
-const ownerControls = createOwner({ onCatalogue: async next => { stationDefault = next; try { localStorage.removeItem('tellybox-preview'); } catch {} broadcast.destroy(); playing = false; install(next); $('tuning-card').hidden = false; } });
-for (const id of ['settings-open', 'about-settings']) $(id).addEventListener('click', ownerControls.open);
 $('tv-controls-open').addEventListener('click', () => $('tv-controls').showModal());
-$('owner-hosting-open').addEventListener('click', () => $('settings').close());
 async function refreshNetworkNotice() { try { const r = await fetch('/api/network'); const n = await r.json(); $('iptv-status').textContent = n.iptvEnabled ? '' : 'IPTV relay disabled by station owner.'; } catch {} }
 refreshNetworkNotice(); document.addEventListener('community-settings-changed', refreshNetworkNotice);
 fetch('/hosting-guide.html').then(r => { if (!r.ok) throw Error(); return r.text(); }).then(markup => { $('hosting-content').innerHTML = markup; fetch('/api/distribution').then(r => r.json()).then(info => { if (!info.downloadAvailable) { $('hosting-download').hidden = true; $('hosting-download-status').textContent = 'This installation does not bundle a source ZIP. Use the starter download supplied by your distributor; the public GitHub release is forthcoming.'; } }).catch(() => {}); }).catch(() => { $('hosting-content').textContent = 'Hosting instructions are unavailable. See docs/HOSTING.md in your download.'; });
@@ -184,7 +180,7 @@ $('tt-input').addEventListener('input', e => { e.target.value = e.target.value.r
 $('tt-auto').addEventListener('click', () => { ttAuto = !ttAuto; $('tt-auto').innerHTML = `<span class="tt-cyan">■</span> Auto: ${ttAuto ? 'on' : 'off'}`; });
 setInterval(() => { if (ttAuto && !$('teletext-view').hidden) { const pages = ['100', '601', '602', '150']; ttPage = pages[Math.floor(now() / 15000) % pages.length]; renderTeletext(); } }, 1000);
 let digits = '', digitTimer;
-document.addEventListener('keydown', e => { if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName) || $('settings').open || !config) return; if (e.key.toLowerCase() === 't') { location.hash = location.hash === '#teletext' ? 'watch' : 'teletext'; return; } if (!/^\d$/.test(e.key)) return; clearTimeout(digitTimer); digits += e.key; if (location.hash === '#teletext') { if (digits.length === 3) { ttPage = digits; digits = ''; renderTeletext(); } } else digitTimer = setTimeout(() => { const c = config.channels.find(c => c.number === Number(digits)); digits = ''; if (c) { tune(c, true); location.hash = 'watch'; } }, 700); });
+document.addEventListener('keydown', e => { if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName)  || !config) return; if (e.key.toLowerCase() === 't') { location.hash = location.hash === '#teletext' ? 'watch' : 'teletext'; return; } if (!/^\d$/.test(e.key)) return; clearTimeout(digitTimer); digits += e.key; if (location.hash === '#teletext') { if (digits.length === 3) { ttPage = digits; digits = ''; renderTeletext(); } } else digitTimer = setTimeout(() => { const c = config.channels.find(c => c.number === Number(digits)); digits = ''; if (c) { tune(c, true); location.hash = 'watch'; } }, 700); });
 async function syncClock() {
   const before = Date.now();
   try { const response = await fetch('/api/time', { cache: 'no-store', signal: AbortSignal.timeout(5000) }); if (!response.ok) throw Error('Clock unavailable'); const data = await response.json(); if (!Number.isFinite(data.now)) throw Error('Invalid clock'); clockOffset = data.now - (before + Date.now()) / 2; }

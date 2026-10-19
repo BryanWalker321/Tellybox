@@ -1,6 +1,6 @@
 # Set up your station from Settings
 
-Start the server and open the station in your browser. Open **Settings** (the cog). A new server prints a **first-run owner setup key** in its console. Paste that key and choose a password of at least 12 characters to claim the station. The key is never exposed through the website and stops working once claimed. If an unclaimed server restarts, use its newly printed key.
+Start the server and open the station in your browser. Open **Settings** (the cog) to enter the dedicated station control room at `/admin.html`. Sections appear in the sidebar on desktop and as a compact navigation grid on mobile; each section can be bookmarked. Use **Back to television** to return to viewing. Opening the control room leaves the player page, so television playback stops. A new server prints a **first-run owner setup key** in its console. Paste that key and choose a password of at least 12 characters to claim the station. The key is never exposed through the website and stops working once claimed. If an unclaimed server restarts, use its newly printed key.
 
 Owner access is separate from viewer Discord accounts. Viewers can watch without signing in. Only an authenticated owner can change the installation, upload files or connect Discord.
 

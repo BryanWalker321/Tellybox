@@ -15,6 +15,7 @@ test('HTTP server serves catalogue, time and byte-range media while isolating fi
     const ready = await Promise.race([once(child.stdout, 'data'), once(child, 'exit').then(() => { throw Error('Server exited before ready'); }), new Promise((_, reject) => { const t = setTimeout(() => reject(Error('Server start timed out')), 5000); t.unref(); })]);
     const url = ready[0].toString().match(/http:\/\/[^\s]+/)[0];
     assert.equal((await fetch(url)).status, 200);
+    const admin=await fetch(url+'/admin.html');assert.equal(admin.status,200);assert.ok((await admin.text()).includes('id="owner-login"'));assert.equal((await fetch(url+'/api/owner/settings')).status,401);
     const catalogue = await (await fetch(url + '/api/catalogue')).json(); assert.ok(catalogue.channels.length);
     const clock = await (await fetch(url + '/api/time')).json(); assert.ok(Math.abs(clock.now - Date.now()) < 3000);
     const playlist = await (await fetch(url + '/channels.m3u')).text(); assert.ok(playlist.startsWith('#EXTM3U')); assert.ok(playlist.includes(`/iptv/${catalogue.channels[0].id}/index.m3u8`));

@@ -9,3 +9,5 @@ Automated coverage includes listed/random/episodic schedules, episode order, bre
 Distribution checks require exactly one channel/two generated demo shows, no promotional homepage or Tip buttons, BBC Test Card F plus its separate third-party notice, and no private station data, credentials, cookies or archive programme pack. GitHub CI is configured for Node 22 and 24 with FFmpeg; its first hosted run occurs after the first push.
 
 This is tested release-candidate evidence, not a guarantee of every device, codec, third-party provider, home router or IPTV application. Owners should follow the live-video, other-device and restart checks in the setup guide before inviting viewers.
+
+The full-page owner control room was additionally checked on the VPS at desktop and 390px mobile widths. Verified cog navigation, return to television, session reuse, section links, programming save and browser console. Four targeted owner/HTTP/shared-player checks passed after this change.
