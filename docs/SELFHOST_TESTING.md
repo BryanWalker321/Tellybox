@@ -11,3 +11,5 @@ Distribution checks require exactly one channel/two generated demo shows, no pro
 This is tested release-candidate evidence, not a guarantee of every device, codec, third-party provider, home router or IPTV application. Owners should follow the live-video, other-device and restart checks in the setup guide before inviting viewers.
 
 The full-page owner control room was additionally checked on the VPS at desktop and 390px mobile widths. Verified cog navigation, return to television, session reuse, section links, programming save and browser console. Four targeted owner/HTTP/shared-player checks passed after this change.
+
+Programme-workspace follow-up: seven targeted owner/server/scheduling checks passed. VPS browser verification used 65 test programmes to exercise search, filtered selection, 30/60/65 pagination, selected-programme preservation after save, empty-channel display, draft/discard indicators, media-folder import and duplicate rescan, and notification expiry.

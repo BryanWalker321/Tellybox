@@ -1,17 +1,21 @@
 import { browserId } from './browser-id.mjs';
 import {createScheduleEditor} from './schedule-editor.mjs';
+import {createProgrammingWorkspace} from './programming-workspace.mjs';
 const $ = id => document.getElementById(id);
 export function createCatalogueEditor({ message,scan }) {
-  let draft, channelIndex = 0, programmeIndex = 0;
+  let draft, channelIndex = 0, programmeIndex = 0, workspace, baseline;
   const channel = () => draft?.channels[channelIndex];
   const programme = () => channel()?.programmes[programmeIndex];
-  const sync = () => { $('owner-catalogue').value = JSON.stringify(draft, null, 2); };
+  const sync = () => { $('owner-catalogue').value = JSON.stringify(draft, null, 2); workspace?.paint({dirty:JSON.stringify(draft)!==baseline}); };
   const scheduler=createScheduleEditor({getChannel:channel,getDraft:()=>draft,sync,message,scan});
   $('edit-channel-align').parentElement.hidden=true;
   const seriesFields=document.createElement('div');seriesFields.className='owner-field-grid owner-wide';seriesFields.innerHTML='<label>Series name (optional)<input id="edit-programme-series"></label><label>Episode order within series<input id="edit-programme-episode-order" type="number" min="0" step="any"></label><div class="owner-actions"><button id="programme-up" type="button">Move programme up</button><button id="programme-down" type="button">Move programme down</button></div>';$('programme-fields').append(seriesFields);
+  workspace=createProgrammingWorkspace({getChannel:channel,getIndex:()=>programmeIndex,selectProgramme:index=>{programmeIndex=index;paintProgramme();}});
+  window.addEventListener('beforeunload',e=>{if(draft&&JSON.stringify(draft)!==baseline){e.preventDefault();e.returnValue='';}});
   function options(id, entries, selected) { const select = $(id); select.replaceChildren(); entries.forEach((label, i) => { const option = document.createElement('option'); option.value = String(i); option.textContent = label; select.append(option); }); select.value = String(selected); }
   function paintProgramme() {
     $('edit-programme-series').value=programme()?.series||'';$('edit-programme-episode-order').value=programme()?.episodeOrder??'';
+    workspace?.paint({dirty:JSON.stringify(draft)!==baseline});
     const p = programme(); $('programme-fields').hidden = !p; $('remove-programme').disabled = !p;
     $('edit-programme-enabled').checked = !p?.playbackDisabled;
     $('edit-programme-health').textContent = [p?.playbackCheck?.reason, p?.iptvCheck?.result === 'pending' ? p.iptvCheck.reason : '', p?.originalYearRange ? `Original date is within ${p.originalYearRange.join('–')}; exact year unknown. Enter a year only if established.` : ''].filter(Boolean).join(' ');
@@ -24,7 +28,7 @@ export function createCatalogueEditor({ message,scan }) {
     options('edit-programme', c.programmes.map(p => p.title), programmeIndex); paintProgramme();scheduler.paint();
   }
   function paint() { options('edit-channel', draft.channels.map(c => `${c.number} · ${c.name}`), channelIndex); $('remove-channel').disabled = draft.channels.length <= 1; $('edit-policy').value = draft.editorial?.beforeYear === 2000 ? 'uk' : 'generic'; paintChannel(); }
-  function load(value) { draft = structuredClone(value); channelIndex = Math.min(channelIndex, draft.channels.length - 1); programmeIndex = 0; sync(); paint(); }
+  function load(value,{saved=true}={}) { const channelId=channel()?.id,programmeId=programme()?.id;draft=structuredClone(value);if(saved)baseline=JSON.stringify(draft);const found=draft.channels.findIndex(c=>c.id===channelId);channelIndex=found<0?Math.min(channelIndex,draft.channels.length-1):found;programmeIndex=Math.max(0,channel().programmes.findIndex(p=>p.id===programmeId));sync();paint(); }
   $('edit-channel').addEventListener('change', e => { channelIndex = Number(e.target.value); programmeIndex = 0; paintChannel(); });
   $('edit-programme').addEventListener('change', e => { programmeIndex = Number(e.target.value); paintProgramme(); });
   document.addEventListener('catalogue-editor-refresh',()=>{options('edit-programme',channel().programmes.map(p=>p.title),programmeIndex);paintProgramme();});
@@ -37,9 +41,9 @@ export function createCatalogueEditor({ message,scan }) {
   for (const [field, key] of [['title', 'title'], ['duration', 'duration'], ['offset', 'sourceOffset'], ['url', 'url'], ['source', 'sourceUrl']]) $('edit-programme-' + field).addEventListener('input', e => { if (!programme()) return; programme()[key] = ['duration', 'sourceOffset'].includes(key) ? Number(e.target.value) : e.target.value; sync(); if (key === 'title') options('edit-programme', channel().programmes.map(p => p.title), programmeIndex); });
   $('edit-programme-year').addEventListener('input', e => { if (!programme()) return; const p = programme(); if (!e.target.value && p.originalYearRange) { delete p.originalYear; sync(); return; } p.originalYear = Number(e.target.value); delete p.originalYearRange; p.year = Number(e.target.value); p.yearEvidence = 'Station owner supplied original year'; sync(); });
   $('edit-policy').addEventListener('change', e => { if (e.target.value === 'uk') draft.editorial = { beforeYear: 2000, region: 'UK' }; else delete draft.editorial; sync(); });
-  $('add-channel').addEventListener('click', () => { const number = Math.max(0, ...draft.channels.map(c => c.number)) + 1, id = 'channel-' + browserId().slice(0, 8); draft.channels.push({ id, number, name: 'New channel', colour: '#4f99a8', description: '', category: 'Archive television', programmes: [], schedule: { alignMinutes: 10, breaks: structuredClone((draft.channels.find(c => c.schedule?.breaks)?.schedule.breaks || []).filter(p => !p.stationBrand)) } }); channelIndex = draft.channels.length - 1; programmeIndex = 0; sync(); paint(); message('New channel added to draft. Add programmes, then save.'); });
+  $('add-channel').addEventListener('click', () => { const number = Math.max(0, ...draft.channels.map(c => c.number)) + 1, id = 'channel-' + browserId().slice(0, 8); draft.channels.push({ id, number, name: 'New channel', colour: '#4f99a8', description: '', category: 'Archive television', programmes: [], schedule: { alignMinutes: 10, breaks: structuredClone((draft.channels.find(c => c.schedule?.breaks)?.schedule.breaks || []).filter(p => !p.stationBrand)) } }); channelIndex = draft.channels.length - 1; programmeIndex = 0; workspace.show('details'); sync(); paint(); message('New channel added to draft. Add programmes, then save.'); });
   $('remove-channel').addEventListener('click', () => { if (draft.channels.length <= 1) return; draft.channels.splice(channelIndex, 1); channelIndex = Math.max(0, channelIndex - 1); programmeIndex = 0; sync(); paint(); message('Channel removed from draft. Discard edits to undo, or save to apply.'); });
-  $('add-programme').addEventListener('click', () => { const p = { id: 'programme-' + browserId().slice(0, 8), title: 'New programme', duration: 60, url: '/media/your-video.mp4', source: 'Station media', originalYear: 1999, year: 1999, yearEvidence: 'Set the original year before saving.' }; channel().programmes.push(p); programmeIndex = channel().programmes.length - 1; sync(); paintChannel(); message('Programme added to draft. Enter its title, original year, URL and duration before saving.'); });
+  $('add-programme').addEventListener('click', () => { const p = { id: 'programme-' + browserId().slice(0, 8), title: 'New programme', duration: 60, url: '/media/your-video.mp4', source: 'Station media', originalYear: 1999, year: 1999, yearEvidence: 'Set the original year before saving.' }; channel().programmes.push(p); programmeIndex = channel().programmes.length - 1; workspace.show('programmes'); sync(); paintChannel(); message('Programme added to draft. Enter its title, original year, URL and duration before saving.'); });
   $('remove-programme').addEventListener('click', () => { if (!programme()) return; channel().programmes.splice(programmeIndex, 1); programmeIndex = Math.max(0, programmeIndex - 1); sync(); paintChannel(); message('Programme removed from draft. Discard edits to undo.'); });
   $('owner-catalogue').addEventListener('change', () => { try { const value = JSON.parse($('owner-catalogue').value); if (!Array.isArray(value.channels) || !value.channels.length || value.channels.some(c => !Array.isArray(c.programmes))) throw Error('Keep at least one channel with a programmes array.'); draft = value; channelIndex = 0; programmeIndex = 0; paint(); message('Advanced edits loaded. Save programming to apply.'); } catch (err) { message('Check catalogue JSON: ' + err.message); } });
   return { load };

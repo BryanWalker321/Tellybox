@@ -1,10 +1,11 @@
 import { createDesign } from '/design.mjs';
 import { createCatalogueEditor } from '/catalogue-editor.mjs';
 import {createSetup} from '/setup.mjs';
+import {createOwnerNotice} from '/owner-notice.mjs';
 const $ = id => document.getElementById(id);
 export function createOwner({ onCatalogue }) {
   let csrf, catalogue, settings;
-  const message = text => $('settings-status').textContent = text;
+  const message = createOwnerNotice($('settings-status'));
   const editor = createCatalogueEditor({ message,scan:folder=>api('media-scan',{method:'POST',body:JSON.stringify({folder})}) });
   const design = createDesign({ message, save: async brand => { const next = { ...catalogue, brand }; await put('catalogue', next); catalogue = next; fillCatalogue(); await onCatalogue(next); } });
   document.addEventListener('owner-upload-holding', async e => { try { if (e.detail.size > 2 * 1024 ** 2) throw Error('Maximum image size is 2 MB.'); const result = await api('logo', { method: 'PUT', body: e.detail, headers: { 'Content-Type': 'application/octet-stream' } }); $('owner-holding-url').value = result.url; message('Holding screen uploaded to draft. Save design & wording to apply.'); } catch (err) { message(err.message); } });
@@ -91,7 +92,7 @@ export function createOwner({ onCatalogue }) {
   });
   $('owner-copy-callback').addEventListener('click', () => navigator.clipboard.writeText($('owner-callback').textContent).then(() => message('Callback address copied.')).catch(() => message('Select and copy the callback address shown.')));
   $('owner-check-webhook').addEventListener('click', async () => { try { const result = await api('webhook-check', { method: 'POST', body: '{}' }); message(`Webhook verified: ${result.name} · server ${result.serverId} · channel ${result.channelId}. No message was posted.`); } catch (err) { message(err.message); } });
-  $('import').addEventListener('change', async e => { try { const file = e.target.files[0]; if (!file) return; if (file.size > 2000000) throw Error('Maximum catalogue size is 2 MB.'); const value = JSON.parse(await file.text()); if (!Array.isArray(value.channels) || !value.channels.length || value.channels.some(c => !Array.isArray(c.programmes))) throw Error('A catalogue needs channels and programme arrays.'); editor.load(value); message('File loaded into editor. Save programming to apply it to the station.'); } catch (err) { message(err.message); } });
+  $('import').addEventListener('change', async e => { try { const file = e.target.files[0]; if (!file) return; if (file.size > 2000000) throw Error('Maximum catalogue size is 2 MB.'); const value = JSON.parse(await file.text()); if (!Array.isArray(value.channels) || !value.channels.length || value.channels.some(c => !Array.isArray(c.programmes))) throw Error('A catalogue needs channels and programme arrays.'); editor.load(value,{saved:false}); message('File loaded into editor. Save programming to apply it to the station.'); } catch (err) { message(err.message); } });
   $('owner-save-catalogue').addEventListener('click', async () => { try { const next = JSON.parse($('owner-catalogue').value); await put('catalogue', next); catalogue = next; fillCatalogue(); await onCatalogue(next); message('Programming saved to the server. Viewers receive it when they reload.'); } catch (err) { message(err.message); } });
   $('export').addEventListener('click', () => { const url = URL.createObjectURL(new Blob([$('owner-catalogue').value], { type: 'application/json' })); const a = document.createElement('a'); a.href = url; a.download = 'catalogue.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); });
   $('reset').addEventListener('click', () => { fillCatalogue(); message('Unsaved catalogue edits discarded.'); });

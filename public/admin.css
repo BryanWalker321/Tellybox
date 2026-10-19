@@ -23,5 +23,21 @@
 .admin-shell button:disabled{opacity:.5;cursor:default}.admin-shell :focus-visible{outline:2px solid #ffda43;outline-offset:3px}
 .admin-shell #settings-status{z-index:10;border:1px solid #527381;box-shadow:0 -8px 20px #07151f88;margin:24px 0 0;padding:16px 20px}
 .admin-settings-link{display:inline-block;padding:12px 16px;border:1px solid currentColor;margin:12px 0}
+.admin-shell #settings-status{position:fixed;bottom:20px;right:24px;left:auto;width:min(650px,calc(100vw - 48px));box-sizing:border-box;margin:0;opacity:1;transition:opacity .5s ease;pointer-events:none}
+.admin-shell #settings-status.notice-fading{opacity:0}
+.programming-nav{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid #365968;padding:12px 0 18px;margin:12px 0}
+.admin-shell .programming-nav button[aria-pressed=true]{background:#81d7e0;color:#07151f;border-color:#81d7e0}
+.admin-shell .programming-savebar{position:sticky;top:0;z-index:6;background:#10232d;padding:12px 0;border-bottom:1px solid #365968;margin-bottom:22px;gap:10px}
+#programming-draft-state{margin-right:auto;color:#9fbdc5;font-size:12px}#programming-draft-state[data-dirty=true]{color:#ffda43}
+.programme-results{display:grid;gap:8px;max-height:340px;overflow:auto;overscroll-behavior:contain;padding:3px}
+.admin-shell button.programme-result{display:flex;flex-direction:column;gap:5px;align-items:flex-start;text-align:left;width:100%;padding:12px 14px;margin:0;background:#091a24}
+.admin-shell button.programme-result[aria-pressed=true]{border-color:#81d7e0;background:#183f4c}
+.programme-result strong{font-size:13px;line-height:1.5}.programme-result span,.programme-search-count{font-size:12px;color:#a6c1c8}
+.programme-browser{padding-bottom:18px;margin-bottom:20px;border-bottom:1px solid #365968}.programme-browser>button{margin-top:12px}
+.programming-overview{color:#a6c1c8}.programming-panel>h4:first-child{margin-top:0}.programming-panel .schedule-editor{border:0;padding:0}
+#programme-editor-title{scroll-margin-top:90px;outline:0}
+@media(prefers-reduced-motion:reduce){.admin-shell #settings-status{transition:none}}
+@media(max-width:520px){.programming-savebar button{font-size:11px;padding:9px}.programming-savebar #programming-draft-state{flex-basis:100%}.programming-nav button{flex:1 1 40%;font-size:11px}.admin-shell #settings-status{right:12px;bottom:12px;width:calc(100vw - 24px)}}
+@media(max-width:520px){.programming-savebar #owner-save-catalogue{flex:1 1 100%}.programming-savebar #export,.programming-savebar #reset{flex:1;min-width:0}#programme-editor-title{scroll-margin-top:180px}}
 @media(max-width:850px){.admin-shell #owner-panel{grid-template-columns:1fr;gap:20px}.admin-shell .owner-tabs{position:static;grid-row:auto;grid-column:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-shell #owner-panel>section,.admin-shell #owner-panel>hr,.admin-shell #owner-panel>details,.admin-shell #owner-panel>#owner-logout{grid-column:1}.admin-shell #owner-panel>section{padding:24px}.admin-header>span{display:none}}
 @media(max-width:520px){#settings.admin-shell{padding:28px 16px 60px}.admin-header{padding:16px;gap:12px}.admin-network{font-size:21px}.admin-return{font-size:11px;padding:10px}.admin-shell #owner-panel>section,.admin-shell #owner-gate{padding:20px}.admin-shell .owner-tabs button{padding:12px;font-size:12px}}
