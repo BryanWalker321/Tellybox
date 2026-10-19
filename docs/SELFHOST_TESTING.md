@@ -13,3 +13,7 @@ This is tested release-candidate evidence, not a guarantee of every device, code
 The full-page owner control room was additionally checked on the VPS at desktop and 390px mobile widths. Verified cog navigation, return to television, session reuse, section links, programming save and browser console. Four targeted owner/HTTP/shared-player checks passed after this change.
 
 Programme-workspace follow-up: seven targeted owner/server/scheduling checks passed. VPS browser verification used 65 test programmes to exercise search, filtered selection, 30/60/65 pagination, selected-programme preservation after save, empty-channel display, draft/discard indicators, media-folder import and duplicate rescan, and notification expiry.
+
+Plan-manager update: 80 tests on Windows and Linux, 78 passed, zero failed, two curated-edition skips. New checks cover fixed-order repeat after initial randomisation, fresh full-collection repeats, exact loop boundaries, deterministic schedules after restart, disabled media exclusion, grid/Flex preservation and canonical duplicate removal. Browser checks cover channel duplication, programme movement, saved repeat policy, Flex tables and cross-channel library reuse.
+
+The manager was also exercised with the public Tellybox catalogue (8 channels, 4,578 entries), including saving the station-wide reshuffle setting through the browser, retaining no-Flex policies, and desktop/mobile rendering. No live catalogue was changed by the isolated QA station.

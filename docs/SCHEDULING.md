@@ -2,11 +2,15 @@
 
 Open Settings → Programmes & media and select a channel. All changes remain a draft until **Save programming to server**. Download the catalogue before large changes; **Discard unsaved edits** restores the last saved catalogue.
 
-## Programme order
+## Initial plan and repeats
 
 1. Choose **Listed order** to repeat the displayed running order. Select a programme and use Move programme up/down to reorder it.
-2. Choose **Random** to reshuffle the entire collection after every full cycle. Episodes may play out of sequence in this mode.
+2. Choose **Randomise the initial plan** to randomise the first plan. Episodes may play out of sequence in this mode.
 3. Choose **Mix series** to mix different series while preserving the order of episodes within each series. Enter the same Series name on related episodes and set Episode order (1, 2, 3…). The series restart after the collection completes.
+
+Every channel loops automatically; it does not stop when its plan ends. Under **When the plan ends**, choose **Repeat the same plan**, **Reshuffle all programmes and repeat**, or **Remix series, keeping episode order**. The same-plan setting repeats the first generated order, even if that initial order was random. Reshuffle-all mixes individual episodes too. The series option preserves episode order. **Use this repeat setting for every channel** applies that choice station-wide in the draft; save to activate it. Empty/offline channels still show their holding screen.
+
+**Channels** opens the station overview, including programme counts, runtime and repeat policy. Use a channel's Actions menu to edit, duplicate or delete it, watch it, or copy its stream URL. Changes are drafts until saved. In Programming, drag rows or use arrows to reorder; Tools & sort offers one-off random, title and series sorting and duplicate removal. Manual sorting/reordering changes the initial plan to listed order while keeping the repeat policy. Media library reuses programme and Flex recordings across channels without duplicating their media references. Held/disabled sources cannot be added through the picker. Flex has a searchable table and clip editor; the schedule preview shows striped Flex rows.
 
 All viewers share the same schedule and random seed, including website and IPTV viewers. This is live television, not independent on-demand playlists. Disabled programmes do not air. Programme start offsets let you use reviewed segments of a longer file. Accurate durations matter.
 

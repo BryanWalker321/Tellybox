@@ -12,9 +12,9 @@ The wizard's final step also lets you save your own Discord invite. You can chan
 
 Save your network name, tagline, logo and accent colour. Upload your own logo and replace the example Tellybox identity before going public. Design & wording provides the wider colour palette, cabinet finish, interface font, introduction/About/footer copy, CRT default and custom holding image; see CUSTOMISING.md. Set the exact address viewers use, including the port on localhost. This address controls Discord callbacks and IPTV links; configure public HTTPS at your hosting provider or reverse proxy. The shared website/IPTV live feed can be enabled or disabled here. FFmpeg must be installed on the host (included in the supplied Docker image).
 
-## Programmes & media
+## Channels, programming and media
 
-Choose your channel, then use **Channel details**, **Programmes**, **Schedule & breaks**, **Media library** or **Advanced**. Search programme titles/series and select a result to edit it; longer lists load 30 at a time. The save bar stays within reach and shows unsaved changes. Saving keeps your selected programme. Folder imports are under Media library. Unsaved catalogue edits trigger a warning when leaving the page; use Save or Discard before leaving. Control-room notifications fade after ten seconds.
+Open Channels to see the station table and its Actions menus. Choose a channel, then use **Channel details**, **Programming**, **Schedule & repeat**, **Flex**, **Media library** or **Advanced**. Search programme titles/series and select a result to edit it; longer lists load 30 at a time. The save bar stays within reach and shows unsaved changes. Saving keeps your selected programme. Folder imports are under Media library. Unsaved catalogue edits trigger a warning when leaving the page; use Save or Discard before leaving. Control-room notifications fade after ten seconds.
 
 Select or add channels, edit their names, numbers, descriptions and status, and choose back-to-back playback, clock-aligned starts or timed breaks. Add programmes with a title, original year, duration in seconds, direct media URL and optional source-credit URL. You can select an initial source offset for a reviewed file segment. Empty/offline channels show Test Card F.
 
