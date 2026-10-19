@@ -1,6 +1,6 @@
 # YouTube and Dailymotion sources
 
-Remote MP4/WebM and local media are read by FFmpeg. Public YouTube/Dailymotion watch URLs additionally need Python/yt-dlp. The website and IPTV now use the same per-channel HLS feed, so their programmes, adverts and fallback output match. The supplied Vintage Tv UK account now contributes 21 enabled Dailymotion recordings; two additional decoded uploads remain disabled pending series identification. See [the import report](VINTAGETVUK.md).
+Remote MP4/WebM and local media are read by FFmpeg. Public YouTube/Dailymotion watch URLs additionally need Python/yt-dlp. The website and IPTV now use the same per-channel HLS feed, so their programmes, adverts and fallback output match.
 
 For the shared live feed, the server can resolve an unrestricted public video URL with yt-dlp, then feed its temporary video/audio addresses into FFmpeg. The original programme is not downloaded into a permanent library. The usual rolling HLS segments are removed when the channel becomes idle. Watch pages are excluded from the source-direct M3U because IPTV clients cannot play them as files.
 
@@ -19,11 +19,7 @@ The Docker image includes Python, yt-dlp and curl-cffi. Rebuild it to update tho
 
 ## Practical limits
 
-Evening check, 17 October 2026: the supplied YouTube batch has 650 of 843 distinct videos reviewed, with 291 earlier short relay/frame-decode passes. The batch paused after a previously working control also failed. A fresh Bullseye control still resolves public video metadata with the saved, unexpired session, but media playback falls back to holding output with `source-http-403`. Do not treat the earlier passes as a current availability guarantee. Reports: `youtube-control-20261017-evening.json` and `youtube-relay-diagnosis-20261017.json`. Separately, all 23 publicly described Vintage Tv UK Dailymotion uploads passed a short shared-feed sample; 21 are enabled, two remain held for identification, and one additional account entry returns no public metadata.
-
 These hosts can change their delivery, restrict embedding, block a server IP or remove uploads. Resolution is cached briefly, and fresh programme requests can take longer to warm up than a direct media file. This is an optional compatibility path, not a guarantee that every public upload works. Optional YouTube session authentication is described below. Private, members-only, premium, age-restricted and DRM sources remain unsupported. Use sources you are authorised to present and review each host's terms.
-
-On 16 October 2026, all three supplied Alright on the Night YouTube uploads produced HLS programme segments that FFmpeg decoded. A Dailymotion advert compilation passed metadata discovery but failed stream resolution and reached the technical fallback; it was excluded from the curated schedule. Metadata success alone is not playback verification. Complete programmes have not been watched end-to-end during these checks.
 
 See [yt-dlp's documentation](https://github.com/yt-dlp/yt-dlp) and [YouTube's player API](https://developers.google.com/youtube/iframe_api_reference).
 

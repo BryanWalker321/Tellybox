@@ -17,7 +17,7 @@ test('reshuffle repeats use the entire active collection and agree after restart
  assert.equal(scheduleAt(c,epoch,start+duration,1)[0].programme.id,orders[1][0].id);
  assert.deepEqual(scheduleAt(c,epoch,start+duration+12345,5),scheduleAt(structuredClone(c),epoch,start+duration+12345,5));
 });
-test('repeat policy retains clock boundaries, whole Flex and uninterrupted channels',()=>{
+test('repeat policy retains clock boundaries, whole fillers and uninterrupted channels',()=>{
  const c=channel();c.playout={order:'episodic',repeat:'shuffle'};c.schedule={alignMinutes:10,breaks:[{id:'ad',title:'Advert',duration:30,url:'/media/ad.mp4',kind:'advert'}],maxClips:1};
  for(const cycle of [0,1,4]){const list=channelTimeline(c,cycle);assert.equal(list.filter(p=>!p.isInterstitial).length,12);assert.ok(list.filter(p=>p.kind==='advert').every(p=>p.duration===30));}
  for(const entry of scheduleAt(c,epoch,start+7200000,60).filter(e=>!e.programme.isInterstitial))assert.equal(entry.start%600000,0);

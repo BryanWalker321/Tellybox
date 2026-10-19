@@ -2,15 +2,15 @@
 
 ## BBC Test Card F
 
-`public/test-card-f.jpg` is the Test Card F image specifically requested by the user, retrieved from:
+`public/test-card-f.jpg` contains the BBC-associated Test Card F reference image, retrieved from:
 
 https://professionalmoron.com/wp-content/uploads/2019/05/bbc-test-card-f.jpg
 
-It is a third-party BBC-associated reference image, used for the requested off-air and technical-difficulty holding screen. It is **not covered by this project's MIT licence**. No ownership or permission to sublicense it is asserted. Operators preparing a redistributed/public edition should obtain appropriate permission or replace this asset with their own cleared test card; retain the same filename to keep fallback behaviour.
+It is a third-party BBC-associated reference image, used for the off-air and technical-difficulty holding screen. It is **not covered by this project's MIT licence**. No ownership or permission to sublicense it is asserted. Operators preparing a redistributed/public edition should obtain appropriate permission or replace this asset with their own cleared test card; retain the same filename to keep fallback behaviour.
 
 ## Programme media
 
-Source videos are not bundled. The UK pilot links to Internet Archive-hosted files; source and rights metadata are retained in catalogue.json. Uploader licence metadata has not been independently verified.
+Programme recordings are not bundled. The starter includes only the two CC0 demonstration transmissions described below. Owners are responsible for the rights to their added media.
 
 ## Research references
 

@@ -20,7 +20,7 @@ Discord needs an exact registered callback. To sign in from other LAN devices, r
 
 The self-hosted starter contains **one channel and two working demo transmissions**. It uses the Tellybox example name and logo. Replace those with your own identity in Settings before inviting viewers. Your station can use your local videos or direct files from an online media archive. The full British archive network belongs to the separate Tellybox edition.
 
-The source is ready to publish on GitHub; a public repository has not been published yet. Until then, download the starter from this station’s **Host your own** page. Do not share the station’s private data directory, passwords or Discord secrets.
+Download the starter from [GitHub Releases](https://github.com/BryanWalker321/Tellybox/releases/latest), or clone [the repository](https://github.com/BryanWalker321/Tellybox). Do not share the station’s private data directory, passwords or Discord secrets.
 
 ## 1. Start locally first
 
