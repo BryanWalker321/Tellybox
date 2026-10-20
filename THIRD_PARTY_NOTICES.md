@@ -22,3 +22,7 @@ The two generated demo MP4 test transmissions in examples/demo were created for 
 Discord glyph: Simple Icons (https://github.com/simple-icons/simple-icons), CC0. Discord marks belong to Discord; their use identifies the sign-in/community service and does not imply endorsement.
 
 HLS.js 1.7.3: https://github.com/video-dev/hls.js, Apache-2.0. The bundled browser module is in public/vendor/hls.mjs; its full licence is public/vendor/hls-LICENSE.txt. It plays the same live HLS channel feed used by IPTV clients.
+
+## Teletext50 font
+
+Teletext50 and Teletext50 ultracondensed are provided under CC0/public-domain terms. Source: https://galax.xyz/Teletext50/ and https://github.com/glxxyz/bedstead. The license is included in public/fonts/Teletext50-LICENSE.txt.

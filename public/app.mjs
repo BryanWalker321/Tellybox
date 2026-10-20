@@ -1,3 +1,4 @@
+import {buildTeletext} from '/teletext.mjs';
 import { createDirectory } from '/directory.mjs';
 import { scheduleAt, programmesAt, listingsWindow, validateCatalogue } from '/lib/schedule.mjs';
 import { createBroadcastPlayer } from '/broadcast-player.mjs';
@@ -13,7 +14,7 @@ video.addEventListener('loadedmetadata', () => {
   }
 });
 document.querySelectorAll('.dialog-close').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
-let config, channel, playing = false, loadedKey = '', clockOffset = 0, ttPage = '100', ttAuto = false, lastSync = 0, stationDefault;
+let config, channel, playing = false, loadedKey = '', clockOffset = 0, ttPage = '100', ttAuto = false, ttSubpage = 0, ttSubpages = 1, lastSync = 0, stationDefault;
 const now = () => Date.now() + clockOffset;
 const time = n => new Date(n).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 const duration = n => { n = Math.max(0, Math.floor(n)); return `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`; };
@@ -118,7 +119,7 @@ function updateProgramme(s) {
 }
 function tick() {
   $('clock').textContent = new Date(now()).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' }).toUpperCase() + ' / ' + time(now());
-  $('tt-clock').textContent = time(now());
+  $('tt-clock').textContent = new Date(now()).toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'}).replace(/ /g,'')+' '+new Date(now()).toLocaleTimeString('en-GB',{hour12:false});
   if (!config || !channel) return;
   const s = current(channel)[0], programmeList = listed(channel), display = programmeList[0];
   updateProgramme(display);
@@ -158,7 +159,7 @@ window.addEventListener('hashchange', showView); showView();
 $('tv-controls-open').addEventListener('click', () => $('tv-controls').showModal());
 async function refreshNetworkNotice() { try { const r = await fetch('/api/network'); const n = await r.json(); $('iptv-status').textContent = n.iptvEnabled ? '' : 'IPTV relay disabled by station owner.'; } catch {} }
 refreshNetworkNotice(); document.addEventListener('community-settings-changed', refreshNetworkNotice);
-fetch('/hosting-guide.html').then(r => { if (!r.ok) throw Error(); return r.text(); }).then(markup => { $('hosting-content').innerHTML = markup; fetch('/api/distribution').then(r => r.json()).then(info => { if (!info.downloadAvailable) { $('hosting-download').href = 'https://github.com/BryanWalker321/Tellybox/releases/latest'; $('hosting-download-status').textContent = 'This installation does not bundle a source ZIP. Download the latest starter from github.com/BryanWalker321/Tellybox/releases.'; } }).catch(() => {}); }).catch(() => { $('hosting-content').textContent = 'Hosting instructions are unavailable. See docs/HOSTING.md in your download.'; });
+fetch('/hosting-guide.html').then(r => { if (!r.ok) throw Error(); return r.text(); }).then(markup => { $('hosting-content').innerHTML = markup; }).catch(() => { $('hosting-content').textContent = 'Hosting instructions are unavailable. See docs/HOSTING.md on GitHub.'; });
 $('tv-open-guide').addEventListener('click', () => $('tv-controls').close());
 $('picture-key').addEventListener('click', () => { $('picture').value = $('picture').value === 'crt' ? 'clean' : 'crt'; picture(); });
 $('picture').value = stored('tellybox-picture') || 'crt';
@@ -167,20 +168,18 @@ $('picture').addEventListener('change', () => picture()); picture(false);
 try { localStorage.removeItem('tellybox-appearance'); } catch {}
 function renderTeletext() {
   if (!config) return;
-  $('tt-page').textContent = 'P' + ttPage;
-  let content;
-  if (ttPage === '100') content = `<h2>${esc(config.brand.name)}<br>TEXT</h2><p class="tt-cyan">THE ARCHIVE TELEVISION SERVICE</p><div class="teletext-links"><button data-page="601"><strong>601</strong> What’s on now</button><button data-page="602"><strong>602</strong> Coming up next</button><button data-page="150"><strong>150</strong> About this station</button></div><p class="tt-yellow">Enter a three-digit page number below.</p>`;
-  else if (ttPage === '601' || ttPage === '602') content = `<h2>TV ${ttPage === '601' ? 'NOW' : 'NEXT'}</h2><div class="teletext-links">${config.channels.map(c => { const list = listed(c), s = ttPage === '601' ? list[0] : list.find(entry => entry.start > now()) || list[1]; return `<button data-tt-channel="${c.id}"><strong>${String(c.number).padStart(2, '0')}</strong>${esc(c.name)}<br><span class="tt-green">${time(s.start)}</span> ${esc(s.programme.title)}</button>`; }).join('')}</div><p class="tt-yellow">Select a channel to tune in live.</p>`;
-  else if (ttPage === '150') content = `<h2>WELCOME</h2><p class="tt-cyan">A little television from another time.</p><p>This is an independent archive station.<br>No login. No subscription. Just television.</p><p>Programmes come from their original hosts.<br>Web and IPTV share one live broadcast.<br>Source credits appear beside every programme.</p><p class="tt-yellow">Original Teletext-style pages, built for this station.</p><p>Inspired by Britain’s television information services.</p>`;
-  else content = '<h2>PAGE NOT FOUND</h2><p class="tt-yellow">Try 100, 150, 601 or 602.</p>';
-  $('tt-content').innerHTML = content;
+  const page=buildTeletext(config,ttPage,now(),ttSubpage);ttSubpage=page.subpage;ttSubpages=page.subpages;
+  $('tt-page').textContent='P'+ttPage;$('tt-content').innerHTML=page.html;
+  $('tt-subpage').textContent=`${ttSubpage+1}/${ttSubpages}`;$('tt-previous').disabled=ttSubpage===0;$('tt-next').disabled=ttSubpage>=ttSubpages-1;
 }
-$('teletext').addEventListener('click', e => { const page = e.target.closest('[data-page]'), ch = e.target.closest('[data-tt-channel]'); if (page) { ttPage = page.dataset.page; renderTeletext(); } if (ch) { tune(config.channels.find(c => c.id === ch.dataset.ttChannel), true); location.hash = 'watch'; } });
-$('tt-input').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); if (e.target.value.length === 3) { ttPage = e.target.value; renderTeletext(); e.target.value = ''; } });
+$('tt-previous').addEventListener('click',()=>{ttSubpage--;renderTeletext();});
+$('tt-next').addEventListener('click',()=>{ttSubpage++;renderTeletext();});
+$('teletext').addEventListener('click', e => { const page = e.target.closest('[data-page]'), ch = e.target.closest('[data-tt-channel]'); if (page) { ttPage = page.dataset.page; ttSubpage=0; renderTeletext(); } if (ch) { tune(config.channels.find(c => c.id === ch.dataset.ttChannel), true); location.hash = 'watch'; } });
+$('tt-input').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); if (e.target.value.length === 3) { ttPage = e.target.value; ttSubpage=0; renderTeletext(); e.target.value = ''; } });
 $('tt-auto').addEventListener('click', () => { ttAuto = !ttAuto; $('tt-auto').innerHTML = `<span class="tt-cyan">■</span> Auto: ${ttAuto ? 'on' : 'off'}`; });
-setInterval(() => { if (ttAuto && !$('teletext-view').hidden) { const pages = ['100', '601', '602', '150']; ttPage = pages[Math.floor(now() / 15000) % pages.length]; renderTeletext(); } }, 1000);
+setInterval(() => { if (ttAuto && !$('teletext-view').hidden) { const pages = ['100', '601', '602', '150']; const sequence=pages.flatMap(page=>Array.from({length:buildTeletext(config,page,now()).subpages},(_,subpage)=>({page,subpage}))),entry=sequence[Math.floor(now()/15000)%sequence.length];ttPage=entry.page;ttSubpage=entry.subpage;renderTeletext(); } }, 1000);
 let digits = '', digitTimer;
-document.addEventListener('keydown', e => { if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName)  || !config) return; if (e.key.toLowerCase() === 't') { location.hash = location.hash === '#teletext' ? 'watch' : 'teletext'; return; } if (!/^\d$/.test(e.key)) return; clearTimeout(digitTimer); digits += e.key; if (location.hash === '#teletext') { if (digits.length === 3) { ttPage = digits; digits = ''; renderTeletext(); } } else digitTimer = setTimeout(() => { const c = config.channels.find(c => c.number === Number(digits)); digits = ''; if (c) { tune(c, true); location.hash = 'watch'; } }, 700); });
+document.addEventListener('keydown', e => { if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName)  || !config) return; if (e.key.toLowerCase() === 't') { location.hash = location.hash === '#teletext' ? 'watch' : 'teletext'; return; } if (!/^\d$/.test(e.key)) return; clearTimeout(digitTimer); digits += e.key; if (location.hash === '#teletext') { if (digits.length === 3) { ttPage = digits; ttSubpage=0; digits = ''; renderTeletext(); } } else digitTimer = setTimeout(() => { const c = config.channels.find(c => c.number === Number(digits)); digits = ''; if (c) { tune(c, true); location.hash = 'watch'; } }, 700); });
 async function syncClock() {
   const before = Date.now();
   try { const response = await fetch('/api/time', { cache: 'no-store', signal: AbortSignal.timeout(5000) }); if (!response.ok) throw Error('Clock unavailable'); const data = await response.json(); if (!Number.isFinite(data.now)) throw Error('Invalid clock'); clockOffset = data.now - (before + Date.now()) / 2; }

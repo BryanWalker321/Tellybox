@@ -26,7 +26,7 @@ Download the starter from [GitHub Releases](https://github.com/BryanWalker321/Te
 
 ## 1. Start locally first
 
-1. Download and extract the self-hosted ZIP into a permanent folder, for example `C:\Tellybox` on Windows or `/opt/tellybox` on Linux. Do not run inside the ZIP.
+1. Install Git and run `git clone https://github.com/BryanWalker321/Tellybox.git`, then `cd Tellybox`. Keep this checkout in a permanent folder.
 2. Install a supported Node.js release (22.13 or newer; 24 recommended) from [Node.js](https://nodejs.org/en/download). For website and IPTV playback, also install FFmpeg from [FFmpeg’s download page](https://ffmpeg.org/download.html) and make sure `ffmpeg -version` works in a new terminal. The Docker image includes FFmpeg.
 3. Open a terminal in the extracted folder. On Windows you can open the folder, type `powershell` in Explorer’s address bar and press Enter.
 4. Run `npm start`. No package installation is needed. Keep the server running.

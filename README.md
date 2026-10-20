@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.1-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.2-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -43,14 +43,14 @@ See [platform compatibility and Raspberry Pi setup](docs/PLATFORMS.md) for Windo
 
 Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on Windows/macOS, or Docker Engine with the Compose plugin on Linux. Docker includes Node.js, FFmpeg and the optional provider tools.
 
-1. Download/extract the starter ZIP from [Releases](https://github.com/BryanWalker321/Tellybox/releases/latest), or clone it:
+1. Install Git and clone the repository:
 
    ```sh
    git clone https://github.com/BryanWalker321/Tellybox.git
    cd Tellybox
    ```
 
-2. Open a terminal in the extracted/cloned folder and run:
+2. Open a terminal in the cloned folder and run:
 
    ```sh
    docker compose up -d --build
@@ -97,7 +97,7 @@ For Kodi/IPTV, use your reachable station address plus `/channels.m3u` for the p
 
 Back up station data and media before updating. Docker stores them in the `community-data` and `media-data` volumes; native installs use `data/` and `media/`. Keep owner settings, databases and sessions private.
 
-For Git installs, stop the station, back up, run `git pull --ff-only`, then `docker compose up -d --build`. ZIP users should extract a new release separately and retain existing data/media. Do not use `docker compose down -v` for updates: it deletes persistent volumes.
+For Git installs, stop the station, back up, run `git pull --ff-only`, then `docker compose up -d --build`. Do not use `docker compose down -v` for updates: it deletes persistent volumes.
 
 ## Community and support
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2
+
+- Rebuild Teletext with period colours, pixel typography, station branding and channel listings.
+- Enlarge the desktop screen and keep mobile layouts responsive.
+- Retain coloured keys and page number entry; add subpage navigation.
+- Use the owner-configured station name in the Teletext masthead.
+- Publish updates through GitHub Releases, incrementing the patch version for every release.
+
 ## 0.1.1
 
 - Add station-wide advert/filler selection and an adjustable repeat cooldown, defaulting to two minutes in the scheduling editor.

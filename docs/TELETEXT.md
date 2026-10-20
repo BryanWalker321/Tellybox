@@ -1,19 +1,33 @@
-# Teletext and PagesFromCeefax
+# Teletext
 
-Reference: https://github.com/robsonjb1/PagesFromCeefax
+The station Teletext uses the name configured by its owner. It has a black background, eight period colours, Teletext50 pixel typography and original mosaic artwork. The desktop screen expands to 1,200 pixels and scales to the available mobile width.
 
-Inspected the README, repository file tree, `API/Program.cs`, `API/Services/CarouselService.cs` and licence designation on 16 October 2026. The project is a tribute to in-vision Pages from Ceefax, with a .NET 8 service and browser renderer. Its README describes BBC RSS-derived cached content refreshed every twenty minutes, plus a clock-based page carousel and an OpenWeatherMap key for weather. The current source contains a `/carousel` endpoint and a page representation holding 1,000 integers (40 columns × 25 rows).
+## Navigation
 
-## What this pilot uses
+- Red: main index (100).
+- Green: television now (601).
+- Yellow: television next (602).
+- Blue: toggle the automatic 15-second carousel.
+- Enter any three-digit page number using the number field or keyboard.
+- Use the previous/next arrows for subpages on longer listings.
+- Select a channel in now/next listings to watch it.
 
-Tellybox implements its own original DOM-based Teletext-style interface. Pages 100, 150, 601 and 602 are generated from the same station catalogue and schedule as the player. The 15-second auto carousel uses the station clock. It does not fetch news/weather or connect to the reference repository. It is not a full hardware Teletext decoder or a pixel-accurate Ceefax reconstruction.
+## Pages
 
-No reference source, fonts, logos, historic BBC artwork, stock TV background or music has been bundled. The repository README distinguishes several third-party assets; a software licence alone should not be taken as permission to redistribute each asset.
+| Page | Contents |
+| --- | --- |
+| 100 | Main index |
+| 150 | Station information |
+| 160 | How to watch |
+| 199 | Help and index |
+| 200 | Channel directory |
+| 300 | Listings index |
+| 301 onwards | Channel running orders |
+| 601 | Television now |
+| 602 | Television next |
 
-## Practical integration choices
+Programme information comes from the same station catalogue and schedule as playback. Times use the viewer's local timezone. News and weather feeds are not included.
 
-1. **Standalone companion:** deploy PagesFromCeefax separately, follow its current setup instructions, and provide a link or an explicitly configured embed. Check its embedding headers and operate only the endpoints needed. An iframe requires an explicit `frame-src` allowance in Tellybox's CSP; arbitrary third-party frames are currently blocked.
-2. **Page-data adapter:** implement a renderer for the `/carousel` page matrix and a read-only integration with a configured, operator-controlled service. Confirm the live schema and cache behaviour before implementation. Design host allowlisting, timeouts, caching and fallback pages; don't create an arbitrary URL proxy. This lets the TV guide use station data while news/weather pages come from another service.
-3. **Integrated fork:** intentionally choose a compatible licensing approach for combined/distributed code, preserve notices and review separate asset terms. The referenced repository is GPL-3.0. The current Tellybox implementation remains original MIT code; no GPL code has been incorporated.
+## Credits
 
-The first follow-up should be a 40×25 text/mosaic renderer and explicit page-source interface. Keep it independent of the video player, so the core service still starts without weather keys or remote feeds. Authentic fonts, BBC logos, archival page dumps and interlude music each need their own provenance review. A station-owned visual identity and cleared audio are preferable for the general-purpose release.
+[PagesFromCeefax](https://github.com/robsonjb1/PagesFromCeefax) and historical Teletext screens were visual references. No source code, logos or artwork from that GPL project are included. The renderer and mosaic artwork are original Tellybox code. Teletext50 fonts are CC0/public domain; see THIRD_PARTY_NOTICES.md and public/fonts/Teletext50-LICENSE.txt.
