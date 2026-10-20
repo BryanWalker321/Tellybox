@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.3-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.4-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -128,3 +128,11 @@ These full-size desktop screenshots show [our hosted Tellybox installation](http
 ### Our television guide
 
 ![Tellybox UK television guide on desktop](docs/screenshots/tellybox-uk-guide.png)
+
+### Box Baffler! daily quiz
+
+Enter Teletext page **400** for a daily dozen from a 144-question bank. Use the coloured keys or tap an answer; one wrong answer sends you back to question one. The quiz changes at midnight UK time and works in fullscreen.
+
+![Box Baffler intro with Bamber](docs/screenshots/quiz-intro.png)
+
+![Four-colour daily quiz question](docs/screenshots/quiz-question.png)

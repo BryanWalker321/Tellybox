@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4
+
+- Add Box Baffler!, an original daily twelve-question Teletext quiz starting on page 400.
+- Include 144 questions across 12 subjects, rotated at midnight UK time with shuffled answer positions.
+- Support coloured keys, tappable answers, wrong-answer resets, same-day saved progress and fullscreen.
+- Use the supplied Bamber host artwork, show dates in UK format, and add quiz screenshots and documentation.
+
 ## 0.1.3
 
 - Add Teletext fullscreen with automatic fit, resize handling and an exit button.

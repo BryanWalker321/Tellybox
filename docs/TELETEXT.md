@@ -35,3 +35,13 @@ Programme information comes from the same station catalogue and schedule as play
 ## Fullscreen
 
 Select Fullscreen beneath the coloured keys. The whole page and its controls scale to fit the screen without scrolling. Resize or rotate the device to refit. Select Exit fullscreen or press Escape to return. Browsers without fullscreen support use a fitted expanded view.
+
+## Box Baffler! daily quiz
+
+Page 400 is the start page, 401–412 are the twelve questions, and 413 is the completion page. A wrong answer returns you to question one; retries keep the same daily questions and answer positions. Page-number entry resumes your current question rather than skipping ahead. The red, green, yellow and blue keys select answers A–D; tapping the answer works too. The automatic page carousel pauses during the quiz.
+
+Box Baffler! is an original quiz inspired by historical colour-key Teletext games, including Bamboozle. Bamber Boozler artwork is displayed from the owner-supplied host image, preserving its original pixels. The question bank is independently worded. See THIRD_PARTY_NOTICES.md for the character artwork notice.
+
+The included bank has 144 original question wordings across 12 subjects. A date-based rotation selects one question per subject, shared by all viewers, and changes at midnight in Europe/London, including daylight-saving time. The initial bank is exhausted over each twelve-day rotation block. Answers are shuffled deterministically for the day. Progress is stored only in the viewer's browser; the next day's quiz resets it. No account or external trivia API is needed.
+
+The bank is in public/quiz-questions.mjs. Each item needs a unique ID, category, question and four distinct answers; the first answer in the source is correct before the daily shuffle. Keep all twelve subjects represented and review factual edits before publishing. Extra questions within an existing subject are included in its daily rotation.

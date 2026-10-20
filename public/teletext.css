@@ -29,3 +29,17 @@
 #teletext:fullscreen,#teletext.tt-fullscreen-fallback{width:100vw;height:100dvh;max-width:none;margin:0;padding:0;border:0;box-shadow:none;overflow:hidden;background:#000;position:fixed;inset:0}
 #teletext.tt-fullscreen-fallback{z-index:100000}body.tt-fullscreen-open{overflow:hidden}
 #teletext:fullscreen .tt-surface,#teletext.tt-fullscreen-fallback .tt-surface{position:absolute;left:50%;top:50%;width:1200px;max-width:none;padding:16px;box-sizing:border-box;transform:translate(-50%,-50%) scale(var(--tt-scale,1));transform-origin:center}
+#tt-content .quiz-title{font:6cqw/6cqw Teletext50,monospace;height:6cqw;color:#ff0;border-bottom:.4cqw solid #f00;margin-bottom:1cqw;white-space:nowrap}
+#tt-content .quiz-welcome,#tt-content .quiz-question{display:grid;grid-template-columns:minmax(0,1fr) 24cqw;gap:2cqw;align-items:center;font:3.2cqw/3.8cqw Teletext50,monospace}
+#tt-content .quiz-welcome{height:24cqw}#tt-content .quiz-question{height:18cqw}
+#tt-content .quiz-question>div{background:#fff;color:#00f;padding:1cqw}#tt-content .quiz-question .tt-cyan{color:#00f}
+#tt-content .quiz-host{width:24cqw;height:24cqw;image-rendering:pixelated}
+#tt-content .quiz-question .quiz-host{width:19cqw;height:18cqw;justify-self:center}
+#tt-content .quiz-welcome p,#tt-content .quiz-question p,#tt-content .quiz-rules p{margin:0;white-space:normal}
+#tt-content .quiz-rules{font:3.2cqw/4.8cqw Teletext50,monospace;margin:2cqw 0}
+#tt-content .quiz-status,#tt-content .quiz-hint{font:3cqw/3.6cqw Teletext50,monospace;height:3.6cqw;white-space:nowrap}
+#tt-content .quiz-answer{display:flex;align-items:center;gap:2cqw;min-height:7.2cqw;width:100%;text-align:left;font:3.2cqw/3.8cqw Teletext50,monospace;color:#fff;white-space:normal}
+#tt-content .quiz-answer>span:last-child{flex:1}#tt-content .quiz-colour{width:3cqw;height:3cqw;flex-shrink:0}#tt-content .quiz-red{background:#f00}#tt-content .quiz-green{background:#0f0}#tt-content .quiz-yellow{background:#ff0}#tt-content .quiz-blue{background:#00f}
+#tt-content .quiz-start{font:3.2cqw/4.8cqw Teletext50,monospace;display:block;width:100%;text-align:left}
+
+#tt-content .quiz-host{object-fit:contain}

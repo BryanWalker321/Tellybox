@@ -26,3 +26,7 @@ HLS.js 1.7.3: https://github.com/video-dev/hls.js, Apache-2.0. The bundled brows
 ## Teletext50 font
 
 Teletext50 and Teletext50 ultracondensed are provided under CC0/public-domain terms. Source: https://galax.xyz/Teletext50/ and https://github.com/glxxyz/bedstead. The license is included in public/fonts/Teletext50-LICENSE.txt.
+
+## Bamber Boozler artwork
+
+public/bamber-host.png is the owner-supplied pixel-art image of Bamber Boozler from the historical Teletext Bamboozle quiz. The image pixels are unchanged. Bamber Boozler and the historical artwork remain the property of their respective rights holders and are excluded from the application code MIT license. The original Bamboozle quiz character was created by Greg Nicholas. This project does not imply endorsement by the original service or creators.
