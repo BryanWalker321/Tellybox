@@ -19,7 +19,7 @@ See the repository's [test runs](https://github.com/BryanWalker321/Tellybox/acti
 4. Open `http://127.0.0.1:4173`, then Settings. Retrieve the setup key privately with `docker compose logs` and create an owner password.
 5. Follow [Hosting](HOSTING.md) for LAN access, startup, firewall rules and public hosting. Docker Desktop must remain running. Windows Server users should use the native setup or a supported Linux VM; Docker Desktop is not supported on Windows Server.
 
-A native installation is also available: install supported Node.js (22.13 or later) and FFmpeg, then follow the native steps in [Hosting](HOSTING.md). There is no separate Windows installer executable.
+A native installation is also available: install supported Node.js (22.13 or later) and FFmpeg, then follow the native steps in [Hosting](HOSTING.md). There is no separate Windows installer executable. When using a package manager that installs launcher shims, set `FFMPEG_PATH` and `FFPROBE_PATH` in `.env` to the real `ffmpeg.exe` and `ffprobe.exe` files, not the shim launchers.
 
 ## Linux
 

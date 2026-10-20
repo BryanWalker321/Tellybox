@@ -32,5 +32,5 @@ test('programme, mixed-audio adverts and silent clips retain stereo AAC and adva
   }
   assert.ok(relay.states.get(channel.id).transitions>=4);assert.ok(packets.length>=10);
   for(let i=1;i<packets.length;i++){assert.ok(packets[i].start>packets[i-1].start,'audio clock advances through handoffs');assert.ok(packets[i].start-packets[i-1].end<2,'no long audio gap at handoff');}
- }finally{await relay?.close();await rm(dir,{recursive:true,force:true});}
+ }finally{await relay?.close();await rm(dir,{recursive:true,force:true,maxRetries:10,retryDelay:250});}
 });

@@ -47,7 +47,7 @@ test('FFmpeg relays local video, off-air cards and failed-source cards into play
     assert.ok([...relay.states.keys()].every(id=>!id.startsWith('owner-check-')), 'sample relays are removed after verification');
     relay.resolver = {resolve:async()=>({streams:[{url:path.join(dir,'missing.mp4'),video:true,audio:false}]})};
     await assert.rejects(checkProviderPlayback(relay,'https://www.youtube.com/watch?v=y9CsvDblsr0',ffmpeg),/footage/,'a technical card must never count as programme playback');
-  } finally { await relay.close(); if (dir.startsWith(path.join(tmpdir(), 'tellybox-test-'))) await rm(dir, { recursive: true, force: true }); }
+  } finally { await relay.close(); if (dir.startsWith(path.join(tmpdir(), 'tellybox-test-'))) await rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 250 }); }
 });
 
 test('a late IPTV join plays an interval from its beginning to EOF, beyond its nominal slot', {skip: !available, timeout: 25000}, async () => {
@@ -66,6 +66,6 @@ test('a late IPTV join plays an interval from its beginning to EOF, beyond its n
     assert.ok(Date.now()-started >= 7000, 'the late join must not cut an eight-second clip to its four-second nominal remainder');
   } finally {
     await relay.close();
-    if (dir.startsWith(path.join(tmpdir(), 'tellybox-test-'))) await rm(dir, {recursive:true,force:true});
+    if (dir.startsWith(path.join(tmpdir(), 'tellybox-test-'))) await rm(dir, {recursive:true,force:true,maxRetries:10,retryDelay:250});
   }
 });

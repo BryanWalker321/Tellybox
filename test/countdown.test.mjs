@@ -27,5 +27,5 @@ test('shared station presentation encodes a live countdown for web and IPTV',{ti
   const segment=playlist.match(/segment\d+\.ts/)[0],bytes=await relay.file(channel,epoch,segment);
   const decoded=spawnSync(ffmpeg,['-v','error','-i','pipe:0','-frames:v','1','-f','null','-'],{input:bytes,windowsHide:true,timeout:10000});
   assert.equal(decoded.status,0,decoded.stderr.toString());
- }finally{await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-countdown-test-')))await rm(dir,{recursive:true,force:true});}
+ }finally{await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-countdown-test-')))await rm(dir,{recursive:true,force:true,maxRetries:10,retryDelay:250});}
 });

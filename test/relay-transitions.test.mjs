@@ -19,7 +19,7 @@ test('timed breaks relay a complete advert, presentation and the following progr
   const channel={id:'timed',programmes:[{id:'one',title:'One',duration:8,url:'/media/programme.mp4'},{id:'two',title:'Two',duration:8,url:'/media/programme.mp4'}],schedule:{breakSeconds:8,breakEvery:2,maxClips:1,transitionReserveSeconds:0,breaks:[{id:'advert',title:'Whole advert',duration:3,url:'/media/advert.mp4'}]}};
   const epoch=new Date(Date.now()-12000).toISOString(),seen=new Set();let decoded=false;
   try{const until=Date.now()+18000;while(Date.now()<until){const playlist=(await relay.file(channel,epoch,'index.m3u8')).toString();assert.ok(!playlist.includes('#EXT-X-ENDLIST'));const state=relay.states.get(channel.id);assert.notEqual(state.playbackKind,'holding');seen.add(state.playbackKind);if(state.currentEntry.id.startsWith('advert-break-'))seen.add('interval');if(state.currentEntry.id==='one')seen.add('following-programme');if(!decoded){const segment=playlist.match(/segment\d+\.ts/)[0],bytes=await relay.file(channel,epoch,segment);assert.equal(spawnSync(ffmpeg,['-v','error','-i','pipe:0','-frames:v','1','-f','null','-'],{input:bytes,windowsHide:true}).status,0);decoded=true;}await pause(150);}assert.ok(seen.has('interval'));assert.ok(seen.has('presentation'));assert.ok(seen.has('following-programme'));assert.equal(relay.states.get(channel.id).sourceFailures??0,0);}finally{await relay.close();}
- }finally{await rm(dir,{recursive:true,force:true});}
+ }finally{await rm(dir,{recursive:true,force:true,maxRetries:10,retryDelay:250});}
 });
 
 test('a transient provider failure recovers inside the current programme instead of holding its entire slot',{skip:!available,timeout:20000},async()=>{
@@ -42,7 +42,7 @@ test('a transient provider failure recovers inside the current programme instead
   assert.equal(state.currentEntry.id,'p');
   assert.equal(state.sourceFailures,1);
   assert.ok((await relay.file(channel,epoch,'index.m3u8')).toString().includes('#EXTINF:'));
- }finally{await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-transition-test-')))await rm(dir,{recursive:true,force:true});}
+ }finally{await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-transition-test-')))await rm(dir,{recursive:true,force:true,maxRetries:10,retryDelay:250});}
 });
 
 test('a live HLS channel keeps consecutive segments and a real client playing across multiple programme boundaries',{skip:!available,timeout:45000},async()=>{
@@ -79,7 +79,7 @@ test('a live HLS channel keeps consecutive segments and a real client playing ac
   const [code]=await clientResult;clearTimeout(timeout);
   assert.equal(code,0,diagnostic);
   assert.ok([...progress.matchAll(/out_time_us=(\d+)/g)].some(m=>Number(m[1])>=16000000),'decode at least sixteen seconds through programme handoffs');
- }finally{reader?.kill();server.closeAllConnections();await new Promise(r=>server.close(r));await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-transition-test-')))await rm(dir,{recursive:true,force:true});}
+ }finally{reader?.kill();server.closeAllConnections();await new Promise(r=>server.close(r));await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-transition-test-')))await rm(dir,{recursive:true,force:true,maxRetries:10,retryDelay:250});}
 });
 
 test('IPTV advert handoffs never restart a finished scheduled slot or replace working adverts with a test card',{skip:!available,timeout:35000},async()=>{
@@ -104,5 +104,5 @@ test('IPTV advert handoffs never restart a finished scheduled slot or replace wo
    await pause(150);
   }
   assert.ok(seen.size>=3,'observe several complete adverts');
- }finally{await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-transition-test-')))await rm(dir,{recursive:true,force:true});}
+ }finally{await relay.close();if(dir.startsWith(path.join(tmpdir(),'tellybox-transition-test-')))await rm(dir,{recursive:true,force:true,maxRetries:10,retryDelay:250});}
 });
