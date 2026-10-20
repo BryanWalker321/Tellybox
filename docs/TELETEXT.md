@@ -45,3 +45,11 @@ Box Baffler! is an original quiz inspired by historical colour-key Teletext game
 The included bank has 144 original question wordings across 12 subjects. A date-based rotation selects one question per subject, shared by all viewers, and changes at midnight in Europe/London, including daylight-saving time. The initial bank is exhausted over each twelve-day rotation block. Answers are shuffled deterministically for the day. Progress is stored only in the viewer's browser; the next day's quiz resets it. No account or external trivia API is needed.
 
 The bank is in public/quiz-questions.mjs. Each item needs a unique ID, category, question and four distinct answers; the first answer in the source is correct before the daily shuffle. Keep all twelve subjects represented and review factual edits before publishing. Extra questions within an existing subject are included in its daily rotation.
+
+## BBC News, Sport and London weather
+
+Page 101 displays BBC News RSS headlines; page 110 uses BBC Sport RSS; page 120 uses the BBC Weather three-day forecast feed for London (location 2643743). The index links to all three. Full headlines continue across subpages when necessary, with BBC source/article links. Times use Europe/London and DD/MM/YYYY.
+
+The server uses only these fixed BBC feed URLs, caches successful results for ten minutes and shares concurrent requests. It retries failed updates after one minute, retaining the last successful information for at most 24 hours with an explicit cached warning. If no usable data is available, the page shows an unavailable message. The browser checks for updates once per minute while Teletext is open. No external JavaScript, tracking embeds or API key is needed.
+
+Feed data belongs to the BBC and is excluded from the application MIT license. Review the BBC RSS terms for your intended use, including any business-use requirements: https://www.bbc.co.uk/usingthebbc/terms/. Attribution and links remain visible on every feed page.

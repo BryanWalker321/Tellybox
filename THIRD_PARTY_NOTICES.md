@@ -30,3 +30,7 @@ Teletext50 and Teletext50 ultracondensed are provided under CC0/public-domain te
 ## Bamber Boozler artwork
 
 public/bamber-host.png is the owner-supplied pixel-art image of Bamber Boozler from the historical Teletext Bamboozle quiz. The image pixels are unchanged. Bamber Boozler and the historical artwork remain the property of their respective rights holders and are excluded from the application code MIT license. The original Bamboozle quiz character was created by Greg Nicholas. This project does not imply endorsement by the original service or creators.
+
+## BBC RSS content
+
+BBC News, BBC Sport and BBC Weather RSS content is retrieved at runtime from BBC feed services and remains subject to BBC terms. It is excluded from the application MIT license. Feed pages identify the BBC source and link to the original source/articles. No BBC logo artwork is bundled. Sources: https://feeds.bbci.co.uk/news/rss.xml, https://feeds.bbci.co.uk/sport/rss.xml and https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743. Terms: https://www.bbc.co.uk/usingthebbc/terms/.

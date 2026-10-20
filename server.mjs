@@ -1,3 +1,4 @@
+import {TeletextFeeds} from './lib/teletext-feeds.mjs';
 import http from 'node:http';
 import {randomUUID} from 'node:crypto';
 import { readFile, stat, realpath, mkdir, writeFile } from 'node:fs/promises';
@@ -34,6 +35,7 @@ for (const name of ['demo-one.mp4', 'demo-two.mp4']) {
 const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 4173);
 const relay = new RelayManager({ mediaRoot, testCard: path.join(root, 'public/test-card-f.jpg') });
+const teletextFeeds=new TeletextFeeds({file:path.join(directory,'teletext-feeds.json')});
 const descriptions = new ProgrammeDescriptions({file:path.join(root,'programme-descriptions.json'),provider:relay.resolver});
 const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.mjs': 'text/javascript', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.mp4': 'video/mp4', '.webm': 'video/webm', '.m4v': 'video/mp4', '.mp3': 'audio/mpeg', '.vtt': 'text/vtt' };
 await readConfig();
@@ -63,6 +65,7 @@ const server = http.createServer(async (req, res) => {
     if (await community.handle(req, res, requestUrl)) return;
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
     const pathname = decodeURIComponent(requestUrl.pathname);
+    if(pathname==='/api/teletext-feeds'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify(await teletextFeeds.get()));}
     if(pathname==='/api/connection-identity'){
       res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});
       return res.end(JSON.stringify({instance:connectionInstance}));

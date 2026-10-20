@@ -169,6 +169,8 @@ $('picture').value = stored('tellybox-picture') || 'crt';
 function picture(persist = true) { $('picture-key').textContent = $('picture').value === 'crt' ? 'CRT on' : 'CRT off'; $('picture-key').setAttribute('aria-pressed', String($('picture').value === 'crt')); $('screen').classList.toggle('crt', $('picture').value === 'crt'); if (persist) stored('tellybox-picture', $('picture').value); }
 $('picture').addEventListener('change', () => picture()); picture(false);
 try { localStorage.removeItem('tellybox-appearance'); } catch {}
+let teletextSources,teletextFeedRequest,teletextFeedCheck=0;
+async function refreshTeletextFeeds(){if(teletextFeedRequest||Date.now()-teletextFeedCheck<60000)return;teletextFeedCheck=Date.now();teletextFeedRequest=true;try{const response=await fetch('/api/teletext-feeds',{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!response.ok)throw Error();teletextSources=await response.json();}catch{teletextSources=teletextSources?{feeds:Object.fromEntries(Object.entries(teletextSources.feeds||{}).map(([k,v])=>[k,{...v,stale:true}]))}:{feeds:{}};}finally{teletextFeedRequest=false;if(!$('teletext-view').hidden&&!isQuizPage())renderTeletext();}}
 let dailyQuiz;
 const isQuizPage=()=>Number(ttPage)>=400&&Number(ttPage)<=413;
 function getDailyQuiz(){if(!dailyQuiz||dailyQuiz.day!==quizDay(now())){let saved;try{saved=JSON.parse(localStorage.getItem('tellybox-daily-quiz-v1'));}catch{}dailyQuiz=createDailyQuiz(now(),saved);}return dailyQuiz;}
@@ -176,8 +178,9 @@ function saveQuiz(){try{localStorage.setItem('tellybox-daily-quiz-v1',JSON.strin
 function quizAction(action){const changed=dailyQuiz&&dailyQuiz.day!==quizDay(now());const quiz=getDailyQuiz();if(changed){ttPage='400';saveQuiz();renderTeletext();return;}if(action==='start'||action==='restart')ttPage=quiz.start(action==='restart');else{quiz.answer(Number(action));ttPage=quiz.page;}saveQuiz();renderTeletext();}
 function renderTeletext() {
   if (!config) return;
+  if(!$('teletext-view').hidden)void refreshTeletextFeeds();
   const quiz=isQuizPage()?getDailyQuiz():null;if(quiz){ttAuto=false;if(ttPage!=='400')ttPage=quiz.page;}
-  const page=buildTeletext(config,ttPage,now(),ttSubpage,quiz);ttSubpage=page.subpage;ttSubpages=page.subpages;
+  const page=buildTeletext(config,ttPage,now(),ttSubpage,quiz,teletextSources);ttSubpage=page.subpage;ttSubpages=page.subpages;
   $('tt-page').textContent='P'+ttPage;$('tt-content').innerHTML=page.html;
   const keys=[...document.querySelectorAll('#teletext .teletext-nav button')];
   keys.forEach((key,i)=>{delete key.dataset.quizAnswer;delete key.dataset.quizAction;delete key.dataset.page;

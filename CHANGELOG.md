@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5
+
+- Add BBC News (101), BBC Sport (110) and London weather (120) to Teletext.
+- Include BBC attribution, source links, UK update times and paginated headlines/forecasts.
+- Cache feeds server-side, share concurrent requests and label stale/unavailable data.
+
 ## 0.1.4
 
 - Add Box Baffler!, an original daily twelve-question Teletext quiz starting on page 400.
