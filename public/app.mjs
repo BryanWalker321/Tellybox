@@ -122,6 +122,7 @@ function updateProgramme(s) {
 function tick() {
   $('clock').textContent = new Date(now()).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' }).toUpperCase() + ' / ' + time(now());
   $('tt-clock').textContent = new Date(now()).toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'}).replace(/ /g,'')+' '+new Date(now()).toLocaleTimeString('en-GB',{hour12:false});
+  if(dailyQuiz&&isQuizPage()&&!$('teletext-view').hidden&&dailyQuiz.day!==quizDay(now()))renderTeletext();
   if (!config || !channel) return;
   const s = current(channel)[0], programmeList = listed(channel), display = programmeList[0];
   updateProgramme(display);
@@ -172,7 +173,7 @@ let dailyQuiz;
 const isQuizPage=()=>Number(ttPage)>=400&&Number(ttPage)<=413;
 function getDailyQuiz(){if(!dailyQuiz||dailyQuiz.day!==quizDay(now())){let saved;try{saved=JSON.parse(localStorage.getItem('tellybox-daily-quiz-v1'));}catch{}dailyQuiz=createDailyQuiz(now(),saved);}return dailyQuiz;}
 function saveQuiz(){try{localStorage.setItem('tellybox-daily-quiz-v1',JSON.stringify(dailyQuiz.snapshot()));}catch{}}
-function quizAction(action){const quiz=getDailyQuiz();if(action==='start'||action==='restart')ttPage=quiz.start(action==='restart');else{quiz.answer(Number(action));ttPage=quiz.page;}saveQuiz();renderTeletext();}
+function quizAction(action){const changed=dailyQuiz&&dailyQuiz.day!==quizDay(now());const quiz=getDailyQuiz();if(changed){ttPage='400';saveQuiz();renderTeletext();return;}if(action==='start'||action==='restart')ttPage=quiz.start(action==='restart');else{quiz.answer(Number(action));ttPage=quiz.page;}saveQuiz();renderTeletext();}
 function renderTeletext() {
   if (!config) return;
   const quiz=isQuizPage()?getDailyQuiz():null;if(quiz){ttAuto=false;if(ttPage!=='400')ttPage=quiz.page;}
