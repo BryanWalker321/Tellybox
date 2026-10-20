@@ -8,7 +8,7 @@
 .tuning-card.test-card-only .primary{font-size:13px;padding:10px 22px}
 @media(max-width:600px){.tuning-card.test-card-only .test-message{padding:14px 18px;min-height:114px;bottom:18px}.tuning-card.test-card-only .test-message p{font-size:12px}.tuning-card.test-card-only .primary{font-size:12px;padding:9px 18px}}
 
-#watch-view .programme-description{font:14px/1.8 var(--mono);color:var(--muted);white-space:pre-line;margin:16px 0 8px;overflow-wrap:anywhere;max-width:100%}
+#watch-view .programme-description{font:14px/1.8 var(--mono);color:var(--muted);white-space:pre-line;margin:16px 0 8px;overflow-wrap:anywhere;max-width:100%;max-height:7.2em;overflow:hidden}
 #watch-view .description-expand{width:auto;margin:0 0 16px;padding:4px 0;border:0;border-radius:0;box-shadow:none;background:transparent;color:var(--network-link,#7fc3c3);font:700 12px/1.6 var(--mono);text-decoration:underline;text-underline-offset:3px}
 
 .tuning-estimate{display:none}.tuning-card.test-card-only .test-message .tuning-estimate{display:block;color:#a9c9cb;font-size:12px;line-height:1.5;margin:-5px 0 16px!important}

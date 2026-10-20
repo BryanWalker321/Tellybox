@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ProgrammeDescriptions,descriptionSource,cleanDescription} from '../lib/descriptions.mjs';
-import {createProgrammeDescription} from '../public/programme-description.mjs';
+import {createProgrammeDescription,shortenDescription} from '../public/programme-description.mjs';
 
 test('source descriptions are plain text and metadata requests stay on supported hosts',async()=>{
  assert.equal(cleanDescription('<p>A &amp; B</p><script>bad()</script><div>Next &#39;episode&#39;</div>'),"A & B\nNext 'episode'");
@@ -24,7 +24,7 @@ test('missing or title-only descriptions stay empty and provider lookups use the
  assert.equal(await service.get({...p,description:'Owner-written synopsis.'}),'Owner-written synopsis.');
 });
 
-test('late descriptions cannot overwrite a newly selected programme and long text expands',async()=>{
+test('late descriptions cannot overwrite a newly selected programme and descriptions cannot be expanded beyond their line limit',async()=>{
  const element={hidden:true,textContent:''},handlers={},button={hidden:true,textContent:'',setAttribute(){},addEventListener(name,fn){handlers[name]=fn;}},pending=[];
  const view=createProgrammeDescription({element,button,fetcher:()=>new Promise(resolve=>pending.push(resolve))});
  view.show({id:'description-old',url:'https://example.com/one'},'c');
@@ -32,6 +32,10 @@ test('late descriptions cannot overwrite a newly selected programme and long tex
  const text='A longer programme description. '.repeat(30);
  pending[1]({ok:true,json:async()=>({description:text})});await new Promise(resolve=>setImmediate(resolve));
  pending[0]({ok:true,json:async()=>({description:'Wrong old programme'})});await new Promise(resolve=>setImmediate(resolve));
- assert.ok(element.textContent.startsWith('A longer'));assert.ok(element.textContent.length<text.length);assert.equal(button.hidden,false);
- handlers.click();assert.equal(element.textContent,text);assert.equal(button.textContent,'Read less');
+ assert.ok(element.textContent.startsWith('A longer'));assert.equal(button.hidden,true);assert.equal(handlers.click,undefined);
+});
+
+test('description truncation keeps complete words and adds an ellipsis only when needed',()=>{
+ assert.equal(shortenDescription('One two three four',s=>s.length<=12),'One two…');
+ assert.equal(shortenDescription('Short synopsis.',s=>s.length<=20),'Short synopsis.');
 });

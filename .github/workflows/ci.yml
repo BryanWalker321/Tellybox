@@ -4,10 +4,19 @@ permissions:
   contents: read
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        node: [22, 24]
+        include:
+          - os: ubuntu-latest
+            node: 22
+          - os: ubuntu-latest
+            node: 24
+          - os: ubuntu-24.04-arm
+            node: 22
+          - os: windows-latest
+            node: 22
     steps:
       - uses: actions/checkout@v7
         with:
@@ -16,6 +25,28 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           package-manager-cache: false
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install FFmpeg on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install FFmpeg on Windows
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg --yes --no-progress
       - run: npm test
       - run: npm run validate
+      - name: Build native Docker image
+        if: runner.os == 'Linux' && matrix.node == 22
+        run: docker build -t tellybox-smoke .
+      - name: Check container startup and live playback
+        if: runner.os == 'Linux' && matrix.node == 22
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name tellybox-smoke -p 127.0.0.1:4173:4173 tellybox-smoke
+          trap 'docker rm -f tellybox-smoke >/dev/null' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/api/catalogue >/dev/null; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4173/channels.m3u >/dev/null
+          curl -fsS http://127.0.0.1:4173/guide.xml >/dev/null
+          timeout 90 ffmpeg -v error -rw_timeout 30000000 -i http://127.0.0.1:4173/iptv/demo/index.m3u8 -t 24 -f null -

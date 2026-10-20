@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.0-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.1-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -34,6 +34,8 @@ The self-hosted edition starts with **one channel and two short demo transmissio
 | Guided setup and connection checks | Adverts, fillers and intervals | Optional Discord sign-in/discussion |
 
 The starter permits custom content, including recent productions. Online providers can restrict playback; check sources from your own server before scheduling them.
+
+See [platform compatibility and Raspberry Pi setup](docs/PLATFORMS.md) for Windows, Linux, ARM64 and the current Mac testing status. Both website and IPTV playback currently use server-side encoding.
 
 ## Quick start
 

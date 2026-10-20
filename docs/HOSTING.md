@@ -1,5 +1,7 @@
 # Put your own network on the air
 
+For Windows, Linux and Raspberry Pi setup, read [Supported platforms](PLATFORMS.md). Mac-specific testing remains a follow-up.
+
 Choose one of three hosting routes. Every route runs the complete Tellybox application: the website, scheduling service, shared live-video processing and persistent station data. Uploading the HTML files to ordinary static website hosting is not enough.
 
 **Watch at home:** run Tellybox on an always-on computer and connect devices on the same network using an address such as `http://192.168.1.50:4173`. No domain, DuckDNS or router port forwarding is needed. Follow section 1 and steps 1–6 of section 2A, then the IPTV instructions. Docker users must also apply the LAN port mapping in section 2A.

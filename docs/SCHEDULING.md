@@ -20,8 +20,9 @@ All viewers share the same schedule and random seed, including website and IPTV 
 2. Choose **Clock-aligned starts** to start programmes on a 5, 10, 15, 20, 30 or 60 minute grid. Complete interval clips fill the gaps; unused time shows the station presentation/countdown. The station schedule date must align with the chosen grid; the supplied epoch does.
 3. Choose **Timed breaks** for a fixed-length break after every N programmes. Set the break length in seconds. Frequency continues across running-order loop boundaries.
 4. Set **after every N programmes** and **maximum clips per break**. Choose random or listed interval order. Clock gaps still exist after programmes without adverts: they show presentation until the next clock slot.
-5. Add clips to the selected channel's pool using title, media URL, duration and type (advert, filler, intermission, ident or continuity). Use a matching station brand for branded clips. Removing a pool entry removes its scheduling reference, not the media file.
-6. A clip must fit in full, including a five-second transition allowance. A 30-second clip therefore needs at least 35 seconds of available space with the default reserve. Clips are never shortened to fill a slot. Large clips may never fit a short break; preview the result.
+5. Choose **This channel’s pool** or **All station adverts and fillers**. The station-wide option includes enabled library clips regardless of their station-brand label. Choose random order to draw from all eligible clips. **Repeat cooldown (seconds)** defaults to 120 when saving settings: after a clip ends, that channel cannot use the same media again until the cooldown expires. Set 0 to disable it. Existing catalogue files retain their saved behaviour until edited. Turning the shared pool off restores the channel’s own pool.
+6. Add clips to the selected channel's pool using title, media URL, duration and type (advert, filler, intermission, ident or continuity). Use a matching station brand for branded clips. Removing a pool entry removes its scheduling reference, not the media file.
+7. A clip must fit in full, including a five-second transition allowance. A 30-second clip therefore needs at least 35 seconds of available space with the default reserve. Clips are never shortened to fill a slot. Large clips may never fit a short break; preview the result.
 
 These are between-programme breaks. Tellybox does not cut a programme open or detect/remove adverts already recorded inside it. To arrange reviewed segments with original breaks, add each segment with its accurate duration and source offset. Guide/now-next listings omit inserted interval media.
 
@@ -36,3 +37,7 @@ These are between-programme breaks. Tellybox does not cut a programme open or de
 7. Use **Preview next 12 items**, inspect complete programme/interval slots, then save. Finally test real video and a programme transition on the website and an IPTV player. A schedule preview does not verify codecs or remote-provider availability.
 
 The self-hosted starter uses Custom station, so owners can schedule short programmes too (including its two 20-second demos). The separately hosted Tellybox archive network applies its own under-five-minute interval policy. Programme policy changes can move short recordings to the interval library; check before saving.
+
+## IPTV handoffs
+
+The relay uses consistent stereo 48 kHz audio, including silence for video without an audio track, and advancing media timestamps across programme/interval changes. Saving catalogue changes preserves the running HLS playlist; the updated plan is used at the next handoff. Explicit channel status or station epoch changes can interrupt immediately. A source failure can still require a holding screen, and a gap with no eligible complete clip still uses presentation.
