@@ -31,3 +31,7 @@ Programme information comes from the same station catalogue and schedule as play
 ## Credits
 
 [PagesFromCeefax](https://github.com/robsonjb1/PagesFromCeefax) and historical Teletext screens were visual references. No source code, logos or artwork from that GPL project are included. The renderer and mosaic artwork are original Tellybox code. Teletext50 fonts are CC0/public domain; see THIRD_PARTY_NOTICES.md and public/fonts/Teletext50-LICENSE.txt.
+
+## Fullscreen
+
+Select Fullscreen beneath the coloured keys. The whole page and its controls scale to fit the screen without scrolling. Resize or rotate the device to refit. Select Exit fullscreen or press Escape to return. Browsers without fullscreen support use a fitted expanded view.

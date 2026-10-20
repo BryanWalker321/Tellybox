@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.2-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.3-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -17,9 +17,9 @@
 
 ![Live television on desktop](docs/screenshots/live-desktop.png)
 
-## What is Tellybox?
+## About
 
-Turn your media into your own linear television channels. Everyone tunes into the same running programme: website and IPTV viewers receive the same live HLS broadcast, allowing for normal buffering. Manage programmes, channels and branding in a dedicated browser-based control room. Viewers can watch without an account.
+Build your own retro television station: shared live channels, using your local media or internet hosted media, TV guide, IPTV, customisable Teletext feature and a browser-based control room. Self-host with Docker or Node.js.
 
 The self-hosted edition starts with **one channel and two short demo transmissions**. Add your own programming and identity. The hosted station's curated collection, promotional homepage and Tip buttons are excluded. The community/support links in this README belong to the Tellybox project; your own station can use its own Discord invite.
 
@@ -110,3 +110,21 @@ Watch at [telly-box.uk](https://telly-box.uk). Support development and hosting o
 ## Contributing and licence
 
 See [Contributing](CONTRIBUTING.md). Original code uses the [MIT licence](LICENSE); demo transmissions are CC0. Third-party material retains its own terms, including the BBC-associated Test Card F image: see [Third-party notices](THIRD_PARTY_NOTICES.md). Programme media is not supplied; use media you have permission to show.
+
+## Screenshots from our Tellybox station
+
+These full-size desktop screenshots show [our hosted Tellybox installation](https://telly-box.uk), including its own branding and curated programming. The self-hosted starter includes demo programming for you to replace.
+
+### Teletext in fullscreen
+
+![Teletext index fitted to the whole desktop screen](docs/screenshots/teletext-fullscreen.png)
+
+![Fullscreen Teletext programme listings](docs/screenshots/teletext-listings-fullscreen.png)
+
+### Our station homepage
+
+![Tellybox UK homepage on desktop](docs/screenshots/tellybox-uk-home.png)
+
+### Our television guide
+
+![Tellybox UK television guide on desktop](docs/screenshots/tellybox-uk-guide.png)

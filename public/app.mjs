@@ -1,3 +1,4 @@
+import {setupTeletextFullscreen} from '/teletext-fullscreen.mjs';
 import {buildTeletext} from '/teletext.mjs';
 import { createDirectory } from '/directory.mjs';
 import { scheduleAt, programmesAt, listingsWindow, validateCatalogue } from '/lib/schedule.mjs';
@@ -172,6 +173,7 @@ function renderTeletext() {
   $('tt-page').textContent='P'+ttPage;$('tt-content').innerHTML=page.html;
   $('tt-subpage').textContent=`${ttSubpage+1}/${ttSubpages}`;$('tt-previous').disabled=ttSubpage===0;$('tt-next').disabled=ttSubpage>=ttSubpages-1;
 }
+setupTeletextFullscreen();
 $('tt-previous').addEventListener('click',()=>{ttSubpage--;renderTeletext();});
 $('tt-next').addEventListener('click',()=>{ttSubpage++;renderTeletext();});
 $('teletext').addEventListener('click', e => { const page = e.target.closest('[data-page]'), ch = e.target.closest('[data-tt-channel]'); if (page) { ttPage = page.dataset.page; ttSubpage=0; renderTeletext(); } if (ch) { tune(config.channels.find(c => c.id === ch.dataset.ttChannel), true); location.hash = 'watch'; } });

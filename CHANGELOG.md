@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Add Teletext fullscreen with automatic fit, resize handling and an exit button.
+- Keep all Teletext controls available in fullscreen; support an expanded view when browser fullscreen is unavailable.
+- Add full-size screenshots of the hosted station and update the project About text.
+
 ## 0.1.2
 
 - Rebuild Teletext with period colours, pixel typography, station branding and channel listings.
