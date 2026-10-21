@@ -65,6 +65,21 @@ test('owner setup is protected; settings, catalogue and media persist without ex
     catalogue.brand.logo = logo.url; catalogue.brand.name = 'My own network'; catalogue.brand.holdingImage = logo.url;
     assert.equal((await call('catalogue', 'PUT', catalogue)).status, 200);
     const renamed = await (await call('settings')).json(); assert.equal(renamed.catalogue.brand.name, 'My own network'); assert.equal(renamed.catalogue.brand.logo, logo.url);
+    // Design saves must work when the catalogue is larger than the full-upload limit.
+    const large = JSON.parse(await readFile(configPath, 'utf8'));
+    large.padding = 'x'.repeat(MAX_CATALOGUE_BYTES + 1);
+    large.brand.tagline = 'Identity edited in another session';
+    await writeFile(configPath, JSON.stringify(large));
+    const patch = { description: 'A newly saved introduction', footerLine: '', theme: { background: '#112233' } };
+    assert.equal((await call('brand', 'PUT', patch, { 'X-CSRF-Token': '' })).status, 403);
+    assert.equal((await call('brand', 'PUT', { holdingImage: 'https://bad.example/image.png' })).status, 400);
+    assert.equal((await call('brand', 'PUT', null)).status, 400);
+    const designSave = await call('brand', 'PUT', patch); assert.equal(designSave.status, 200);
+    const afterDesign = JSON.parse(await readFile(configPath, 'utf8'));
+    assert.deepEqual(afterDesign, { ...large, brand: { ...large.brand, ...patch, theme: { ...large.brand.theme, ...patch.theme } } });
+    const reopened = await (await call('settings')).json();
+    assert.equal(reopened.catalogue.brand.description, patch.description);
+    assert.equal(reopened.catalogue.brand.footerLine, '');
     const stored = await readFile(owner.file, 'utf8'); assert.ok(!stored.includes('test-only-owner-password')); assert.ok(!stored.includes(setupKey));
     const restored = await Owner.create(options); assert.equal(restored.bootstrap, null); assert.equal(restored.runtime.DISCORD_CLIENT_SECRET, 'private-secret');
     await call('logout', 'POST', {}); assert.equal((await call('settings')).status, 401);
