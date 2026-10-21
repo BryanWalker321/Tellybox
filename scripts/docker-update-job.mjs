@@ -4,13 +4,16 @@ import {DockerTransaction} from '../lib/update-docker-transaction.mjs';
 import {updatePaths,readJson,registry,validateManifest} from '../lib/updates.mjs';
 import {writeProgress,wait} from '../lib/update-native.mjs';
 const paths=updatePaths(process.env.DATA_DIR||'/app/data'),engine=new DockerEngine(),job=await readJson(paths.active);
-if(!job)throw Error('No active update.');
+async function disableRestart(){const name=process.env.TELLYBOX_UPDATE_CONTAINER_NAME;if(name&&/^tellybox-update-[a-f0-9-]+$/.test(name))await engine.call('POST','/containers/'+name+'/update',{RestartPolicy:{Name:'no'}});}
+if(!job){await disableRestart();process.exit(0);}
 validateManifest(job.manifest,job.version);
 const journal=await readJson(paths.journal);
 const transaction=new DockerTransaction(engine,paths,job,journal);
 let probe,retainRecovery=false;
 async function finishCleanup(){for(const step of transaction.journal?.steps||[])await engine.remove(step.oldId);}
+async function cleanupProbes(){const filters=encodeURIComponent(JSON.stringify({label:['io.tellybox.update-probe='+job.id,'io.tellybox.update-project='+process.env.TELLYBOX_UPDATE_PROJECT]}));const rows=await engine.call('GET','/containers/json?all=true&filters='+filters);for(const row of rows)await engine.remove(row.Id);}
 try {
+  await cleanupProbes();
   if(journal?.committed){await writeProgress(paths,job,'completed',100,'Update installed. Your media, channels and schedules have been retained.');await finishCleanup();}
   else if(process.env.TELLYBOX_UPDATE_RECOVER==='1'||journal){
     await transaction.rollback();
@@ -24,7 +27,7 @@ try {
     if(!sameData(app,agent)||!app.Config.Image.startsWith(registry)||image.Config?.Labels?.['org.opencontainers.image.revision']!==job.manifest.commit||image.Config?.Labels?.['org.opencontainers.image.version']!==job.version)throw Error('Invalid update target.');
     await writeProgress(paths,job,'verifying',55,'Checking the new version before restarting your station.');
     const checked=await engine.call('POST','/containers/create?name=tellybox-check-'+job.id.slice(0,8),{
-      Image:image.Id,Env:['HOST=0.0.0.0','PORT=4173'],Healthcheck:healthcheck(job.version),
+      Image:image.Id,Env:['HOST=0.0.0.0','PORT=4173'],Healthcheck:healthcheck(job.version),Labels:{'io.tellybox.update-probe':job.id,'io.tellybox.update-project':project},
       HostConfig:{Tmpfs:{'/app/data':'rw,nosuid,size=67108864,mode=1777','/app/media':'rw,nosuid,size=67108864,mode=1777'}}
     });
     probe=checked.Id;await engine.call('POST','/containers/'+probe+'/start');await engine.health(probe);await engine.remove(probe);probe=null;
@@ -60,5 +63,6 @@ try {
   }
 } finally {
   if(probe)await engine.remove(probe);
-  if(!retainRecovery){await rm(paths.journal,{force:true});await rm(paths.active,{force:true});}
+  if(!retainRecovery){await disableRestart();await rm(paths.journal,{force:true});await rm(paths.active,{force:true});}
+  else if(!transaction.journal?.committed)await disableRestart();
 }
