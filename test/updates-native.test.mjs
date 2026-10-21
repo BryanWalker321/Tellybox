@@ -67,6 +67,9 @@ test('native managed update and failed startup rollback preserve real owner medi
   // Old owner sessions expire; the same owner password and settings survive.
   const relogin=await api('login','POST',{password:'preserved-owner-password'});cookie=relogin.r.headers.get('set-cookie').split(';')[0];csrf=relogin.result.csrf;
   const saved=await api('settings');assert.equal(saved.result.settings.CHAT_DAILY_LIMIT,'77');assert.equal(saved.result.catalogue.channels[0].name,'My preserved channel');
+  const newMedia=Buffer.from('Owner upload after the application update');
+  const upload=await fetch(origin+'/api/owner/media?name=after-update.mp4',{method:'PUT',headers:{Origin:origin,Cookie:cookie,'X-CSRF-Token':csrf},body:newMedia});
+  assert.equal(upload.status,200);assert.deepEqual(await readFile(path.join(media,'after-update.mp4')),newMedia);
   await fixture('0.1.7',badCommit);
   // Force a fresh server-side release lookup without waiting for the normal cache.
   await stopChild(child);child=spawn(process.execPath,[path.join(original,'scripts/launch.mjs')],{cwd:original,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});child.stdout.on('data',c=>{logs+=c;});child.stderr.on('data',c=>{logs+=c;});
@@ -77,4 +80,5 @@ test('native managed update and failed startup rollback preserve real owner medi
   await until(async()=>(await readJson(paths.status))?.phase==='failed'&&(await fetch(origin+'/api/version').then(r=>r.json())).version==='0.1.6','failed candidate did not roll back: '+logs,90000);
   assert.deepEqual(await readFile(customConfig),catalogueBytes);assert.deepEqual(await readFile(path.join(data,'owner.json')),ownerBytes);assert.deepEqual(readRows(),savedRows);
   assert.equal(createHash('sha256').update(await readFile(path.join(media,'Owner video ü.mp4'))).digest('hex'),mediaHash);
+  assert.deepEqual(await readFile(path.join(media,'after-update.mp4')),newMedia);
 });
