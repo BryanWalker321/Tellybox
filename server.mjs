@@ -160,3 +160,4 @@ async function shutdown() { if (closing) return; closing = true; server.close();
 process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown);
 
 process.on('message',message=>{if(message?.type==='tellybox:shutdown')shutdown();});
+process.on('disconnect',shutdown);
