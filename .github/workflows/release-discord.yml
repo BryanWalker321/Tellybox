@@ -1,0 +1,41 @@
+name: Announce release in Discord
+on:
+  release:
+    types: [published]
+permissions:
+  contents: read
+concurrency:
+  group: discord-release-${{ github.event.release.id }}
+  cancel-in-progress: false
+jobs:
+  announce:
+    if: ${{ !github.event.release.prerelease && !github.event.release.draft }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Wait until the Station Control Room update is ready
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        shell: bash
+        run: |
+          for attempt in $(seq 1 60); do
+            if gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern tellybox-update.json --dir "$RUNNER_TEMP/tellybox-release" --clobber 2>/dev/null; then
+              node --input-type=module -e 'import fs from "node:fs"; const m=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/tellybox-release/tellybox-update.json")); if(m.format!==1 || "v"+m.version!==process.env.RELEASE_TAG || !/^ghcr\.io\/bryanwalker321\/tellybox@sha256:[a-f0-9]{64}$/.test(m.image)) process.exit(1);'
+              exit 0
+            fi
+            sleep 30
+          done
+          echo 'The installable update is not ready. No Discord announcement was sent.'
+          exit 1
+      - name: Send branded release announcement
+        run: node scripts/notify-release.mjs
+        env:
+          TELLYBOX_RELEASE_DISCORD_WEBHOOK: ${{ secrets.TELLYBOX_RELEASE_DISCORD_WEBHOOK }}
