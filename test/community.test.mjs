@@ -7,7 +7,8 @@ import path from 'node:path';
 import { once } from 'node:events';
 import { Community } from '../lib/community.mjs';
 
-test('Discord sign-in, channel chat, CSRF, moderation, webhook retry and presence', async () => {
+test('Discord sign-in, channel chat, CSRF, moderation, webhook retry and presence', async t => {
+  t.mock.method(Date,'now',()=>Date.UTC(2026,0,15,12));
   const directory = await mkdtemp(path.join(tmpdir(), 'tellybox-community-test-'));
   const config = { brand: { name: 'Test station' }, channels: [{ id: 'one', number: 1, name: 'Channel One' }, { id: 'two', number: 2, name: 'Channel Two' }] };
   const deliveries = []; let webhookOk = false;
