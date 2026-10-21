@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.5-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.6-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -53,7 +53,7 @@ Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on Win
 2. Open a terminal in the cloned folder and run:
 
    ```sh
-   docker compose up -d --build
+   docker compose up -d
    docker compose logs --tail=30 tellybox
    ```
 
@@ -65,7 +65,11 @@ The default port mapping accepts connections only from the server computer. Foll
 
 ### Without Docker
 
-Install **Node.js 22.13+** and **FFmpeg**, with `ffmpeg` and `ffprobe` on PATH. Extract the starter or clone it, then run `npm start`. Open **http://127.0.0.1:4173**, claim the station using its printed key and follow steps 4–5 above. No npm dependency installation is needed. Keep the server running. See [Providers](docs/PROVIDERS.md) for optional YouTube/Dailymotion tools and [Hosting](docs/HOSTING.md) for automatic startup.
+Install **Node.js 22.13+** and **FFmpeg**, with `ffmpeg` and `ffprobe` on PATH. Clone the repository, then run `npm start`. Open **http://127.0.0.1:4173**, claim the station using its printed key and follow steps 4–5 above. No npm dependency installation is needed. Keep the server running. See [Providers](docs/PROVIDERS.md) for optional YouTube/Dailymotion tools and [Hosting](docs/HOSTING.md) for automatic startup.
+
+## Updates
+
+Install new versions from **Station Control Room → Updates**. Managed updates retain your media, channels, programmes and schedule configuration. Existing installations need a one-time setup to enable the updater. See [updating your station](docs/UPDATES.md).
 
 ## The control room
 
@@ -97,7 +101,7 @@ For Kodi/IPTV, use your reachable station address plus `/channels.m3u` for the p
 
 Back up station data and media before updating. Docker stores them in the `community-data` and `media-data` volumes; native installs use `data/` and `media/`. Keep owner settings, databases and sessions private.
 
-For Git installs, stop the station, back up, run `git pull --ff-only`, then `docker compose up -d --build`. Do not use `docker compose down -v` for updates: it deletes persistent volumes.
+For Git installs, stop the station, back up, run `git pull --ff-only`, then `docker compose up -d`. Do not use `docker compose down -v` for updates: it deletes persistent volumes.
 
 ## Community and support
 

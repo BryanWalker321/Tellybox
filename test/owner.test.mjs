@@ -12,7 +12,7 @@ test('owner setup is protected; settings, catalogue and media persist without ex
   const configPath = path.join(directory, 'catalogue.json'), mediaRoot = path.join(directory, 'media');
   const catalogue = JSON.parse(await readFile(new URL('../catalogue.json', import.meta.url), 'utf8'));
   await writeFile(configPath, JSON.stringify(catalogue)); let active;
-  const options = { directory, configPath, mediaRoot, env: {}, onSettings: env => { active = env; }, fetchImpl: async () => Response.json({ name: 'Station log', channel_id: '12', guild_id: '34' }) };
+  const options = { directory, configPath, mediaRoot, env: {}, onSettings: env => { active = env; }, updates:{status:async()=>({currentVersion:'0.1.5'}),install:async version=>({version})}, fetchImpl: async () => Response.json({ name: 'Station log', channel_id: '12', guild_id: '34' }) };
   const owner = await Owner.create(options), setupKey = owner.bootstrap;
   const server = http.createServer((req, res) => owner.handle(req, res, new URL(req.url, 'http://localhost')));
   server.listen(0, '127.0.0.1'); await once(server, 'listening'); const base = `http://127.0.0.1:${server.address().port}`;
@@ -23,12 +23,16 @@ test('owner setup is protected; settings, catalogue and media persist without ex
     assert.equal((await call('settings', 'PUT', {})).status, 401);
     assert.equal((await call('media-scan','POST',{folder:''})).status,401);
     assert.equal((await call('media-folders')).status,401);
+    assert.equal((await call('updates')).status,401);assert.equal((await call('updates/install','POST',{version:'0.1.6'})).status,401);
     assert.equal((await call('login', 'POST', { setupKey, password: 'test-only-owner-password' }, { Origin: 'https://elsewhere.example' })).status, 403);
     assert.equal((await call('login', 'POST', { setupKey: 'wrong', password: 'test-only-owner-password' })).status, 403);
     const login = await call('login', 'POST', { setupKey, password: 'test-only-owner-password' }); assert.equal(login.status, 200);
     cookie = login.headers.get('set-cookie').split(';')[0]; csrf = (await login.json()).csrf;
     assert.ok(login.headers.get('set-cookie').includes('HttpOnly')); assert.equal(owner.bootstrap, null);
     assert.equal((await call('settings', 'PUT', {}, { 'X-CSRF-Token': '' })).status, 403);
+    assert.equal((await call('updates/install','POST',{version:'0.1.6'},{'X-CSRF-Token':''})).status,403);
+    assert.equal((await call('updates/install','POST',{version:'0.1.6'},{Origin:'https://evil.example'})).status,403);
+    assert.equal((await call('updates')).status,200);assert.equal((await call('updates/check','POST',{})).status,200);assert.equal((await call('updates/install','POST',{version:'0.1.6'})).status,202);
     assert.equal((await call('settings', 'PUT', { DISCORD_WEBHOOK_URL: 'https://evil.example/hook' })).status, 400);
     assert.equal((await call('settings', 'PUT', { PUBLIC_BASE_URL: base + '/bad' })).status, 400);
     assert.equal((await call('settings', 'PUT', { DISCORD_AUTO_JOIN: '1' })).status, 400);

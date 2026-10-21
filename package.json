@@ -1,6 +1,6 @@
 {
   "name": "tellybox",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "type": "module",
   "description": "A configurable, synchronised archive television service",
@@ -9,7 +9,7 @@
     "node": ">=22.13"
   },
   "scripts": {
-    "start": "node --env-file-if-exists=.env server.mjs",
+    "start": "node --env-file-if-exists=.env scripts/launch.mjs",
     "dev": "node --env-file-if-exists=.env --watch server.mjs",
     "test": "node --test",
     "validate": "node scripts/validate.mjs",

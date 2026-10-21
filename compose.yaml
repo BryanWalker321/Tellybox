@@ -1,9 +1,11 @@
 services:
   tellybox:
-    build: .
+    image: ghcr.io/bryanwalker321/tellybox:latest
     ports:
       - "127.0.0.1:4173:4173"
     environment:
+      TELLYBOX_UPDATE_MODE: docker-agent
+      TELLYBOX_UPDATE_PROJECT: ${COMPOSE_PROJECT_NAME}
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://127.0.0.1:4173}
       DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID:-}
       DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET:-}
@@ -14,6 +16,22 @@ services:
       - media-data:/app/media
       - community-data:/app/data
     restart: unless-stopped
+  updater:
+    image: ghcr.io/bryanwalker321/tellybox:latest
+    user: "0:0"
+    command: ["node", "scripts/update-agent.mjs"]
+    environment:
+      DATA_DIR: /app/data
+      TELLYBOX_UPDATE_PROJECT: ${COMPOSE_PROJECT_NAME}
+      TELLYBOX_UPDATE_UID: "1000"
+      TELLYBOX_UPDATE_GID: "1000"
+    volumes:
+      - community-data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+
 volumes:
   community-data:
   media-data:

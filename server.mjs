@@ -1,3 +1,4 @@
+import {Updates} from './lib/updates.mjs';
 import {TeletextFeeds} from './lib/teletext-feeds.mjs';
 import http from 'node:http';
 import {randomUUID} from 'node:crypto';
@@ -17,6 +18,7 @@ import { iptvNetworkInfo } from './lib/network.mjs';
 import { ProgrammeDescriptions } from './lib/descriptions.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
+const appVersion=JSON.parse(await readFile(path.join(root,'package.json'),'utf8')).version;
 const directory = path.resolve(process.env.DATA_DIR || path.join(root, 'data'));
 await mkdir(directory,{recursive:true});
 const connectionIdentityFile=path.join(directory,'connection-identity');
@@ -42,7 +44,8 @@ await readConfig();
 async function sourceHealth(){try{return JSON.parse(await readFile(path.join(directory,'source-health.json'),'utf8'));}catch{return null;}}
 async function readConfig() { return applySourceHealth(validateCatalogue(JSON.parse(await readFile(configPath, 'utf8'))),await sourceHealth()); }
 let community;
-const owner = await Owner.create({ directory, configPath, mediaRoot, onSettings: env => { community?.configure(env); relay.resolver.configure({cookieFile: env.YOUTUBE_COOKIE_FILE}); }, checkYoutube: url => checkProviderPlayback(relay, url) });
+const updates=new Updates({directory,root});
+const owner = await Owner.create({ updates,directory, configPath, mediaRoot, onSettings: env => { community?.configure(env); relay.resolver.configure({cookieFile: env.YOUTUBE_COOKIE_FILE}); }, checkYoutube: url => checkProviderPlayback(relay, url) });
 community = new Community({ directory, getConfig: readConfig, env: owner.runtime });
 function mediaBase(req) {
   const configured = (owner.runtime.PUBLIC_BASE_URL || '').replace(/\/$/, '');
@@ -65,6 +68,7 @@ const server = http.createServer(async (req, res) => {
     if (await community.handle(req, res, requestUrl)) return;
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
     const pathname = decodeURIComponent(requestUrl.pathname);
+    if(pathname==='/api/version'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify({version:appVersion,updateProtocol:1}));}
     if(pathname==='/api/teletext-feeds'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify(await teletextFeeds.get()));}
     if(pathname==='/api/connection-identity'){
       res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});
@@ -154,3 +158,5 @@ server.listen(port, host, () => {
 let closing = false;
 async function shutdown() { if (closing) return; closing = true; server.close(); await relay.close(); community.close(); process.exit(0); }
 process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown);
+
+process.on('message',message=>{if(message?.type==='tellybox:shutdown')shutdown();});

@@ -1,3 +1,4 @@
+import {createUpdates} from '/updates.mjs';
 import { createDesign } from '/design.mjs';
 import { createCatalogueEditor } from '/catalogue-editor.mjs';
 import {createSetup} from '/setup.mjs';
@@ -14,6 +15,7 @@ export function createOwner({ onCatalogue }) {
     const result = await response.json();
     if (!response.ok) { if (response.status === 401) { $('owner-panel').hidden = true; $('owner-gate').hidden = false; } throw Error(result.error); } return result;
   }
+  const updates=createUpdates({api});
   const put = (route, data) => api(route, { method: 'PUT', body: JSON.stringify(data) });
   const setup=createSetup({message,save:async data=>{const result=await put('settings',data);settings=result.settings;fillSettings();document.dispatchEvent(new Event('community-settings-changed'));return settings;}});
   async function youtubeStatus() {
@@ -55,7 +57,7 @@ export function createOwner({ onCatalogue }) {
     for (const file of result.files) { const li = document.createElement('li'), code = document.createElement('code'), button = document.createElement('button'); code.textContent = file.url; button.type = 'button'; button.textContent = 'Copy URL'; button.addEventListener('click', () => navigator.clipboard.writeText(file.url).then(() => message('Media URL copied.')).catch(() => message('Select and copy the URL shown.'))); li.append(code, ' ', button); $('owner-media-list').append(li); }
     if (!result.files.length) $('owner-media-list').textContent = 'No local media uploaded yet.';
   }
-  async function load() { const result = await api('settings'); catalogue = result.catalogue; settings = result.settings; fillSettings(); fillCatalogue(); await onCatalogue(catalogue); $('owner-panel').hidden = false; $('owner-gate').hidden = true; await media(); await youtubeStatus(); if (!$('owner-youtube-check-url').value) $('owner-youtube-check-url').value = catalogue.channels.flatMap(c => c.programmes).find(p => !p.playbackDisabled && /^https:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\//.test(p.url))?.url || ''; }
+  async function load() { const result = await api('settings'); catalogue = result.catalogue; settings = result.settings; fillSettings(); fillCatalogue(); await onCatalogue(catalogue); $('owner-panel').hidden = false; $('owner-gate').hidden = true; await media(); await youtubeStatus(); updates.start(); if (!$('owner-youtube-check-url').value) $('owner-youtube-check-url').value = catalogue.channels.flatMap(c => c.programmes).find(p => !p.playbackDisabled && /^https:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\//.test(p.url))?.url || ''; }
   async function open() {
     message('');
     try { const session = await api('session'); csrf = session.csrf; $('owner-key-label').hidden = session.claimed; $('owner-password').autocomplete = session.claimed ? 'current-password' : 'new-password'; $('owner-gate-title').textContent = session.claimed ? 'Owner sign-in' : 'Welcome to your new station'; $('owner-gate-note').textContent = session.claimed ? 'Enter your station owner password. This is separate from viewer Discord sign-in.' : 'Copy the one-time setup key from your server console, then choose an owner password (at least 12 characters).'; $('owner-panel').hidden = true; $('owner-gate').hidden = false; if (session.authenticated) await load(); } catch (err) { message(err.message); }

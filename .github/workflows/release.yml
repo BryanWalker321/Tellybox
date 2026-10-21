@@ -1,0 +1,88 @@
+name: Publish installable update
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit or tag to build for release verification
+        required: true
+permissions:
+  contents: write
+  packages: write
+concurrency:
+  group: publish-tellybox-update
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: ${{ github.event_name == 'workflow_dispatch' || (!github.event.release.prerelease && !github.event.release.draft) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Verify release identity
+        id: release
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        shell: bash
+        run: |
+          VERSION=$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")
+          [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          if [ -n "$RELEASE_TAG" ]; then test "$RELEASE_TAG" = "v$VERSION"; fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Install playback test tools
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          python3 -m pip install "yt-dlp[default]" curl-cffi
+      - run: npm test
+      - run: npm run validate
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build verified x86 and ARM64 application images
+        id: image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ github.event_name == 'release' && format('ghcr.io/bryanwalker321/tellybox:{0},ghcr.io/bryanwalker321/tellybox:latest', steps.release.outputs.version) || format('ghcr.io/bryanwalker321/tellybox:candidate-{0}', steps.release.outputs.commit) }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ steps.release.outputs.version }}
+            REVISION=${{ steps.release.outputs.commit }}
+      - name: Write immutable update manifest
+        env:
+          UPDATE_VERSION: ${{ steps.release.outputs.version }}
+          UPDATE_COMMIT: ${{ steps.release.outputs.commit }}
+          UPDATE_DIGEST: ${{ steps.image.outputs.digest }}
+        run: |
+          node --input-type=module -e 'import fs from "node:fs";import {validateManifest,registry} from "./lib/updates.mjs";const m={format:1,version:process.env.UPDATE_VERSION,commit:process.env.UPDATE_COMMIT,image:registry+"@"+process.env.UPDATE_DIGEST,dataProtocol:1};validateManifest(m,m.version);fs.writeFileSync("tellybox-update.json",JSON.stringify(m,null,2)+"\n");'
+      - name: Verify the update can be downloaded without an account
+        env:
+          UPDATE_DIGEST: ${{ steps.image.outputs.digest }}
+        run: |
+          docker logout ghcr.io
+          docker buildx imagetools inspect "ghcr.io/bryanwalker321/tellybox@$UPDATE_DIGEST"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-update-manifest
+          path: tellybox-update.json
+      - name: Make update available to station owners
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" tellybox-update.json --clobber
