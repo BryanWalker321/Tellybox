@@ -8,9 +8,9 @@ export function createUpdates({api}) {
     const running=busy.has(s.job?.phase);
     $('update-current').textContent=s.currentVersion;
     $('update-latest').textContent=s.latestVersion || 'Checking…';
-    $('update-status').textContent=running ? s.job.message : s.job?.phase==='failed' ? s.job.message : s.job?.phase==='completed' ? `Version ${s.currentVersion} is installed.` : s.available ? 'A new update is ready to install.' : s.preparing ? 'A new release is being prepared. Check again shortly.' : s.checkError || 'You’re up to date.';
+    $('update-status').textContent=running ? s.job.message : ['failed','recovery-needed'].includes(s.job?.phase) ? s.job.message : s.job?.phase==='completed' ? `Version ${s.currentVersion} is installed.` : s.available ? 'A new update is ready to install.' : s.preparing ? 'A new release is being prepared. Check again shortly.' : s.checkError || 'You’re up to date.';
     $('update-support').hidden=s.supported;
-    $('update-install').hidden=!s.available || !s.supported;
+    $('update-install').hidden=!s.available || !s.supported || s.job?.phase==='recovery-needed';
     $('update-install').disabled=running;
     $('update-check').disabled=running;
     $('update-progress-wrap').hidden=!running;
