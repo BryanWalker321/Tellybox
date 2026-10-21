@@ -7,9 +7,11 @@ export function createUpdates({api}) {
     state=s;
     const running=busy.has(s.job?.phase);
     $('update-current').textContent=s.currentVersion;
+    if($('owner-installed-version'))$('owner-installed-version').textContent=s.currentVersion;
     $('update-latest').textContent=s.latestVersion || 'Checking…';
     $('update-status').textContent=running ? s.job.message : ['failed','recovery-needed'].includes(s.job?.phase) ? s.job.message : s.job?.phase==='completed' ? `Version ${s.currentVersion} is installed.` : s.available ? 'A new update is ready to install.' : s.preparing ? 'A new release is being prepared. Check again shortly.' : s.checkError || 'You’re up to date.';
     $('update-support').hidden=s.supported;
+    $('update-support').textContent=s.mode==='hosted'?'Updates for this hosted station are applied by its maintainer to preserve its custom homepage and playback services.':'This installation needs a one-time setup to enable updates here. See Hosting & help.';
     $('update-install').hidden=!s.available || !s.supported || s.job?.phase==='recovery-needed';
     $('update-install').disabled=running;
     $('update-check').disabled=running;
@@ -31,7 +33,7 @@ export function createUpdates({api}) {
       const response=await fetch('/api/owner/updates',{cache:'no-store'});
       if(response.status===401 && expected) {
         const version=await fetch('/api/version',{cache:'no-store'}).then(r=>r.json());
-        if(version.version===expected)$('update-current').textContent=expected;
+        if(version.version===expected){$('update-current').textContent=expected;if($('owner-installed-version'))$('owner-installed-version').textContent=expected;}
         $('update-status').textContent=version.version===expected ? `Version ${expected} is installed. Sign in again to continue.` : 'Your station has restarted. Sign in again to check the update result.';
         $('update-progress-wrap').hidden=true;
         $('update-banner').hidden=true;

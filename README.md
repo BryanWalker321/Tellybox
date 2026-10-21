@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.6-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.7-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -31,7 +31,7 @@ The self-hosted edition starts with **one channel and two short demo transmissio
 | Station management | Scheduling | Viewing |
 |---|---|---|
 | Custom name, logo, colours and wording | Listed, random or episodic order | Shared live web player |
-| Full-page owner control room | Automatic repeats or fresh reshuffles | M3U playlist and XMLTV guide |
+| Owner control room with live viewer counts | Automatic repeats or fresh reshuffles | M3U playlist and XMLTV guide |
 | Local uploads and folder browser | Back-to-back playback or timed breaks | Desktop and mobile layouts |
 | Searchable media and filler libraries | Clock-aligned starts and previews | Directory and Teletext |
 | Guided setup and connection checks | Adverts, fillers and intervals | Optional Discord sign-in/discussion |

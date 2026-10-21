@@ -16,6 +16,7 @@ export function createOwner({ onCatalogue }) {
     if (!response.ok) { if (response.status === 401) { $('owner-panel').hidden = true; $('owner-gate').hidden = false; } throw Error(result.error); } return result;
   }
   const updates=createUpdates({api});
+  fetch('/api/version',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{$('owner-installed-version').textContent=data.version;}).catch(()=>{$('owner-installed-version').textContent='Unavailable';});
   const put = (route, data) => api(route, { method: 'PUT', body: JSON.stringify(data) });
   const setup=createSetup({message,save:async data=>{const result=await put('settings',data);settings=result.settings;fillSettings();document.dispatchEvent(new Event('community-settings-changed'));return settings;}});
   async function youtubeStatus() {

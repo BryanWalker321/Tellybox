@@ -24,6 +24,7 @@ test('native managed update and failed startup rollback preserve real owner medi
   await copyApp(original);await copyApp(upstream);await mkdir(data);await mkdir(media);
   const pkg=JSON.parse(await readFile(path.join(original,'package.json'),'utf8'));
   await writeFile(path.join(original,'package.json'),JSON.stringify({...pkg,version:'0.1.5'}));
+  await writeFile(path.join(upstream,'package.json'),JSON.stringify({...pkg,version:'0.1.6'}));
   const git=async args=>exec('git',['-C',upstream,...args],{windowsHide:true});
   await git(['init','-q']);await git(['config','user.email','test@localhost']);await git(['config','user.name','Updater test']);
   await git(['add','.']);await git(['commit','-qm','working candidate']);await git(['tag','v0.1.6']);
