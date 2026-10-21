@@ -21,6 +21,9 @@
 
 Build your own retro television station: shared live channels, using your local media or internet hosted media, TV guide, IPTV, customisable Teletext feature and a browser-based control room. Self-host with Docker or Node.js.
 
+Website: [telly-box.uk](https://telly-box.uk)  
+Discord: [Join our community](https://discord.gg/WeTsEbdcCZ)
+
 The self-hosted edition starts with **one channel and two short demo transmissions**. Add your own programming and identity. The hosted station's curated collection, promotional homepage and Tip buttons are excluded. The community/support links in this README belong to the Tellybox project; your own station can use its own Discord invite.
 
 ## Features
