@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.9
+
+- Expand installation, hosting, owner setup and in-site help for current features and managed updates.
+- Allow native shutdown handles to finish closing so a failed candidate restores the last working release on Windows.
+
+- Keep one continuous HLS encoder timeline across programmes, adverts and countdowns, with automatic source-decoder recovery.
+- Search further through available replacement adverts, allow multiple shorter clips and show a recovery countdown instead of a test card on source failure.
+- Prepare sources earlier and accommodate slower provider lookups; cache catalogue validation to keep HLS requests responsive.
+- Refresh affected channel playback when programming changes, without changing programming for design/wording edits.
+- Add optional Chromecast/Google TV receiver and remote controls, AirPlay controls and Anyview/Miracast guidance. Real-device compatibility remains subject to testing.
+- Move Cast and IPTV controls into the TV panel, style the Guide button consistently, add mobile popup navigation and rename Directory to Channels.
+- Show total channels and estimated unique programming hours on Channels; update the countdown heading with station-neutral wording.
+- Clarify that website and Control Room viewer counts exclude external IPTV viewers, including Kodi users.
+- Add regression coverage for continuous IPTV playback, source failures, schedule changes, presentation and cast configuration.
+
 ## 0.1.5
 
 - Add BBC News (101), BBC Sport (110) and London weather (120) to Teletext.

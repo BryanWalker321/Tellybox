@@ -1,0 +1,11 @@
+.mobile-menu-button{display:none}
+@media(max-width:760px){
+ .masthead.mobile-menu-ready{position:relative;align-items:center;justify-content:space-between;gap:12px;z-index:30}
+ .mobile-menu-ready .mobile-menu-button{display:inline-flex;align-items:center;justify-content:center;flex:none;width:46px;height:44px;padding:0;background:#1b3942;color:var(--network-text,#f1efd9);border:2px solid #69847d;box-shadow:2px 2px #0008;font:700 28px/1 var(--mono,monospace)}
+ .masthead.mobile-menu-ready .wordmark{min-width:0;max-width:calc(100% - 60px)}
+ .masthead.mobile-menu-ready .masthead-caption{display:none}
+ .masthead.mobile-menu-ready #station-navigation{display:none;position:absolute;top:calc(100% - 1px);right:12px;left:12px;width:auto;max-height:calc(100dvh - 110px);overflow:auto;flex-direction:column;align-items:stretch;gap:7px;padding:14px;background:var(--network-surface,#112831);border:2px solid #69847d;box-shadow:5px 7px #0009;z-index:40}
+ .masthead.mobile-menu-ready #station-navigation[data-mobile-open=true]{display:flex}
+ .masthead.mobile-menu-ready #station-navigation>a,.masthead.mobile-menu-ready #station-navigation>button{width:100%;min-height:44px;display:flex;align-items:center;justify-content:flex-start;margin:0;padding:10px 14px;font-size:13px}
+ .masthead.mobile-menu-ready #station-navigation .masthead-tools{display:flex;gap:12px;justify-content:flex-start;min-height:44px;align-items:center}
+}

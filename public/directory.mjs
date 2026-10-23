@@ -24,7 +24,7 @@ export function createDirectory({root,detail,now,onTune}){
  function renderDetail(id){
   detailId=id;if(!config)return;
   const c=config.channels.find(c=>c.id===id);
-  if(!c){detail.innerHTML='<h1>Channel not found</h1><a href="#directory">Back to directory</a>';return;}
+  if(!c){detail.innerHTML='<h1>Channel not found</h1><a href="#directory">Back to channels</a>';return;}
   const summary=channelSummary(c),slots=listingsWindow(c,config.epoch,now(),now()+24*3600000);
   detail.innerHTML=`<a class="directory-back" href="#directory">← All channels</a><header class="directory-detail-heading" style="--channel:${c.colour}">${badge(c)}<div><p class="eyebrow">${escape(c.category||c.tagline||'Archive television')}</p><h1>${escape(c.name)}</h1></div></header><p class="directory-detail-description">${escape(description(c))}</p><p class="directory-stats">${stats(c)}</p>${showing(c)}<button class="primary" data-directory-tune="${c.id}" ${!summary.count||['offline','technical'].includes(c.status)?'disabled':''}>▶ Tune in to ${escape(c.name)}</button><section class="directory-upcoming"><h2>On this channel</h2><p class="page-description">The next 24 hours. All times are local.</p><ol>${slots.map(s=>`<li><time>${s.start<=now()?'On now':clock(s.start)}</time><strong>${escape(s.programme.title)}</strong></li>`).join('')}</ol></section>`;
  }

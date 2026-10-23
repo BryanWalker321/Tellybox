@@ -78,7 +78,8 @@ test('native managed update and failed startup rollback preserve real owner medi
   const again=await api('login','POST',{password:'preserved-owner-password'});cookie=again.r.headers.get('set-cookie').split(';')[0];csrf=again.result.csrf;
   await until(async()=>(await api('updates')).result.available,'next release not available');
   await api('updates/install','POST',{version:'0.1.7'});
-  await until(async()=>(await readJson(paths.status))?.phase==='failed'&&(await fetch(origin+'/api/version').then(r=>r.json())).version==='0.1.6','failed candidate did not roll back: '+logs,90000);
+  let rollbackState;
+  await until(async()=>{const status=await readJson(paths.status),pointer=await readJson(paths.pointer);let running;try{running=await fetch(origin+'/api/version',{signal:AbortSignal.timeout(1500)}).then(r=>r.json());}catch{}rollbackState={status,pointer,running};return status?.phase==='failed'&&running?.version==='0.1.6';},()=> 'failed candidate did not roll back: '+JSON.stringify(rollbackState)+'\n'+logs.replace(/setup key:\s*\S+/gi,'setup key: [redacted]'),90000);
   assert.deepEqual(await readFile(customConfig),catalogueBytes);assert.deepEqual(await readFile(path.join(data,'owner.json')),ownerBytes);assert.deepEqual(readRows(),savedRows);
   assert.equal(createHash('sha256').update(await readFile(path.join(media,'Owner video ü.mp4'))).digest('hex'),mediaHash);
   assert.deepEqual(await readFile(path.join(media,'after-update.mp4')),newMedia);

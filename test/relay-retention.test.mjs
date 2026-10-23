@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,writeFile,utimes,access,rm} from 'node:fs/promises';import os from 'node:os';import path from 'node:path';import {RelayManager} from '../lib/relay.mjs';
+test('buffered IPTV segments are retained and abandoned encoder files are eventually pruned',async()=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'tellybox-hls-retention-'));const relay=new RelayManager({mediaRoot:dir,testCard:''});
+ try{const old=new Date(Date.now()-180000);for(const file of ['segment1.ts','segment2.ts','segment3.ts','segment4.ts','other-project.txt']){await writeFile(path.join(dir,file),'test');if(file!=='segment4.ts')await utimes(path.join(dir,file),old,old);}await writeFile(path.join(dir,'index.m3u8'),'#EXTM3U\n#EXTINF:2,\nsegment2.ts\n');await relay.pruneSegments({dir,servedPlaylist:Buffer.from('#EXTM3U\n#EXTINF:2,\nsegment3.ts\n')});await assert.rejects(access(path.join(dir,'segment1.ts')));for(const file of ['segment2.ts','segment3.ts','segment4.ts','other-project.txt'])await access(path.join(dir,file));}finally{await relay.close();await rm(dir,{recursive:true,force:true});}
+});

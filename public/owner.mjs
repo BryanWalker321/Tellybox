@@ -30,6 +30,11 @@ export function createOwner({ onCatalogue }) {
     $('owner-base').value = settings.PUBLIC_BASE_URL || location.origin;
     apiNetworkNotice();
     $('owner-iptv').value = settings.IPTV_ENABLED;
+    $('owner-airplay').value = settings.AIRPLAY_ENABLED || '1';
+    $('owner-mirroring').value = settings.MIRRORING_HELP_ENABLED || '1';
+    $('owner-cast').value = settings.CAST_ENABLED || '0';
+    $('owner-cast-app').value = settings.CAST_APP_ID || '';
+    $('owner-cast-url').textContent = location.origin + '/cast-receiver.html';
     $('owner-client-id').value = settings.DISCORD_CLIENT_ID;
     $('owner-invite').value = settings.DISCORD_INVITE_URL ?? catalogue.brand.discordInvite ?? '';
     $('owner-guild').value = settings.DISCORD_GUILD_ID || '';
@@ -69,7 +74,7 @@ export function createOwner({ onCatalogue }) {
   window.addEventListener('hashchange',selectSection);selectSection();
   $('owner-station-form').addEventListener('submit', async e => { e.preventDefault(); try { const next = structuredClone(catalogue); Object.assign(next.brand, { name: $('owner-brand').value, tagline: $('owner-tagline').value, accent: $('owner-accent').value, logo: $('owner-reset-logo').checked ? '/icon.svg' : $('owner-logo-url').value.trim() }); await put('catalogue', next); catalogue = next; fillCatalogue(); await onCatalogue(next); message('Network name and logo saved for everyone.'); } catch (err) { message(err.message); } });
   $('owner-upload-logo').addEventListener('click', async () => { const file = $('owner-logo-file').files[0]; if (!file) return message('Choose a logo image first.'); if (file.size > 2 * 1024 ** 2) return message('Logo maximum size is 2 MB.'); try { const result = await api('logo', { method: 'PUT', body: file, headers: { 'Content-Type': 'application/octet-stream' } }); $('owner-logo-url').value = result.url; $('owner-logo-preview').src = result.url; $('owner-reset-logo').checked = false; message('Logo uploaded to your draft. Save station identity to apply it.'); } catch (err) { message(err.message); } });
-  $('owner-service-form').addEventListener('submit', async e => { e.preventDefault(); try { const result = await put('settings', { PUBLIC_BASE_URL: $('owner-base').value.trim(), IPTV_ENABLED: $('owner-iptv').value }); settings = result.settings; fillSettings(); message('Service settings saved. No server restart needed.'); document.dispatchEvent(new Event('community-settings-changed')); } catch (err) { message(err.message); } });
+  $('owner-service-form').addEventListener('submit', async e => { e.preventDefault(); try { const result = await put('settings', { PUBLIC_BASE_URL: $('owner-base').value.trim(), IPTV_ENABLED: $('owner-iptv').value, CAST_ENABLED: $('owner-cast').value, CAST_APP_ID: $('owner-cast-app').value.trim(), AIRPLAY_ENABLED: $('owner-airplay').value, MIRRORING_HELP_ENABLED: $('owner-mirroring').value }); settings = result.settings; fillSettings(); message('Service settings saved. No server restart needed.'); document.dispatchEvent(new Event('community-settings-changed')); } catch (err) { message(err.message); } });
   $('owner-youtube-form').addEventListener('submit', async e => {
     e.preventDefault(); const file = $('owner-youtube-file').files[0];
     if (!file) return message('Choose the exported YouTube-only cookies.txt file.');

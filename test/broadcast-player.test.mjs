@@ -37,3 +37,9 @@ test('native HLS browsers watch the same feed and teardown cancels recovery',()=
  const f=fixture(true);f.player.tune('little-box');assert.equal(f.video.src,'/iptv/little-box/index.m3u8');assert.equal(f.engine,undefined);
  f.listeners.get('ended')();f.player.destroy();assert.equal(f.video.src,'');assert.equal(f.player.active,false);
 });
+
+test('AirPlay-capable browsers use a native channel URL even when MediaSource is supported',()=>{
+ let engines=0;const video={src:'',webkitShowPlaybackTargetPicker(){},canPlayType:()=> 'maybe',pause(){},load(){},play:async()=>{},removeAttribute(){this.src='';},addEventListener(){}};
+ class MseHls{static isSupported(){return true;}constructor(){engines++;}}
+ const player=createBroadcastPlayer({video,HlsClass:MseHls});player.tune('one');assert.equal(engines,0);assert.equal(video.src,'/iptv/one/index.m3u8');player.tune('two');assert.equal(video.src,'/iptv/two/index.m3u8');player.destroy();assert.equal(video.src,'');
+});

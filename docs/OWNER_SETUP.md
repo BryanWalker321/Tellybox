@@ -12,9 +12,17 @@ The wizard's final step also lets you save your own Discord invite. You can chan
 
 Save your network name, tagline, logo and accent colour. Upload your own logo and replace the example Tellybox identity before going public. Design & wording provides the wider colour palette, cabinet finish, interface font, introduction/About/footer copy, CRT default and custom holding image; see CUSTOMISING.md. Set the exact address viewers use, including the port on localhost. This address controls Discord callbacks and IPTV links; configure public HTTPS at your hosting provider or reverse proxy. The shared website/IPTV live feed can be enabled or disabled here. FFmpeg must be installed on the host (included in the supplied Docker image).
 
+Station also provides independent Chromecast/Google TV, AirPlay and screen-mirroring-help switches. Google Cast starts disabled and needs a Custom Receiver registered for your own station URL and its app ID. AirPlay needs a supported browser/device; Anyview/Miracast is initiated in the operating system rather than by a website button. See [Cast setup](CAST.md) before enabling these options. The viewer controls appear in the TV panel rather than crowding the title bar.
+
+## Design & wording
+
+Edit colours, cabinet, fonts and text in this section, then choose **Save design & wording**. Wait for the success notification and reload to verify the saved appearance. Uploading holding artwork adds it to the draft; save the design to apply it. Appearance changes preserve your channels, programme entries, running order and schedules. To change what is on air, use Channels instead. A large catalogue must not prevent a design-only save.
+
 ## Channels, programming and media
 
 Open Channels to see the station table and its Actions menus. Choose a channel, then use **Channel details**, **Programming**, **Schedule & repeat**, **fillers**, **Media library** or **Advanced**. Search programme titles/series and select a result to edit it; longer lists load 30 at a time. The save bar stays within reach and shows unsaved changes. Saving keeps your selected programme. Folder imports are under Media library. Unsaved catalogue edits trigger a warning when leaving the page; use Save or Discard before leaving. Control-room notifications fade after ten seconds.
+
+The table's viewer column counts active website/browser sessions only. External IPTV viewers, including Kodi users, are not included. Programme changes refresh the affected broadcast as well as the calculated guide; other channels retain their encoder sessions. Browser catalogue refreshes may take up to a minute, and players can briefly have older footage buffered.
 
 Select or add channels, edit their names, numbers, descriptions and status, and choose back-to-back playback, clock-aligned starts or timed breaks. Add programmes with a title, original year, duration in seconds, direct media URL and optional source-credit URL. You can select an initial source offset for a reviewed file segment. Empty/offline channels show Test Card F.
 
@@ -35,6 +43,10 @@ Saved secrets are never returned to the browser. Leaving a secret blank preserve
 Under **Owner access**, change your password using the current one. Other owner sessions are revoked. Owner sessions expire after eight hours and on server restart; **Lock owner settings** signs out the current session. Passwords are stored as salted scrypt hashes. Owner endpoints require authentication and same-origin/CSRF checks for writes.
 
 Private settings (including Discord secrets) are in `data/owner.json`; comments are in `data/community.sqlite`. The initial bundled catalogue seeds `data/catalogue.json` on first run. Keep the data directory and uploaded media persistent and private. Owner-saved settings override environment defaults. `DATA_DIR`, `MEDIA_DIR` and `CATALOGUE_PATH` can relocate storage. The supplied Compose file uses persistent named volumes. Never share your data directory in a source release.
+
+## Updates and installed version
+
+The installed Tellybox version appears below the Settings tabs. Open **Updates** to check the latest ready release, read its changes and install it. Managed updates retain media, channels, programming, schedule configuration, artwork and owner settings. The station briefly restarts, so choose a suitable time and sign in again afterwards. There is no manual media export/reimport step. If installation support is unavailable, follow the one-time launcher/updater adoption steps in [Updates](UPDATES.md); copying new source files over a running unmanaged install is not the in-app update process.
 
 If the owner password is lost, stop the server and back up `owner.json`. Remove only its `password` property locally, preserving `settings`, then restart and use the newly printed first-run key. This recovery requires filesystem access to the host.
 

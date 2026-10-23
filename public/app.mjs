@@ -1,3 +1,6 @@
+import {setupMobileMenu} from '/mobile-menu.mjs';
+import {createTvOutput} from '/tv-output.mjs';
+import {createStationCast} from '/cast-sender.mjs';
 import {createDailyQuiz,quizDay} from '/teletext-quiz.mjs';
 import {setupTeletextFullscreen} from '/teletext-fullscreen.mjs';
 import {buildTeletext} from '/teletext.mjs';
@@ -9,6 +12,8 @@ import { createCommunity } from '/community.mjs';
 import { createIptvHelp } from '/iptv-help.mjs';
 import { createProgrammeDescription } from '/programme-description.mjs';
 const $ = id => document.getElementById(id);
+setupMobileMenu();
+document.getElementById('panel-guide').addEventListener('click',()=>{location.hash='guide';});
 const video = $('video');
 video.addEventListener('loadedmetadata', () => {
   for (const track of video.textTracks) {
@@ -23,6 +28,7 @@ const duration = n => { n = Math.max(0, Math.floor(n)); return `${Math.floor(n /
 const esc = str => String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const stored = (key, value) => { try { if (value === undefined) return localStorage.getItem(key); localStorage.setItem(key, value); } catch {} };
 function applyBranding(brand) {
+  document.querySelectorAll('.tv-station-name').forEach(el=>el.textContent=brand.name);
   const logo = brand.logo || '/icon.svg';
   for (const id of ['brand-logo', 'footer-logo']) { $(id).src = logo; $(id).hidden = false; }
   $('brand-mark').hidden = true; $('footer-mark').hidden = true;
@@ -50,11 +56,16 @@ const programmeDescription=createProgrammeDescription({element:$('rights'),butto
 createIptvHelp({getBrand:()=>config?.brand||{}});
 const broadcast = createBroadcastPlayer({video,onStatus:message=>status(message),onPlaying:()=>{ $('tuning-card').hidden=true; $('station-bug').hidden=false; status('On air · Shared live broadcast with IPTV.'); }});
 const directory=createDirectory({root:$('directory-grid'),detail:$('directory-detail'),now,onTune:c=>{location.hash='watch';showView();tune(c,true);}});
+const stationCast=createStationCast({getConfig:()=>config,getChannel:()=>channel,onConnected:connected=>{if(connected){broadcast.destroy();status('Playing on your television. Open TV remote to control the station.');}},onState:state=>{if(state.channelName)status('On your television · '+state.channelName);}});
+createTvOutput({video,beforeAirPlay:()=>{if(stationCast.active)return false;playing=true;if(!broadcast.active)loadLive();return true;}});
 function status(message) { $('status').textContent = message; }
 let homeStatsGeneration=0;
 async function refreshHomeStats(){
- if(!$('home-view'))return;const generation=++homeStatsGeneration;
- try{const response=await fetch('/api/programming-stats',{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!response.ok)return;const stats=await response.json();if(generation!==homeStatsGeneration)return;$('home-hours').textContent=Number(stats.hours).toLocaleString('en-GB');$('home-channels').textContent=String(stats.channels);$('home-hours').title='Estimated unique hours of available programmes. Adverts and filler are excluded.';}catch{/* Retain the last estimate during a network interruption. */}
+ const generation=++homeStatsGeneration;
+ try{const response=await fetch('/api/programming-stats',{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!response.ok)return;const stats=await response.json();if(generation!==homeStatsGeneration)return;
+ const totals=$('channel-network-totals');if(totals&&config){const channels=config.channels.length;totals.textContent=`${channels.toLocaleString('en-GB')} ${channels===1?'CHANNEL':'CHANNELS'} · ${Number(stats.hours).toLocaleString('en-GB')} HOURS OF PROGRAMMING`;totals.title='Estimated unique programme hours; adverts, filler and duplicate recordings are excluded.';totals.hidden=false;}
+ if($('home-hours')){$('home-hours').textContent=Number(stats.hours).toLocaleString('en-GB');$('home-channels').textContent=String(stats.channels);$('home-hours').title='Estimated unique hours of available programmes. Adverts and filler are excluded.';}
+ }catch{/* Keep the last verified estimate during a network interruption. */}
 }
 function install(next) {
   validateCatalogue(next); config = next; directory.install(config);
@@ -62,7 +73,8 @@ function install(next) {
   for (const id of ['brand-name', 'card-brand', 'footer-name']) $(id).textContent = config.brand.name;
   $('brand-tagline').textContent = config.brand.tagline || 'THE ARCHIVE TELEVISION SERVICE';
   applyBranding(config.brand);
-  if($('home-view')){ $('home-brand').textContent=config.brand.name; refreshHomeStats(); }
+  if($('home-view'))$('home-brand').textContent=config.brand.name;
+  void refreshHomeStats();
   $('tt-brand').textContent = config.brand.name.toUpperCase() + ' TEXT';
   for (const [id, key, fallback] of [['hero-kicker', 'kicker', 'YOUR MEDIA. YOUR STATION.'], ['hero-line1', 'heroLine1', 'A little television.'], ['hero-line2', 'heroLine2', 'Of your own.']]) $(id).textContent = config.brand[key] || fallback;
   $('about-description').textContent = config.brand.about || `${config.brand.name} is an independent station built from its operator’s own catalogue. Find your channel in the television guide and join a shared live schedule.`;
@@ -138,6 +150,7 @@ function tick() {
   }
 }
 function loadLive() {
+  if(stationCast.active){broadcast.destroy();void stationCast.tune(channel.id);return;}
   clearTimeout(bufferTimer);
   $('interval-presentation').hidden = true; $('external-player').hidden = true;
   $('tuning-card').hidden = false; $('tuning-card').classList.add('test-card-only');
@@ -157,7 +170,7 @@ $('guide').addEventListener('click', e => { const b = e.target.closest('[data-gu
 $('fullscreen').addEventListener('click', async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else if ($('screen').requestFullscreen) await $('screen').requestFullscreen(); else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); else status('Use your browser’s fullscreen control.'); } catch { status('Fullscreen is unavailable in this browser window.'); } });
 let lastView;
 function stopForHome(){playing=false;loadedKey='';clearTimeout(bufferTimer);broadcast.destroy();$('tuning-card').hidden=false;$('tuning-card').classList.remove('test-card-only');$('station-bug').hidden=true;$('player-message').textContent='A whole other time. Just one button away.';$('start').textContent='▶ Switch on the telly';}
-function showView() { const route=location.hash.slice(1);const requested=route.startsWith('channel/')?'channel':route;const view=['home','watch','guide','directory','channel','about','teletext','hosting'].includes(requested)&&$(requested+'-view')?requested:($('home-view')&&(!new URLSearchParams(location.search).has('channel')||new URLSearchParams(location.search).has('home'))?'home':'watch'); if(view==='home')stopForHome();const changed=view!==lastView;lastView=view; document.body.classList.toggle('home-active', view === 'home'); document.querySelectorAll('.view').forEach(el => el.hidden = el.id !== `${view}-view`); televisionGuide.setVisible(view === 'guide'); community.setView(view); document.querySelectorAll('nav [data-view]').forEach(el => { el.classList.toggle('active', el.dataset.view === view); if (el.dataset.view === view) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); }); if (config) { renderGuide(); renderTeletext(); if(view==='directory')directory.render();if(view==='channel')directory.showChannel(route.slice(8)); } if(changed)requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'})); }
+function showView() { const route=location.hash.slice(1);const requested=route.startsWith('channel/')?'channel':route;const view=['home','watch','guide','directory','channel','about','teletext','hosting','tv'].includes(requested)&&$(requested+'-view')?requested:($('home-view')&&(!new URLSearchParams(location.search).has('channel')||new URLSearchParams(location.search).has('home'))?'home':'watch'); if(view==='home')stopForHome();const changed=view!==lastView;lastView=view; document.body.classList.toggle('home-active', view === 'home'); document.querySelectorAll('.view').forEach(el => el.hidden = el.id !== `${view}-view`); televisionGuide.setVisible(view === 'guide'); community.setView(view); document.querySelectorAll('nav [data-view]').forEach(el => { el.classList.toggle('active', el.dataset.view === view); if (el.dataset.view === view) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); }); if (config) { renderGuide(); renderTeletext(); if(view==='directory')directory.render();if(view==='channel')directory.showChannel(route.slice(8)); } if(changed)requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'})); }
 window.addEventListener('hashchange', showView); showView();
 $('tv-controls-open').addEventListener('click', () => $('tv-controls').showModal());
 async function refreshNetworkNotice() { try { const r = await fetch('/api/network'); const n = await r.json(); $('iptv-status').textContent = n.iptvEnabled ? '' : 'IPTV relay disabled by station owner.'; } catch {} }

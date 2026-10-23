@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.8-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.9-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -21,6 +21,8 @@
 
 Build your own retro television station: shared live channels, using your local media or internet hosted media, TV guide, IPTV, customisable Teletext feature and a browser-based control room. Self-host with Docker or Node.js.
 
+We’re always working on new ways for station viewers and station owners to enjoy their content, whatever viewing equipment they have at home. Browser viewing and IPTV are available now. Optional Chromecast / Google TV support adds a TV guide, channel controls, a phone/computer remote and CRT picture options. Owners can switch casting on or off in Station settings. Register your own Google Cast Custom Receiver app, then enter its app ID. See [Cast setup and testing](docs/CAST.md). Hardware compatibility is still being tested; do not assume support for every smart TV or remote.
+
 Website: [telly-box.uk](https://telly-box.uk)  
 Discord: [Join our community](https://discord.gg/WeTsEbdcCZ)
 
@@ -33,14 +35,18 @@ The self-hosted edition starts with **one channel and two short demo transmissio
 | Custom name, logo, colours and wording | Listed, random or episodic order | Shared live web player |
 | Owner control room with live viewer counts | Automatic repeats or fresh reshuffles | M3U playlist and XMLTV guide |
 | Local uploads and folder browser | Back-to-back playback or timed breaks | Desktop and mobile layouts |
-| Searchable media and filler libraries | Clock-aligned starts and previews | Directory and Teletext |
+| Searchable media and filler libraries | Clock-aligned starts and previews | Channels and Teletext |
 | Guided setup and connection checks | Adverts, fillers and intervals | Optional Discord sign-in/discussion |
 
 The starter permits custom content, including recent productions. Online providers can restrict playback; check sources from your own server before scheduling them.
 
+**Viewer counts show active website/browser viewers only. External IPTV viewers, including Kodi and VLC users, are not included in the website or Control Room counts.** These figures are not the station's total audience across all devices.
+
 See [platform compatibility and Raspberry Pi setup](docs/PLATFORMS.md) for Windows, Linux, ARM64 and the current Mac testing status. Both website and IPTV playback currently use server-side encoding.
 
 ## Quick start
+
+For a complete first installation, follow [Install Tellybox](docs/INSTALL.md). For an overview of the controls, casting, Teletext, scheduling and recovery behaviour, see the [feature guide](docs/FEATURES.md). The in-site **Host your own** page contains the hosting steps and current viewing/update guidance too.
 
 ### Docker Compose (recommended)
 
@@ -88,6 +94,10 @@ Screenshots show the self-hosted demo. Click an image to see its original deskto
 
 | Guide | Covers |
 |---|---|
+| [Install](docs/INSTALL.md) | First installation, startup, storage and verification |
+| [Features](docs/FEATURES.md) | Viewing controls, station settings and new features |
+| [Cast](docs/CAST.md) | Google Cast registration, AirPlay and screen mirroring |
+| [Updates](docs/UPDATES.md) | In-app updates, adoption and retained media |
 | [Hosting](docs/HOSTING.md) | Windows/Linux, LAN, home/VPS, domains, DuckDNS, HTTPS and firewalls |
 | [Owner setup](docs/OWNER_SETUP.md) | Claiming the station, passwords and settings |
 | [Scheduling](docs/SCHEDULING.md) | Episodes, repeats, reshuffles, adverts, fillers and imports |
@@ -102,9 +112,9 @@ For Kodi/IPTV, use your reachable station address plus `/channels.m3u` for the p
 
 ## Updates and backups
 
-Back up station data and media before updating. Docker stores them in the `community-data` and `media-data` volumes; native installs use `data/` and `media/`. Keep owner settings, databases and sessions private.
+Use **Station Control Room → Updates** for managed updates. Application code is replaced while media, channels, schedules and saved settings remain in persistent storage. No manual download, backup or reinstall is needed for this process. Older installations need one-time adoption of the managed launcher or updater; see [Updates](docs/UPDATES.md).
 
-For Git installs, stop the station, back up, run `git pull --ff-only`, then `docker compose up -d`. Do not use `docker compose down -v` for updates: it deletes persistent volumes.
+Keep independent disaster-recovery backups. Never delete Docker volumes or change an existing station's Compose project name during an update.
 
 ## Community and support
 
@@ -153,3 +163,7 @@ Enter Teletext page **400** for a daily dozen from a 144-question bank. Use the 
 Use the subpage arrows for more headlines or forecast days. Pages include BBC attribution, article/source links and UK update times. Cached information is labelled when a feed is temporarily unavailable.
 
 ![London forecast in Teletext fullscreen](docs/screenshots/teletext-weather.png)
+
+### AirPlay and Anyview screen mirroring
+
+The **Watch on TV** control offers an AirPlay video picker in supported Safari browsers and Anyview/Miracast setup instructions for compatible Android and Windows devices. Your phone or computer remains the controller. AirPlay sends the live video; system screen mirroring shares the whole screen and requires the source device to remain active. These are separate from the Google Cast receiver app. Owners can switch AirPlay controls off or hide mirroring instructions in Station settings. Real-device compatibility still needs testing. A website cannot initiate Anyview’s system picker.

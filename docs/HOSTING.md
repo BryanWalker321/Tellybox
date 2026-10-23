@@ -33,7 +33,7 @@ Download the starter from [GitHub Releases](https://github.com/BryanWalker321/Te
 5. Open `http://127.0.0.1:4173`. The two demo patterns are generated examples supplied with the starter; there are no archive programme videos to download.
 6. Open Settings. Copy the first-run setup key from the terminal and choose an owner password of at least 12 characters. The key changes if an unclaimed server restarts.
 7. In Station, enter your own network name, tagline, colour and logo. Upload a PNG/JPEG/WebP logo, then **Save station identity**. The displayed network name, TV cabinet label, guide, Teletext, browser title and popup title bars update together.
-8. In Programmes & media, replace the demo programmes. Upload local files or enter direct video URLs, accurate durations in seconds and source credits. Add channels as required, then **Save programming to server**. Existing viewers reload for a new catalogue.
+8. In Programmes & media, replace the demo programmes. Upload local files or enter direct video URLs, accurate durations in seconds and source credits. Add channels as required, then **Save programming to server**. Saved programming refreshes the affected channel and guide; appearance changes do not change the running order.
 9. The UK pre-2000 filter is optional for your own station. The starter uses Custom station, so your own recent media works too. A watch-page link is not an MP4 file. Supported public YouTube and Dailymotion URLs need the optional Python provider tools below for the shared website/IPTV feed. Vevo watch pages are not supported as media files.
 
 ## 2A. Use an always-on home PC or home server
@@ -42,7 +42,7 @@ For **home-network viewing only**, stop after step 6 and use the IPTV instructio
 
 For **Docker LAN access**, change the supplied Compose mapping from `127.0.0.1:4173:4173` to `192.168.1.50:4173:4173`, replacing the example with your reserved LAN address, then recreate the service with `docker compose up -d`. The container already listens on all its internal interfaces; changing a host `.env` HOST value does not change the Docker port mapping. Restrict port 4173 to your LAN in the applicable host/provider firewall. For public HTTPS with host-installed Caddy, restore the default loopback mapping and follow section 5.
 
-1. Keep the machine awake while plugged in. Arrange for the server to start after a reboot: on Windows, create a Task Scheduler task at logon using `node.exe` as the program, `--env-file-if-exists=.env server.mjs` as arguments, and your extracted folder as **Start in**. Select **Hidden**, and use the account that owns the station folder. On Linux, use the service instructions below. A user-logon task starts only after that user signs in.
+1. Keep the machine awake while plugged in. Arrange for the server to start after a reboot: on Windows, create a Task Scheduler task at logon using `node.exe` as the program, `--env-file-if-exists=.env scripts/launch.mjs` as arguments, and your extracted folder as **Start in**. Select **Hidden**, and use the account that owns the station folder. On Linux, use the service instructions below. A user-logon task starts only after that user signs in.
 2. Find the computer’s private IPv4 address. On Windows run `ipconfig` and look for the active adapter’s IPv4 Address and Default Gateway. On Linux run `ip -4 address` and `ip route`. Example: server `192.168.1.50`, router `192.168.1.1`. These examples must be replaced with your actual values.
 3. Sign in to the router’s local admin page using the Default Gateway address. Find LAN/DHCP/Address reservation and reserve the server’s address using its network adapter’s MAC address. This prevents a future restart from changing the forwarding destination.
 4. For a direct network test, create a `.env` file beside `server.mjs` containing the following. Restart the server afterwards. These are launcher settings; the website cannot change its own listening interface.
@@ -64,12 +64,13 @@ Your ISP may block inbound ports, change your public IP, or prohibit server oper
 ## 2B. Use a VPS
 
 1. Create an Ubuntu VPS with a public IPv4 address and a persistent disk. Use an SSH key to access it. Allow SSH from your management address in the provider firewall before applying restrictive rules. Choose enough CPU/bandwidth for IPTV: each active relay channel encodes video and consumes the server’s outbound traffic.
-2. Install Docker Engine and the Compose plugin using [Docker’s Ubuntu installation steps](https://docs.docker.com/engine/install/ubuntu/). The supplied Compose file builds the image with Node and FFmpeg.
+2. Install Docker Engine and the Compose plugin using [Docker’s Ubuntu installation steps](https://docs.docker.com/engine/install/ubuntu/). The supplied Compose file downloads the official image, including Node, FFmpeg and provider tools.
 3. Transfer the extracted starter folder to the VPS, for example with an SFTP client. Keep projects separate: use a dedicated folder such as `/srv/my-station/app`, keep its persistent data/media in its own volumes, and use a separate hostname. Open a shell in the application folder. If another project already uses port 4173, change only the host side of the mapping to an unused port, for example `127.0.0.1:4174:4173`, and point Caddy at `127.0.0.1:4174`.
-4. Start it and read its first-run console key:
+4. Copy `.env.example` to `.env`. Set a unique `COMPOSE_PROJECT_NAME` for this new station before first startup, especially on a shared server. Keep that name unchanged after installation. Start it and read its first-run console key:
 
 ```sh
-sudo docker compose up -d --build
+sudo docker compose pull
+sudo docker compose up -d
 sudo docker compose logs --tail=30 tellybox
 ```
 
@@ -78,7 +79,7 @@ sudo docker compose logs --tail=30 tellybox
 7. After HTTPS is set up, claim the station through its HTTPS address. In Settings → Station, save that exact address; then follow Discord & chat if you want comments. Never paste the console key into a public chat or issue.
 8. Keep the Compose named volumes. They store your catalogue, owner settings, chat database and uploaded media. Updating the application must preserve them. `docker compose down` keeps the volumes; do not add `-v` unless deliberately destroying station data.
 
-For a native Linux install instead of Docker: install supported Node and FFmpeg, place the starter in a folder owned by a dedicated station user, and create a systemd service with that user, the folder as `WorkingDirectory`, `ExecStart=/usr/bin/node --env-file-if-exists=.env /opt/tellybox/server.mjs`, `Restart=on-failure` and `WantedBy=multi-user.target`. Adjust the actual Node/folder paths, then run `sudo systemctl daemon-reload` and `sudo systemctl enable --now tellybox`. Leave the default loopback binding when Caddy runs on the same host.
+For a native Linux install instead of Docker: install supported Node and FFmpeg, place the starter in a folder owned by a dedicated station user, and create a systemd service with that user, the folder as `WorkingDirectory`, `ExecStart=/usr/bin/node --env-file-if-exists=.env /opt/tellybox/scripts/launch.mjs`, `Restart=on-failure` and `WantedBy=multi-user.target`. Adjust the actual Node/folder paths, then run `sudo systemctl daemon-reload` and `sudo systemctl enable --now tellybox`. Leave the default loopback binding when Caddy runs on the same host.
 
 ## IPTV addresses: localhost, home network and Internet
 
@@ -148,7 +149,7 @@ Check the chosen service’s current streaming, bandwidth and acceptable-use ter
 
 ## 7. Check and maintain your network
 
-1. Confirm the two demo programmes were replaced, your logo/name are distinct, source durations are accurate, and interval media carries only the matching channel’s brand. A complete clip must fit; any remaining gap uses a live station presentation screen. Test Card F is reserved for offline channels and technical problems.
+1. Confirm the two demo programmes were replaced, your logo/name are distinct, source durations are accurate, and interval media carries only the matching channel’s brand. Complete replacement adverts must fit before the next programme; several shorter adverts can fill a longer gap. Source failures use a recovery countdown rather than a test card. Explicit offline status remains an off-air state.
 2. Confirm Settings is owner-protected and Discord secrets are absent from downloaded catalogues. Do not copy `data/` into a public GitHub repository or ZIP.
 3. Back up the catalogue, private data and local media. For SQLite, stop the station while taking a filesystem backup, including any journal files. Keep backup access private.
 4. Restart the machine and verify that the station and reverse proxy return automatically. Keep the OS, Node, FFmpeg and proxy updated.
@@ -175,3 +176,32 @@ Choosing a route or saving an address in Settings does not automatically configu
 Website and IPTV use the same temporary live feed. To resolve public watch URLs on a native installation, install Python 3.10+, create a virtual environment with `python -m venv .providers`, then use its Python to run `-m pip install "yt-dlp[default]" curl-cffi`. Set `PROVIDER_PYTHON` in `.env` to that environment’s absolute Python executable path and restart. On Windows the executable is `.providers\Scripts\python.exe`; on Linux/macOS it is `.providers/bin/python`. The Docker image includes these tools.
 
 Add the public watch URL as the programme media URL, set its accurate duration and test real live-feed playback before scheduling it. Check each YouTube or Dailymotion source individually: provider restrictions and changes mean availability is not guaranteed. Private owner-supplied YouTube sessions are optional; follow the provider guide. No DRM or paywall bypass is supported. Direct media files remain the most predictable choice. See docs/PROVIDERS.md in your download for full instructions.
+
+
+## Viewing controls, casting and accessibility
+
+The TV control panel contains Guide, IPTV and available casting controls alongside channel and fullscreen buttons. On phones, open the top navigation with the `=` button. Channels lists the station's channels and estimated unique programming hours, excluding adverts and duplicate footage.
+
+In Settings, owners can enable Google Cast, AirPlay and screen-mirroring help separately. Google Cast needs a custom receiver application registered for your station's HTTPS receiver URL and its application ID entered in Settings. The TV runs the receiver; a compatible phone or computer becomes its remote. The receiver supports channel selection, a guide and Normal/Stretched/Centred picture options for CRT adapters. Do not use another station's application ID. Follow [Cast setup](CAST.md) for registration, discovery and testing.
+
+AirPlay uses the native picker on compatible Apple browsers/devices. Anyview/Miracast uses the phone or computer's operating-system mirroring controls; a website cannot silently initiate it. The sending device remains responsible for playback with mirroring. Support varies by device, browser and television. Automated interface checks do not establish physical-device compatibility.
+
+Teletext includes news, sport, London weather and a daily quiz, with UK dates, coloured-key controls and fullscreen viewing. Online feeds show their source and cached/stale status. See [Teletext](TELETEXT.md) and the [feature guide](FEATURES.md).
+
+## Viewer counts and Discord links
+
+Website viewer counts and the Control Room's per-channel viewers count active browser sessions only. **External IPTV viewers, including Kodi and VLC users, are not counted.** A zero browser count does not mean nobody is watching IPTV.
+
+Save the station owner's Discord invite in Settings. Both the navigation icon and community button use that invite; clearing it hides them. Optional Discord authentication and chat are configured separately. Watching TV does not require joining Discord.
+
+## Updates, retained media and recovery
+
+Open Settings → Updates to check the installed version and ready releases, read the changelist and install. Managed updates download and verify application code and briefly restart the station. No manual backup/export/reimport is required for that process. Existing media, channels, schedules, uploads and owner settings stay in their persistent storage. A failed candidate startup triggers application rollback. Keep independent disaster-recovery backups for disk loss or accidental deletion.
+
+Native installations must start through `npm start` or `scripts/launch.mjs`; Docker installations need the supplied updater service. Older installations need the one-time adoption described in [Updates](UPDATES.md). Keep the same data/media paths, Compose project name and volumes. Never delete volumes as an update step. Custom deployments require their own update procedure unless they adopt the managed configuration.
+
+## If playback stalls
+
+Check another channel and a fresh browser window. If a fresh window works, fully reload the affected tab before changing server settings. A stuck browser session is different from a server-wide source failure. Compare the website and IPTV, check source availability and FFmpeg/provider logs, and monitor server CPU and outbound bandwidth. Do not restart every station on a shared host to troubleshoot one tab.
+
+For Kodi, use the current station playlist and XMLTV addresses. After changing saved channel numbering or guide mappings, refresh the IPTV client's stored channel/guide data. Test programme-to-advert-to-programme transitions and audio. See [IPTV reliability](IPTV_RELIABILITY.md) for detailed checks.

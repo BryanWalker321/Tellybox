@@ -24,7 +24,7 @@ export function createBroadcastPlayer({video, HlsClass=Hls, onStatus=()=>{}, onP
   function tune(id) {
     const url=channelFeed(id);destroy();channel=id;retries=0;mediaRecoveries=0;const ticket=generation;
     onStatus('Tuning in to the live broadcast…');
-    if(!HlsClass.isSupported()&&video.canPlayType('application/vnd.apple.mpegurl')){video.src=url;video.load();play();return;}
+    if((!HlsClass.isSupported()||typeof video.webkitShowPlaybackTargetPicker==='function')&&video.canPlayType('application/vnd.apple.mpegurl')){video.src=url;video.load();play();return;}
     if(!HlsClass.isSupported()){onStatus('This browser cannot play the live feed. Use an up-to-date browser or the IPTV link below.');return;}
     engine=new HlsClass({enableWorker:false,lowLatencyMode:false,liveSyncDurationCount:3,liveMaxLatencyDurationCount:6,maxBufferLength:12,backBufferLength:12,manifestLoadingTimeOut:35000,manifestLoadingMaxRetry:6,levelLoadingTimeOut:35000,levelLoadingMaxRetry:6});
     engine.on(HlsClass.Events.MANIFEST_PARSED,()=>{if(ticket!==generation||!channel)return;engine.subtitleDisplay=false;engine.subtitleTrack=-1;play();});

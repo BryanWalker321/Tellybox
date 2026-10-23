@@ -1,3 +1,5 @@
+import {createCatalogueReader} from './lib/catalogue-reader.mjs';
+import {castSettings,viewingSettings} from './lib/cast.mjs';
 import {Updates} from './lib/updates.mjs';
 import {TeletextFeeds} from './lib/teletext-feeds.mjs';
 import http from 'node:http';
@@ -11,6 +13,7 @@ import {applySourceHealth} from './lib/source-health.mjs';
 import { validateCatalogue } from './lib/schedule.mjs';
 import { directM3u, liveM3u, xmltv } from './lib/iptv.mjs';
 import { RelayManager } from './lib/relay.mjs';
+import {ContinuousRelay} from './lib/continuous-relay.mjs';
 import { Community } from './lib/community.mjs';
 import { Owner } from './lib/owner.mjs';
 import { checkProviderPlayback } from './lib/provider-check.mjs';
@@ -37,12 +40,14 @@ for (const name of ['demo-one.mp4', 'demo-two.mp4']) {
 const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 4173);
 const relay = new RelayManager({ mediaRoot, testCard: path.join(root, 'public/test-card-f.jpg') });
+const liveRelay = new ContinuousRelay({mediaRoot,testCard:path.join(root,'public/test-card-f.jpg'),resolver:relay.resolver,presentationWebsite:relay.presentationWebsite});
 const teletextFeeds=new TeletextFeeds({file:path.join(directory,'teletext-feeds.json')});
 const descriptions = new ProgrammeDescriptions({file:path.join(root,'programme-descriptions.json'),provider:relay.resolver});
 const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.mjs': 'text/javascript', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.mp4': 'video/mp4', '.webm': 'video/webm', '.m4v': 'video/mp4', '.mp3': 'audio/mpeg', '.vtt': 'text/vtt' };
+const catalogueReader=createCatalogueReader({configPath,healthPath:path.join(directory,'source-health.json'),validate:validateCatalogue,applyHealth:applySourceHealth});
 await readConfig();
 async function sourceHealth(){try{return JSON.parse(await readFile(path.join(directory,'source-health.json'),'utf8'));}catch{return null;}}
-async function readConfig() { return applySourceHealth(validateCatalogue(JSON.parse(await readFile(configPath, 'utf8'))),await sourceHealth()); }
+async function readConfig() { return catalogueReader(); }
 let community;
 const updates=new Updates({directory,root});
 const owner = await Owner.create({ updates,directory, configPath, mediaRoot, onSettings: env => { community?.configure(env); relay.resolver.configure({cookieFile: env.YOUTUBE_COOKIE_FILE}); }, checkYoutube: url => checkProviderPlayback(relay, url) });
@@ -61,13 +66,18 @@ function within(base, target) { return target.startsWith(base + path.sep); }
 const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; media-src 'self' https: http: blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://www.dailymotion.com https://geo.dailymotion.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://www.google.com https://cast.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; media-src 'self' https: http: blob:; connect-src 'self' https://www.gstatic.com https://cast.gstatic.com https://*.googleapis.com; frame-src https://www.gstatic.com https://www.google.com https://www.youtube-nocookie.com https://www.youtube.com https://www.dailymotion.com https://geo.dailymotion.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'");
   try {
     const requestUrl = new URL(req.url, 'http://localhost');
     if (await owner.handle(req, res, requestUrl)) return;
     if (await community.handle(req, res, requestUrl)) return;
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
     const pathname = decodeURIComponent(requestUrl.pathname);
+    // The receiver SDK talks to the Cast device's local IPC service.
+    if(pathname==='/cast-receiver.html')res.setHeader('Content-Security-Policy',res.getHeader('Content-Security-Policy').replace("connect-src 'self'","connect-src 'self' ws://localhost:*")+"; worker-src 'self' blob:");
+    if(pathname==='/cast-help.html'){res.writeHead(302,{Location:'/#tv','Cache-Control':'no-store'});return res.end();}
+    if(pathname==='/api/viewing'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify(viewingSettings(owner.runtime)));}
+    if(pathname==='/api/cast'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify(castSettings(owner.runtime)));}
     if(pathname==='/api/version'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify({version:appVersion,updateProtocol:1}));}
     if(pathname==='/api/teletext-feeds'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify(await teletextFeeds.get()));}
     if(pathname==='/api/connection-identity'){
@@ -100,7 +110,7 @@ const server = http.createServer(async (req, res) => {
       if (!channel) { res.writeHead(404); return res.end('Unknown channel or stream file.'); }
       if (owner.runtime.IPTV_ENABLED === '0') { res.writeHead(503); return res.end('IPTV relay is disabled on this server.'); }
       try {
-        const body = await relay.file(channel, config.epoch, match[2], config.brand.holdingImage);
+        const body = await liveRelay.file(channel, config.epoch, match[2], config.brand.holdingImage);
         res.writeHead(200, { 'Content-Type': match[2].endsWith('.m3u8') ? 'application/vnd.apple.mpegurl' : 'video/mp2t', 'Cache-Control': 'no-store', 'Content-Length': body.length });
         return res.end(req.method === 'HEAD' ? undefined : body);
       } catch (err) { res.writeHead(503, { 'Retry-After': '3', 'Content-Type': 'text/plain' }); return res.end(err.message); }
@@ -156,7 +166,7 @@ server.listen(port, host, () => {
   if (owner.bootstrap) console.log(`First-run owner setup key: ${owner.bootstrap}\nOpen Settings to claim this station and choose your owner password.`);
 });
 let closing = false;
-async function shutdown() { if (closing) return; closing = true; server.close(); await relay.close(); community.close(); process.exit(0); }
+async function shutdown() { if (closing) return; closing = true; server.close(); await Promise.all([relay.close(),liveRelay.close()]); community.close(); process.exitCode=0;if(process.connected)process.disconnect(); }
 process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown);
 
 process.on('message',message=>{if(message?.type==='tellybox:shutdown')shutdown();});

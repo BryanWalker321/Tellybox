@@ -7,7 +7,7 @@ const root=path.dirname(path.dirname(fileURLToPath(import.meta.url))),paths=upda
 const env={...process.env,TELLYBOX_UPDATE_MODE:'managed-node'};let server,busy=false,stopping=false,ready=false;
 const host=env.HOST&&!['0.0.0.0','::'].includes(env.HOST)?env.HOST:'127.0.0.1',origin='http://'+(host.includes(':')?'['+host+']':host)+':'+(env.PORT||4173);
 async function heartbeat(){await atomicJson(paths.agent,{mode:'managed-node',version,at:new Date().toISOString()});}
-async function shutdown(code=0){if(stopping)return;stopping=true;clearInterval(timer);clearInterval(heart);await stopChild(server);process.exit(code);}
+async function shutdown(code=0){if(stopping)return;stopping=true;clearInterval(timer);clearInterval(heart);await stopChild(server);process.exitCode=code;if(process.connected)process.disconnect();}
 const timer=setInterval(()=>void poll(),1000),heart=setInterval(()=>heartbeat().catch(()=>{}),5000);
 process.on('SIGINT',()=>shutdown());process.on('SIGTERM',()=>shutdown());process.on('message',message=>{if(message?.type==='tellybox:shutdown')shutdown();});
 process.on('disconnect',()=>shutdown(1));

@@ -1,6 +1,6 @@
 {
   "name": "tellybox",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "type": "module",
   "description": "A configurable, synchronised archive television service",
@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node --env-file-if-exists=.env scripts/launch.mjs",
     "dev": "node --env-file-if-exists=.env --watch server.mjs",
-    "test": "node --test",
+    "test": "node --test --test-concurrency=2",
     "validate": "node scripts/validate.mjs",
     "import:archive": "node scripts/import-archive.mjs"
   }
