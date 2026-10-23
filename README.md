@@ -167,3 +167,8 @@ Use the subpage arrows for more headlines or forecast days. Pages include BBC at
 ### AirPlay and Anyview screen mirroring
 
 The **Watch on TV** control offers an AirPlay video picker in supported Safari browsers and Anyview/Miracast setup instructions for compatible Android and Windows devices. Your phone or computer remains the controller. AirPlay sends the live video; system screen mirroring shares the whole screen and requires the source device to remain active. These are separate from the Google Cast receiver app. Owners can switch AirPlay controls off or hide mirroring instructions in Station settings. Real-device compatibility still needs testing. A website cannot initiate Anyview’s system picker.
+
+
+## Community standards
+
+Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guide](CONTRIBUTING.md). Report vulnerabilities through the private route in our [security policy](SECURITY.md). Our [accessibility statement](ACCESSIBILITY.md) describes current support, known limitations and how to report barriers.
