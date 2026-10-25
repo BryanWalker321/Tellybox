@@ -1,3 +1,4 @@
+import {renderPaperListings} from '/newspaper-guide.mjs';
 import {setupMobileMenu} from '/mobile-menu.mjs';
 import {createTvOutput} from '/tv-output.mjs';
 import {createStationCast} from '/cast-sender.mjs';
@@ -109,7 +110,7 @@ function renderGuide() {
   $('edition-date').textContent = day.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   $('guide-note').textContent = `All times local (${Intl.DateTimeFormat().resolvedOptions().timeZone}). Select a channel heading to tune in live. ${config.brand.guideNote || 'Channel running orders repeat throughout the day.'}`;
   $('guide').style.setProperty('--columns', config.channels.length);
-  $('guide').innerHTML = config.channels.map(c => `<section class="paper-channel"><button class="paper-channel-heading" data-guide-channel="${c.id}"><span>${String(c.number).padStart(2, '0')}</span><strong>${esc(c.name)}</strong><small>TUNE IN LIVE ↗</small></button><p class="paper-channel-description">${esc(c.description || c.category || '')}</p><div class="paper-listings">${listingsWindow(c, config.epoch, start.getTime(), end.getTime()).map(s => `<article class="paper-listing ${s.start <= now() && s.end > now() ? 'on-now' : ''}"><time>${time(s.start)}</time><div><h3>${esc(s.programme.title)} ${s.start <= now() && s.end > now() ? '<span class="paper-live">ON NOW</span>' : ''}</h3><p>${esc(s.programme.year || 'Archive')} ${s.start < start.getTime() ? ' · In progress' : ''}</p></div></article>`).join('')}</div></section>`).join('');
+  $('guide').innerHTML = renderPaperListings({config,start:start.getTime(),end:end.getTime(),now:now()});
   televisionGuide.render();
   community.refresh();
 }

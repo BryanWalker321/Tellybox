@@ -12,3 +12,44 @@
 #watch-view .description-expand{width:auto;margin:0 0 16px;padding:4px 0;border:0;border-radius:0;box-shadow:none;background:transparent;color:var(--network-link,#7fc3c3);font:700 12px/1.6 var(--mono);text-decoration:underline;text-underline-offset:3px}
 
 .tuning-estimate{display:none}.tuning-card.test-card-only .test-message .tuning-estimate{display:block;color:#a9c9cb;font-size:12px;line-height:1.5;margin:-5px 0 16px!important}
+
+/* 1990s British listings magazine: text-only, readable channel columns. */
+#newspaper-guide{--paper-red:#df2b24;--paper-yellow:#fff127;background:#fffdf5;background-image:none;border:12px solid var(--paper-red);padding:0 20px 18px;color:#111;box-shadow:5px 6px 0 #0005;font-family:Arial,Helvetica,sans-serif;}
+#newspaper-guide .paper-masthead{margin-inline:-20px;background:var(--paper-red);padding:0 8px 9px;}
+#newspaper-guide .newspaper-kicker{border:0;padding:2px 3px 7px;color:#fff;font:700 10px/1.3 Arial,Helvetica,sans-serif;letter-spacing:1px;gap:12px;}
+#newspaper-guide .newspaper-title{padding:11px 14px 12px;background:#fffdf5;border:0;justify-content:space-between;gap:20px;}
+#newspaper-guide .newspaper-title h1{font:900 clamp(32px,4.3vw,65px)/.98 'Arial Black',Arial,Helvetica,sans-serif;letter-spacing:-2.8px;text-align:left;text-transform:uppercase;color:#111;max-width:950px;}
+#newspaper-guide .paper-coverline{font:900 italic 21px/1 Arial,Helvetica,sans-serif;text-transform:uppercase;white-space:nowrap;border-left:3px solid #111;padding-left:15px;}
+#newspaper-guide .paper-edition{background:var(--paper-yellow);border:0;padding:9px 14px;margin-top:8px;letter-spacing:0;color:#080808;gap:15px;font:700 11px/1.25 Arial,Helvetica,sans-serif;}
+#newspaper-guide .paper-edition strong{font:900 italic clamp(18px,2.3vw,32px)/1.05 'Arial Black',Arial,Helvetica,sans-serif;text-transform:uppercase;}
+#newspaper-guide .paper-edition>span{max-width:230px;text-align:right;font:800 10px/1.25 Arial,Helvetica,sans-serif;}
+#newspaper-guide .guide-tools{display:flex;gap:16px;align-items:end;padding:15px 0 10px;border-bottom:2px solid #111;}
+#newspaper-guide .guide-tools label{font:700 12px/1.2 Arial,Helvetica,sans-serif;color:#111;letter-spacing:0;}
+#newspaper-guide .guide-tools input,#newspaper-guide .guide-tools select{font:14px/1.2 Arial,Helvetica,sans-serif;color:#111;background:#fff;border:1px solid #777;border-radius:0;padding:9px;max-width:100%;min-height:40px;}
+#newspaper-guide .guide-tools button{background:#111;color:#fff;border:1px solid #111;border-radius:0;padding:11px 16px;font:800 12px/1.2 Arial,Helvetica,sans-serif;box-shadow:none;min-height:40px;}
+#newspaper-guide .guide-tools button:hover{background:var(--paper-red);border-color:var(--paper-red);}
+#newspaper-guide .paper-note{font:12px/1.4 Arial,Helvetica,sans-serif;color:#444;margin:9px 0 16px;}
+#newspaper-guide .newspaper-columns.guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:0;gap:22px 0;}
+#newspaper-guide .paper-channel{padding:0 14px 10px;border-right:1px solid #929292;min-width:0;border-top:5px solid var(--paper-channel,#164da3);}
+#newspaper-guide .paper-channel:nth-child(4n){border-right:0;}
+#newspaper-guide .paper-channel-heading{display:grid;grid-template-columns:70px minmax(0,1fr);gap:6px 9px;padding:12px 0 0;border:0;min-height:110px;align-content:start;box-shadow:none;background:transparent!important;color:#111;}
+#newspaper-guide .paper-channel-heading>span{border:0;padding:0;font:900 56px/.95 'Arial Black',Arial,Helvetica,sans-serif;letter-spacing:-4px;}
+#newspaper-guide .paper-channel-heading strong{font:900 19px/1.04 'Arial Black',Arial,Helvetica,sans-serif;text-transform:uppercase;align-self:center;overflow-wrap:anywhere;}
+#newspaper-guide .paper-channel-heading small{grid-column:1/-1;background:#111;color:#fff;padding:6px 7px;font:800 9px/1.25 Arial,Helvetica,sans-serif;letter-spacing:.7px;}
+#newspaper-guide .paper-channel-heading:hover small{background:var(--paper-red);text-decoration:none;}
+#newspaper-guide .paper-channel-description{font:italic 12px/1.35 Arial,Helvetica,sans-serif;color:#333;min-height:0;margin:0 0 9px;padding:0 0 11px;border-bottom:1px solid #888;overflow-wrap:anywhere;}
+#newspaper-guide .paper-listing{display:block;padding:10px 0 11px;border-bottom:1px solid #ccc;min-width:0;}
+#newspaper-guide .paper-listing time{display:block;font:900 14px/1.1 Arial,Helvetica,sans-serif;color:#111;margin-bottom:3px;white-space:normal;}
+#newspaper-guide .paper-listing h3{font:800 15px/1.17 Arial,Helvetica,sans-serif;color:#111;margin:0;letter-spacing:-.15px;overflow-wrap:anywhere;}
+#newspaper-guide .paper-listing p{font:11px/1.3 Arial,Helvetica,sans-serif;color:#444;margin:5px 0 0;}
+#newspaper-guide .paper-listing .paper-synopsis{font:13px/1.3 Arial,Helvetica,sans-serif;color:#222;margin:5px 0 0;}
+#newspaper-guide .paper-programme-meta{font-style:italic!important;}
+#newspaper-guide .paper-listing.on-now{background:#fff59c;box-shadow:0 0 0 6px #fff59c;}
+#newspaper-guide .paper-live{background:#111;color:var(--paper-yellow);font:900 9px/1 Arial,Helvetica,sans-serif;padding:4px 5px;letter-spacing:.2px;vertical-align:middle;margin:3px 0;}
+#newspaper-guide .paper-bottom{margin-top:20px;padding:13px 0 0;border-top:4px solid #111;font:800 11px/1.3 Arial,Helvetica,sans-serif;letter-spacing:0;}
+#newspaper-guide .paper-bottom>span{font:italic 11px/1.3 Arial,Helvetica,sans-serif;}
+#newspaper-guide button:focus-visible,#newspaper-guide input:focus-visible,#newspaper-guide select:focus-visible{outline:3px solid #004fc5;outline-offset:3px;}
+@media(max-width:1150px){#newspaper-guide .newspaper-columns.guide{grid-template-columns:repeat(3,minmax(0,1fr));}#newspaper-guide .paper-channel:nth-child(4n){border-right:1px solid #929292;}#newspaper-guide .paper-channel:nth-child(3n){border-right:0;}#newspaper-guide .paper-coverline{font-size:17px;}#newspaper-guide .paper-edition>span{max-width:180px;}}
+@media(max-width:850px){#newspaper-guide .newspaper-columns.guide{grid-template-columns:repeat(2,minmax(0,1fr));}#newspaper-guide .paper-channel:nth-child(3n){border-right:1px solid #929292;}#newspaper-guide .paper-channel:nth-child(2n){border-right:0;}#newspaper-guide{border-width:9px;padding-inline:15px;}#newspaper-guide .paper-masthead{margin-inline:-15px;}#newspaper-guide .newspaper-title h1{font-size:39px;letter-spacing:-1.5px;}#newspaper-guide .paper-edition{flex-wrap:wrap;}#newspaper-guide .paper-edition>span{max-width:none;text-align:left;}#newspaper-guide .guide-tools{flex-wrap:wrap;}#newspaper-guide .guide-tools label{min-width:170px;flex:1;}#newspaper-guide .guide-tools button{margin:0;}#newspaper-guide .paper-channel-heading{min-height:116px;}}
+@media(max-width:520px){#newspaper-guide{border-width:7px;padding:0 12px 14px;}#newspaper-guide .paper-masthead{margin-inline:-12px;padding:0 0 7px;}#newspaper-guide .newspaper-kicker{font-size:8px;letter-spacing:.25px;flex-wrap:wrap;gap:3px;padding:3px 4px 7px;}#newspaper-guide .newspaper-kicker>span:last-child{display:none;}#newspaper-guide .newspaper-title{padding:11px 9px;}#newspaper-guide .newspaper-title h1{font-size:34px;letter-spacing:-1.6px;}#newspaper-guide .paper-coverline{display:none;}#newspaper-guide .paper-edition{margin-top:7px;padding:8px 9px;gap:6px;}#newspaper-guide .paper-edition strong{font-size:22px;}#newspaper-guide .paper-edition>span{font-size:9px;}#newspaper-guide .newspaper-columns.guide{grid-template-columns:minmax(0,1fr);row-gap:24px;}#newspaper-guide .paper-channel{padding:0 0 8px;border-right:0!important;}#newspaper-guide .paper-channel-heading{grid-template-columns:76px minmax(0,1fr);min-height:0;margin-bottom:10px;}#newspaper-guide .paper-channel-heading>span{font-size:60px;}#newspaper-guide .paper-channel-heading strong{font-size:22px;}#newspaper-guide .paper-channel-heading small{padding-block:8px;font-size:10px;}#newspaper-guide .paper-channel-description{font-size:13px;}#newspaper-guide .paper-listing{padding:13px 0;}#newspaper-guide .paper-listing time{font-size:15px;}#newspaper-guide .paper-listing h3{font-size:16px;line-height:1.22;}#newspaper-guide .paper-listing .paper-synopsis{font-size:14px;}#newspaper-guide .paper-listing p{font-size:12px;}#newspaper-guide .guide-tools{gap:11px;}#newspaper-guide .guide-tools label{min-width:0;flex:1 1 100%;}#newspaper-guide .guide-tools input,#newspaper-guide .guide-tools select{width:100%;}#newspaper-guide .paper-bottom{font-size:10px;gap:8px;}}
+@media print{#newspaper-guide{box-shadow:none;border-width:5px;print-color-adjust:exact;-webkit-print-color-adjust:exact;}#newspaper-guide .guide-tools,#newspaper-guide .paper-note,#newspaper-guide .paper-coverline{display:none;}#newspaper-guide .paper-channel{break-inside:avoid;}#newspaper-guide .paper-listing.on-now{box-shadow:none;background:transparent;}}

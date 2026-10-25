@@ -1,6 +1,6 @@
 {
   "name": "tellybox",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "private": true,
   "type": "module",
   "description": "A configurable, synchronised archive television service",

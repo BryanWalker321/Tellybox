@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.10 — 25 October 2026
+
+- Redesign newspaper listings as a text-only 1990s British TV magazine, with responsive columns and compact am/pm times, channel accents, on-air labels and cleaned programme synopses.
+- Add Vimeo video-page and player URL support to the shared website/IPTV broadcast, preserving unlisted privacy hashes and isolating YouTube credentials.
+- Resolve Vimeo through its public embedded player without requiring a viewer account or browser SDK.
+- Exclude Vimeo watch pages from direct-file playlists and count alternate Vimeo URL forms as the same footage.
+- Document Vimeo setup and limitations, with provider validation and regression coverage.
+
 ## 0.1.9
 
 - Expand installation, hosting, owner setup and in-site help for current features and managed updates.

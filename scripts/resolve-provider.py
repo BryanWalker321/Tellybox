@@ -1,5 +1,5 @@
 """Resolve public provider URLs for a transient relay. Only transient probes; never retain programme media."""
-import json,sys,urllib.parse,os,io,tempfile
+import json,sys,urllib.parse,os,io,tempfile,re
 from http.cookiejar import MozillaCookieJar
 import yt_dlp
 class Quiet:
@@ -9,8 +9,22 @@ class Quiet:
 url=sys.argv[1]
 description_only='--description' in sys.argv[2:]
 host=urllib.parse.urlparse(url).hostname
-if host not in ['youtube.com','www.youtube.com','youtu.be','www.dailymotion.com','dailymotion.com','dai.ly']:
+if host not in ['youtube.com','www.youtube.com','youtu.be','www.dailymotion.com','dailymotion.com','dai.ly','vimeo.com','www.vimeo.com','player.vimeo.com']:
  raise SystemExit('Unsupported provider host')
+if host in ['vimeo.com','www.vimeo.com','player.vimeo.com']:
+ parsed=urllib.parse.urlparse(url)
+ pattern=r'/video/\d{1,12}/?' if host=='player.vimeo.com' else r'/\d{1,12}(?:/[a-fA-F0-9]{8,64})?/?'
+ hashes=urllib.parse.parse_qs(parsed.query,keep_blank_values=True).get('h',[])
+ if parsed.scheme!='https' or parsed.username or parsed.password or parsed.port or not re.fullmatch(pattern,parsed.path) or any(not re.fullmatch(r'[a-fA-F0-9]{8,64}',h) for h in hashes):
+  raise SystemExit('Unsupported Vimeo video URL')
+ # Public video pages now use Vimeo's signed-in web client. Resolve their
+ # public embedded player instead; retain unlisted privacy hashes verbatim.
+ ident=re.search(r'/(?:video/)?(\d+)',parsed.path)[1]
+ path_hash=parsed.path.strip('/').split('/')[-1] if host!='player.vimeo.com' and '/' in parsed.path.strip('/') else None
+ privacy_hash=hashes[0] if hashes else path_hash
+ url='https://player.vimeo.com/video/'+ident+(('?'+urllib.parse.urlencode({'h':privacy_hash})) if privacy_hash else '')
+
+
 options={'quiet':True,'no_warnings':True,'skip_download':True,'noplaylist':True,'socket_timeout':15,'retries':1,'extractor_retries':1,'js_runtimes':{'node':{}},'logger':Quiet(),'format':'bv[height<=576][protocol=https][vcodec^=avc1]+ba[protocol=https][ext=m4a]/best[height<=576]/best','allow_unplayable_formats':False}
 if host in ['youtube.com','www.youtube.com','youtu.be']:
  # YouTube can return metadata for HTTPS formats whose media requests require

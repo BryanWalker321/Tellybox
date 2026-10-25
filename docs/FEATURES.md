@@ -45,3 +45,13 @@ BBC News, BBC Sport and London weather have dedicated pages with attribution, so
 The owner-configured Discord invite is used by the top-menu icon and community button. Clearing it hides those links. Watching and IPTV do not require Discord membership or sign-in. Optional OAuth, chat, logging and server joining have their own configuration and consent; see [Discord](DISCORD.md).
 
 Managed updates are installed from the Updates tab after the installation has adopted the managed Node launcher or Docker updater. Media and station data remain in their persistent locations; application startup failure has a rollback path. A release is offered for installation after its verified image and update manifest are ready. See [Updates and data retention](UPDATES.md).
+
+
+## Vimeo sources
+
+Add public Vimeo video-page URLs alongside YouTube, Dailymotion, Internet Archive and local media. The server resolves the public player and feeds the same continuous HLS broadcast to website/IPTV viewers. No separate Vimeo SDK or viewer login is needed. See [provider setup](PROVIDERS.md) for supported URLs, native dependencies and restrictions.
+
+
+## Magazine-style newspaper listings
+
+The newspaper guide uses a 1990s British listings-magazine style: a red frame, yellow day/date strip, bold sans-serif programme headings and compact am/pm times. It has no programme images. Desktop channel columns adapt to smaller screens and become one readable column on phones. The date, viewing-period selector, live channel headings and alternate TV-grid view continue to use the station's shared schedule. Appearance does not change programme timing. Supplied synopses can appear beneath titles; uploader promotion/copyright boilerplate is omitted from that presentation.

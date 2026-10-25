@@ -1,6 +1,6 @@
-# YouTube and Dailymotion sources
+# YouTube, Dailymotion and Vimeo sources
 
-Remote MP4/WebM and local media are read by FFmpeg. Public YouTube/Dailymotion watch URLs additionally need Python/yt-dlp. The website and IPTV now use the same per-channel HLS feed, so their programmes, adverts and fallback output match.
+Remote MP4/WebM and local media are read by FFmpeg. Public YouTube/Dailymotion/Vimeo video-page URLs additionally need Python/yt-dlp. The website and IPTV now use the same per-channel HLS feed, so their programmes, adverts and fallback output match.
 
 For the shared live feed, the server can resolve an unrestricted public video URL with yt-dlp, then feed its temporary video/audio addresses into FFmpeg. The original programme is not downloaded into a permanent library. The usual rolling HLS segments are removed when the channel becomes idle. Watch pages are excluded from the source-direct M3U because IPTV clients cannot play them as files.
 
@@ -52,3 +52,12 @@ The official embedded-player checker remains a diagnostic tool. Its result descr
 ## Captions
 
 The shared browser player starts with captions/subtitles disabled. Burned-in text cannot be hidden. IPTV apps control their own subtitle preferences.
+
+
+## Vimeo
+
+Public Vimeo video pages (`https://vimeo.com/123456789`), player URLs (`https://player.vimeo.com/video/123456789`) and owner-supplied unlisted links with their privacy hash can be used as programme URLs. Keep an unlisted hash intact. Profile, showcase, review and On Demand pages are not supported programme URLs. The resolver accepts HTTPS Vimeo hosts only and rejects credentials embedded in URLs.
+
+Vimeo follows the same server-side FFmpeg/shared HLS route as YouTube and Dailymotion, including website, IPTV and Cast output. Native installations need the documented Python/yt-dlp tools; Docker includes them. No Vimeo browser SDK, account token or separate player is required. The YouTube cookie file is never supplied to Vimeo. Password-protected, paid, private, live and DRM sources are outside this public-source integration.
+
+Store the original video page in the catalogue, not a temporary CDN URL. Stream resolution is cached briefly and refreshed after expiry/failure. Test duration, audio, video, seeking and programme transitions from the actual server before scheduling; metadata alone is not proof of playback. Remote owners can remove or restrict their videos. An accessible upload does not establish permission to rebroadcast it.

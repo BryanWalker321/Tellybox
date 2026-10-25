@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.9-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.10-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -172,3 +172,5 @@ The **Watch on TV** control offers an AirPlay video picker in supported Safari b
 ## Community standards
 
 Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guide](CONTRIBUTING.md). Report vulnerabilities through the private route in our [security policy](SECURITY.md). Our [accessibility statement](ACCESSIBILITY.md) describes current support, known limitations and how to report barriers.
+
+Vimeo video-page sources use the shared website/IPTV broadcast alongside YouTube, Dailymotion and direct/local files. See [provider setup](docs/PROVIDERS.md).

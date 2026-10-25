@@ -34,7 +34,7 @@ Download the starter from [GitHub Releases](https://github.com/BryanWalker321/Te
 6. Open Settings. Copy the first-run setup key from the terminal and choose an owner password of at least 12 characters. The key changes if an unclaimed server restarts.
 7. In Station, enter your own network name, tagline, colour and logo. Upload a PNG/JPEG/WebP logo, then **Save station identity**. The displayed network name, TV cabinet label, guide, Teletext, browser title and popup title bars update together.
 8. In Programmes & media, replace the demo programmes. Upload local files or enter direct video URLs, accurate durations in seconds and source credits. Add channels as required, then **Save programming to server**. Saved programming refreshes the affected channel and guide; appearance changes do not change the running order.
-9. The UK pre-2000 filter is optional for your own station. The starter uses Custom station, so your own recent media works too. A watch-page link is not an MP4 file. Supported public YouTube and Dailymotion URLs need the optional Python provider tools below for the shared website/IPTV feed. Vevo watch pages are not supported as media files.
+9. The UK pre-2000 filter is optional for your own station. The starter uses Custom station, so your own recent media works too. A watch-page link is not an MP4 file. Supported public YouTube, Dailymotion and Vimeo URLs need the optional Python provider tools below for the shared website/IPTV feed. Vevo watch pages are not supported as media files.
 
 ## 2A. Use an always-on home PC or home server
 
@@ -171,11 +171,11 @@ Open **Settings → Hosting & help → Guided station setup** for the four-step 
 
 Choosing a route or saving an address in Settings does not automatically configure the router, DNS, firewall or HTTPS. Change the top-menu Discord invite in the wizard's final step or Discord & chat; saving it blank hides the invite links. The self-hosted starter contains no Tip buttons.
 
-## Optional YouTube/Dailymotion IPTV setup
+## Optional YouTube/Dailymotion/Vimeo IPTV setup
 
 Website and IPTV use the same temporary live feed. To resolve public watch URLs on a native installation, install Python 3.10+, create a virtual environment with `python -m venv .providers`, then use its Python to run `-m pip install "yt-dlp[default]" curl-cffi`. Set `PROVIDER_PYTHON` in `.env` to that environment’s absolute Python executable path and restart. On Windows the executable is `.providers\Scripts\python.exe`; on Linux/macOS it is `.providers/bin/python`. The Docker image includes these tools.
 
-Add the public watch URL as the programme media URL, set its accurate duration and test real live-feed playback before scheduling it. Check each YouTube or Dailymotion source individually: provider restrictions and changes mean availability is not guaranteed. Private owner-supplied YouTube sessions are optional; follow the provider guide. No DRM or paywall bypass is supported. Direct media files remain the most predictable choice. See docs/PROVIDERS.md in your download for full instructions.
+Add the public watch URL as the programme media URL, set its accurate duration and test real live-feed playback before scheduling it. Check each YouTube, Dailymotion or Vimeo source individually: provider restrictions and changes mean availability is not guaranteed. Private owner-supplied YouTube sessions are optional; follow the provider guide. No DRM or paywall bypass is supported. Direct media files remain the most predictable choice. See docs/PROVIDERS.md in your download for full instructions.
 
 
 ## Viewing controls, casting and accessibility
