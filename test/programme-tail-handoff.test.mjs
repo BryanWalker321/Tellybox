@@ -32,3 +32,10 @@ test('short clock delays are repaid rather than permanently slowing every follow
  try{const {relay,state}=fixture(10000);state.nextFrame=8000;for(let i=0;i<51;i++)relay.tick(state);assert.equal(state.nextFrame,10040);assert.equal(state.outputFrames,51);relay.tick(state);assert.equal(state.outputFrames,51);}
  finally{Date.now=original;}
 });
+
+
+test('encoder startup tolerates one queued video frame but keeps both pipe queues bounded',()=>{
+ const original=Date.now;Date.now=()=>10000;
+ try{const {relay,state}=fixture(10000),video=state.child.stdio[3],audio=state.child.stdio[4];video.writableNeedDrain=true;video.writableLength=622080;audio.writableLength=0;relay.tick(state);assert.equal(state.outputFrames,1,'Audio probing must receive another matching packet while video waits');state.nextFrame=0;video.writableLength=622080*2;relay.tick(state);assert.equal(state.outputFrames,1,'Video queue is bounded');video.writableLength=0;audio.writableLength=7680*24;relay.tick(state);assert.equal(state.outputFrames,1,'Audio queue is bounded');audio.writableLength=0;relay.tick(state);assert.equal(state.outputFrames,2);}
+ finally{Date.now=original;}
+});

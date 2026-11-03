@@ -7,6 +7,7 @@
 - Add a yellow search icon beside Settings and align navigation button backgrounds and heights.
 - Preserve playback clock debt after brief delays so channels catch up instead of permanently falling behind.
 - Let delayed programme closing footage finish within the existing advert gap, without moving the next programme's scheduled start.
+- Avoid an encoder startup deadlock on FFmpeg 8 by allowing bounded paired input buffering.
 - Add regression checks for programme tails, clock catch-up, schedule parity and search HTTP integration.
 
 ## 0.1.10 — 25 October 2026
