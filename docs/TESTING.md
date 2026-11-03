@@ -41,3 +41,7 @@ On the hosted Linux VPS, City Bound and Morning Paper resolved and produced HLS 
 Local Windows / Node 24: 141 tests, 139 passed, zero failed and two expected curated-edition skips. The full suite includes native update/rollback and station-data preservation checks. Catalogue validation confirms one demo channel and two demo programmes. Public-release scope and documentation-link audits passed.
 
 New magazine-guide checks cover compact am/pm times, programme synopsis cleanup, HTML escaping and unchanged shared-schedule rendering without images. The guide was inspected at desktop, tablet and 390/320-pixel mobile sizes without horizontal overflow. Vimeo coverage and the limits of the live source samples are recorded above. Cross-platform and container results are available in GitHub Actions for the release commit.
+
+## Linux dependency baseline
+
+Full release checks run on Ubuntu 24.04 LTS (Node 22 and 24), ARM64 Ubuntu 24.04 and Windows. The official Docker image uses Debian Bookworm. Ubuntu 26.04 / FFmpeg 8 also runs the current continuous broadcast engine, source recovery, programme-tail, search and server checks. The older per-source RelayManager HLS integration tests have outstanding timing failures on FFmpeg 8; the production server uses ContinuousRelay for its channel feeds. These legacy failures are retained as a known compatibility limitation rather than being labelled as passing.

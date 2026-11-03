@@ -9,12 +9,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             node: 22
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             node: 24
           - os: ubuntu-24.04-arm
             node: 22
+          - os: ubuntu-26.04
+            node: 22
+            broadcastOnly: true
           - os: windows-latest
             node: 22
     steps:
@@ -43,13 +46,19 @@ jobs:
           "FFMPEG_PATH=$encoder" >> $env:GITHUB_ENV
           "FFPROBE_PATH=$probe" >> $env:GITHUB_ENV
           Split-Path $encoder | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      # Full suite uses the supported LTS dependency baseline. Newer FFmpeg
+      # separately exercises the actual continuous engine shipped by the server.
       - run: npm test
+        if: ${{ !matrix.broadcastOnly }}
+      - name: Check current broadcast engine with modern FFmpeg
+        if: ${{ matrix.broadcastOnly }}
+        run: node --test --test-concurrency=2 test/advert-fallback.test.mjs test/continuous-countdown.test.mjs test/continuous-relay.test.mjs test/programme-tail-handoff.test.mjs test/programme-search.test.mjs test/server.test.mjs
       - run: npm run validate
       - name: Build native Docker image
-        if: runner.os == 'Linux' && matrix.node == 22
+        if: runner.os == 'Linux' && matrix.node == 22 && !matrix.broadcastOnly
         run: docker build -t tellybox-smoke .
       - name: Check container startup and live playback
-        if: runner.os == 'Linux' && matrix.node == 22
+        if: runner.os == 'Linux' && matrix.node == 22 && !matrix.broadcastOnly
         shell: bash
         run: |
           set -euo pipefail
