@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.11 - 3 November 2026
+
+- Add programme search with a dedicated page, Watch sidebar popup, channel details and next-showing times across the complete active library.
+- Offer a programme suggestion link using the station owner's Discord settings when search finds no matches.
+- Add a yellow search icon beside Settings and align navigation button backgrounds and heights.
+- Preserve playback clock debt after brief delays so channels catch up instead of permanently falling behind.
+- Let delayed programme closing footage finish within the existing advert gap, without moving the next programme's scheduled start.
+- Add regression checks for programme tails, clock catch-up, schedule parity and search HTTP integration.
+
 ## 0.1.10 — 25 October 2026
 
 - Redesign newspaper listings as a text-only 1990s British TV magazine, with responsive columns and compact am/pm times, channel accents, on-air labels and cleaned programme synopses.
