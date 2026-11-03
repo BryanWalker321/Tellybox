@@ -8,7 +8,7 @@ test('a failed advert warms a whole replacement without test-card frames or an e
  relay=new ContinuousRelay({mediaRoot:dir,testCard:path.resolve('public/test-card-f.jpg')});const epoch=new Date().toISOString(),until=Date.now()+16500;let replacement=false,pid;
  while(Date.now()<until){await relay.file(channel,epoch,'index.m3u8');const state=relay.states.get(channel.id);pid??=state.child.pid;assert.equal(state.child.pid,pid);assert.equal(state.sourceFrameCounts.holding,0,'A failed advert with a playable alternative must not show a test card');if(state.active?.entry.programme.isReplacementAdvert&&state.active.sentFrames>20)replacement=true;await new Promise(r=>setTimeout(r,50));}
  assert.ok(replacement,'The replacement advert must actually play');assert.equal(relay.states.get(channel.id).encoderStarts,1);
- }finally{await relay?.close();await rm(dir,{recursive:true,force:true});}
+ }catch(error){if(relay)for(const state of relay.states.values())console.error('Encoder startup diagnostic',JSON.stringify({frames:state.outputFrames,fallbackFrames:state.fallbackFrames,error:state.error,encoder:state.diagnostic,sources:[...state.sources.values()].map(x=>({ready:x.ready,failed:x.failed,video:x.video.length,audio:x.audio.length,sentFrames:x.sentFrames}))}));throw error;}finally{await relay?.close();await rm(dir,{recursive:true,force:true});}
 });
 test('a long failed advert is covered by several short adverts before the next programme',{skip:!available,timeout:35000},async()=>{
  const dir=await mkdtemp(path.join(os.tmpdir(),'tellybox-short-ad-backups-'));let relay;
@@ -19,5 +19,5 @@ test('a long failed advert is covered by several short adverts before the next p
   relay=new ContinuousRelay({mediaRoot:dir,testCard:path.resolve('public/test-card-f.jpg')});const epoch=new Date().toISOString(),until=Date.now()+22500,replacements=new Set();let nextProgramme=false;
   while(Date.now()<until){await relay.file(channel,epoch,'index.m3u8');const state=relay.states.get(channel.id);assert.equal(state.sourceFrameCounts.holding,0,'Short playable adverts must prevent a test card');assert.equal(state.encoderStarts,1,'Recovery must retain the IPTV encoder');const active=state.active;if(active?.entry.programme.isReplacementAdvert&&active.sentFrames>=20)replacements.add(active.key);if(active?.entry.programme.id==='two'&&active.sentFrames>=25)nextProgramme=true;await new Promise(r=>setTimeout(r,40));}
   assert.ok(replacements.size>=3,`Expected several short adverts, saw ${replacements.size}`);assert.ok(nextProgramme,'Next programme must start without restarting the stream');
- }finally{await relay?.close();await rm(dir,{recursive:true,force:true});}
+ }catch(error){if(relay)for(const state of relay.states.values())console.error('Encoder startup diagnostic',JSON.stringify({frames:state.outputFrames,fallbackFrames:state.fallbackFrames,error:state.error,encoder:state.diagnostic,sources:[...state.sources.values()].map(x=>({ready:x.ready,failed:x.failed,video:x.video.length,audio:x.audio.length,sentFrames:x.sentFrames}))}));throw error;}finally{await relay?.close();await rm(dir,{recursive:true,force:true});}
 });
