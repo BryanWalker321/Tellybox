@@ -17,6 +17,8 @@ test('HTTP server serves catalogue, time and byte-range media while isolating fi
     assert.equal((await fetch(url)).status, 200);
     const admin=await fetch(url+'/admin.html');assert.equal(admin.status,200);assert.ok((await admin.text()).includes('id="owner-login"'));assert.equal((await fetch(url+'/api/owner/settings')).status,401);
     const catalogue = await (await fetch(url + '/api/catalogue')).json(); assert.ok(catalogue.channels.length);
+    const searchPage=await fetch(url+'/search.html');assert.equal(searchPage.status,200);assert.ok((await searchPage.text()).includes('programme-search-page'));
+    const searchResult=await fetch(url+'/api/programme-search?q=demo');assert.equal(searchResult.status,200);assert.ok(Array.isArray((await searchResult.json()).results));
     const clock = await (await fetch(url + '/api/time')).json(); assert.ok(Math.abs(clock.now - Date.now()) < 3000);
     const playlist = await (await fetch(url + '/channels.m3u')).text(); assert.ok(playlist.startsWith('#EXTM3U')); assert.ok(playlist.includes(`/iptv/${catalogue.channels[0].id}/index.m3u8`));
     const network = await (await fetch(url + '/api/network')).json(); assert.equal(network.loopbackOnly, true); assert.equal(network.base, 'http://127.0.0.1:4173');

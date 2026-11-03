@@ -1,3 +1,4 @@
+import {createProgrammeSearchHandler} from './lib/programme-search.mjs';
 import {createCatalogueReader} from './lib/catalogue-reader.mjs';
 import {castSettings,viewingSettings} from './lib/cast.mjs';
 import {Updates} from './lib/updates.mjs';
@@ -48,6 +49,7 @@ const catalogueReader=createCatalogueReader({configPath,healthPath:path.join(dir
 await readConfig();
 async function sourceHealth(){try{return JSON.parse(await readFile(path.join(directory,'source-health.json'),'utf8'));}catch{return null;}}
 async function readConfig() { return catalogueReader(); }
+const programmeSearch=createProgrammeSearchHandler({getConfig:readConfig,getDiscordInvite:()=>owner.runtime.DISCORD_INVITE_URL});
 let community;
 const updates=new Updates({directory,root});
 const owner = await Owner.create({ updates,directory, configPath, mediaRoot, onSettings: env => { community?.configure(env); relay.resolver.configure({cookieFile: env.YOUTUBE_COOKIE_FILE}); }, checkYoutube: url => checkProviderPlayback(relay, url) });
@@ -69,6 +71,7 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://www.google.com https://cast.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; media-src 'self' https: http: blob:; connect-src 'self' https://www.gstatic.com https://cast.gstatic.com https://*.googleapis.com; frame-src https://www.gstatic.com https://www.google.com https://www.youtube-nocookie.com https://www.youtube.com https://www.dailymotion.com https://geo.dailymotion.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'");
   try {
     const requestUrl = new URL(req.url, 'http://localhost');
+    if(requestUrl.pathname==='/api/programme-search'){await programmeSearch(req,res,requestUrl);return;}
     if (await owner.handle(req, res, requestUrl)) return;
     if (await community.handle(req, res, requestUrl)) return;
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
