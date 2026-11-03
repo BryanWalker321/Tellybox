@@ -5,3 +5,8 @@
 #programme-search-dialog{max-width:920px;padding:30px!important;overflow:auto}#programme-search-dialog .search-dialog-close{width:auto;margin:0;display:block;background:transparent;right:10px;top:8px}#programme-search-dialog .programme-search-input-row button{width:auto;margin:0}#programme-search-dialog label{margin:0 0 9px}#programme-search-dialog .programme-search-more{width:auto}#programme-search-dialog p{color:#b8ceca}@media(max-width:600px){#programme-search-dialog{padding:25px 17px!important}#programme-search-dialog .programme-search-input-row button{width:100%}}
 
 .masthead-tools .programme-search-nav-icon{display:inline-flex;align-items:center;justify-content:center;color:#ffda43!important;flex:none;padding:6px;line-height:1}.programme-search-nav-icon svg{display:block}.programme-search-nav-icon:hover{color:#fff2a0!important}
+
+/* Identical icon button geometry keeps search and settings aligned. */
+nav .masthead-tools{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}nav .masthead-tools>a.icon-button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:44px;height:44px;min-width:44px;margin:0;padding:0;border:1px solid #536068;border-radius:0;background:#152b36;box-shadow:2px 2px 0 #000;color:#ffda43;line-height:1;font-size:23px;vertical-align:middle}nav .masthead-tools>a.icon-button:hover{background:#246774;color:#fff29e}
+
+#station-navigation>a,#station-navigation>button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:44px}
