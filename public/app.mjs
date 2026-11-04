@@ -218,11 +218,14 @@ async function syncClock() {
   try { const response = await fetch('/api/time', { cache: 'no-store', signal: AbortSignal.timeout(5000) }); if (!response.ok) throw Error('Clock unavailable'); const data = await response.json(); if (!Number.isFinite(data.now)) throw Error('Invalid clock'); clockOffset = data.now - (before + Date.now()) / 2; }
   catch { /* Keep the last clock offset until the next successful sync. */ }
 }
+let catalogueETag;
 async function refreshCatalogue() {
   try {
-    const response = await fetch('/api/catalogue', {cache:'no-store', signal:AbortSignal.timeout(5000)});
+    const response = await fetch('/api/catalogue', {cache:'no-store',headers:catalogueETag?{'If-None-Match':catalogueETag}:{},signal:AbortSignal.timeout(5000)});
+    if(response.status===304)return;
     if (!response.ok) return;
     const next = validateCatalogue(await response.json());
+    catalogueETag=response.headers.get('etag')||undefined;
     if (JSON.stringify(next) === JSON.stringify(stationDefault)) return;
     stationDefault = next; install(next);
   } catch { /* Keep the last valid running order during a network interruption. */ }
@@ -230,6 +233,7 @@ async function refreshCatalogue() {
 try {
   const response = await fetch('/api/catalogue'); if (!response.ok) throw Error('Unable to read station catalogue');
   stationDefault = validateCatalogue(await response.json());
+  catalogueETag=response.headers.get('etag')||undefined;
   await syncClock();
   try { localStorage.removeItem('tellybox-preview'); } catch {}
   install(stationDefault); status('Ready when you are. Switch on to join the live transmission.');

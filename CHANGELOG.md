@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Refill source buffers before either picture or sound runs dry.
+- Reuse bounded video frame buffers without overwriting frames still being encoded.
+- Cache catalogue responses and use conditional browser refreshes to avoid repeatedly transferring and parsing unchanged large libraries.
+- Add regression checks for buffer starvation, frame ownership and catalogue cache invalidation.
+
 ## 0.1.11 - 3 November 2026
 
 - Add programme search with a dedicated page, Watch sidebar popup, channel details and next-showing times across the complete active library.
