@@ -5,7 +5,13 @@
 - Refill source buffers before either picture or sound runs dry.
 - Reuse bounded video frame buffers without overwriting frames still being encoded.
 - Cache catalogue responses and use conditional browser refreshes to avoid repeatedly transferring and parsing unchanged large libraries.
-- Add regression checks for buffer starvation, frame ownership and catalogue cache invalidation.
+- Preserve the shared source timeline so audio/video track offsets survive decoding and seeking.
+- Keep a bounded four-second source reserve and prewarm two upcoming clips to absorb delivery jitter.
+- Resume stalled programmes from the footage actually consumed and finish partial final audio blocks without freezing the last picture.
+- Reconnect interrupted provider connections rather than silently padding the rest of an advert after audio truncation.
+- Replace an advert promptly when it has not loaded by its scheduled playback time.
+- Preserve the active programme during advert-pool edits and support a channel schedule anchor for library maintenance.
+- Add regression checks for buffer starvation, frame ownership, catalogue caching, track timing, truncated audio requests and schedule-preserving removals.
 
 ## 0.1.11 - 3 November 2026
 
