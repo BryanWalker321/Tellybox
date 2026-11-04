@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.12 - 4 November 2026
 
 - Refill source buffers before either picture or sound runs dry.
 - Reuse bounded video frame buffers without overwriting frames still being encoded.
