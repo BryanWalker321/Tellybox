@@ -1,3 +1,4 @@
+import {createCatalogueResponse} from './lib/catalogue-response.mjs';
 import {createProgrammeSearchHandler} from './lib/programme-search.mjs';
 import {createCatalogueReader} from './lib/catalogue-reader.mjs';
 import {castSettings,viewingSettings} from './lib/cast.mjs';
@@ -49,6 +50,8 @@ const catalogueReader=createCatalogueReader({configPath,healthPath:path.join(dir
 await readConfig();
 async function sourceHealth(){try{return JSON.parse(await readFile(path.join(directory,'source-health.json'),'utf8'));}catch{return null;}}
 async function readConfig() { return catalogueReader(); }
+const catalogueResponse=createCatalogueResponse({getConfig:readConfig});
+await catalogueResponse.prime();
 const programmeSearch=createProgrammeSearchHandler({getConfig:readConfig,getDiscordInvite:()=>owner.runtime.DISCORD_INVITE_URL});
 let community;
 const updates=new Updates({directory,root});
@@ -127,6 +130,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'public, max-age=300'});return res.end(JSON.stringify({description}));
     }
     if(pathname==='/api/programming-stats'){const config=await readConfig(),health=await sourceHealth();const stats=programmingStats(config);res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify({...stats,updatedAt:new Date().toISOString(),audit:health?{reviewed:health.results.length,total:health.total,finishedAt:health.finishedAt||null}:null}));}
+    if(pathname==='/api/catalogue'){await catalogueResponse(req,res);return;}
     if (pathname === '/api/catalogue' || pathname === '/api/time') {
       const body = JSON.stringify(pathname === '/api/time' ? { now: Date.now() } : await readConfig());
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); return res.end(req.method === 'HEAD' ? undefined : body);

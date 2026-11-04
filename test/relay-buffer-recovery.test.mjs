@@ -6,8 +6,8 @@ test('a starved video pipe releases paused audio even above its normal low water
 });
 test('a stuck programme restarts only its decoder after five seconds and rate-limits retries',()=>{
  let discarded=0,prepared=0;const entry={programme:{id:'show',url:'/media/show.mp4'}};
- const s={child:{},sentFrames:1,entry,video:{length:0},audio:{length:AUDIO*18}},state={active:s,slot:entry};
- const relay={sourceFailed(){},discard(_state,source){assert.equal(source,s);discarded++;},prepare(_state,slot){assert.equal(slot,entry);prepared++;return Promise.resolve();}};
+ const s={child:{},seek:10,playbackDuration:100,sentFrames:1,entry,video:{length:0},audio:{length:AUDIO*18}},state={active:s,slot:entry};
+ const relay={sourceFailed(){},discard(_state,source){assert.equal(source,s);discarded++;},prepare(_state,slot){assert.equal(slot.programme,entry.programme);assert.equal(slot.resumePosition,10.04);assert.equal(slot.resumeDuration,99.96);prepared++;return Promise.resolve();}};
  ContinuousRelay.prototype.checkSourceProgress.call(relay,state,s,20000);
  ContinuousRelay.prototype.checkSourceProgress.call(relay,state,s,24999);assert.equal(prepared,0);
  ContinuousRelay.prototype.checkSourceProgress.call(relay,state,s,25000);assert.equal(prepared,1);assert.equal(discarded,1);assert.equal(state.active,null);assert.equal(state.decoderRecoveries,1);
@@ -40,3 +40,6 @@ test('advert recovery searches beyond three unavailable candidates',async()=>{
  await ContinuousRelay.prototype.replaceFailedAdvert.call({...relay,replaceFailedAdvert:ContinuousRelay.prototype.replaceFailedAdvert},state,s);
  assert.equal(s.fallback.entry.programme.url,'/media/ad3');assert.equal(holding,0);assert.equal(s.rejectedUrls.size,4);
 });
+
+
+test('a late advert preparation falls back promptly without waiting its entire slot',()=>{const s={entry:{start:1000,programme:{isInterstitial:true}},sentFrames:0,ready:false};let failed;const relay={failedSource(_state,source,reason){failed={source,reason};}};ContinuousRelay.prototype.checkSourceProgress.call(relay,{},s,2999);assert.equal(failed,undefined);ContinuousRelay.prototype.checkSourceProgress.call(relay,{},s,3000);assert.equal(failed.source,s);assert.equal(failed.reason,'interval-preparation-late');});
