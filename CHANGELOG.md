@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Improve channel running-order readability: white channel headings and times, yellow programme titles, and aligned continuation lines.
+
 - Add a native VBIT live date/time header using the receiver server clock and timezone. The updated receiver updater installs the service header configuration while preserving other settings.
 - Match the native page frame to the website with a three-row masthead, strapline, section/page counter and slogan. Add a two-column main index and native TV/quiz-host mosaics; retain fixed column spacing.
 - Rebuild native artwork from the original host asset, retain multi-colour details, and centre the owner-approved shorter native slogan.
