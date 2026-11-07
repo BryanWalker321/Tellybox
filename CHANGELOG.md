@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add a native VBIT live date/time header using the receiver server clock and timezone. The updated receiver updater installs the service header configuration while preserving other settings.
+- Match the native page frame to the website with a two-row masthead, strapline, section/page counter and slogan. Add a two-column main index and native TV/quiz-host mosaics; retain fixed column spacing.
+- Document the one-time updater refresh and VBIT restart needed by existing installations to enable the new live header.
+
 ## 0.1.16 - 7 November 2026
 
 - Add Tonight on Tellybox, daily Channel Spotlight, yesterday's quiz answers and a page-linked Daily Word Challenge.

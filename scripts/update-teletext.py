@@ -13,6 +13,9 @@ def install(archive, target):
         data={m.name:tar.extractfile(m).read() for m in members}
     manifest=json.loads(data.pop('manifest.json'))
     if manifest.get('format')!='tellytext-tti-v1': raise ValueError('Unsupported snapshot')
+    header=manifest.get('vbitHeader')
+    if header is not None and (not isinstance(header,str) or not re.fullmatch(r'\x1bB[ -~]{13}\x1bG%%a%d%%b %H:%M:%S',header)):
+        raise ValueError('Invalid VBIT header template')
     listed=manifest['files']
     if set(data)!={f['name'] for f in listed} or len(listed)!=len(data): raise ValueError('Incomplete snapshot')
     for f in listed:
@@ -23,6 +26,12 @@ def install(archive, target):
     marker=target/'.tellytext-service'
     if target.exists() and any(target.iterdir()) and not marker.is_file(): raise ValueError('Refusing to modify a nonempty folder without a Tellytext marker')
     if target.exists() and any(p.is_symlink() for p in target.iterdir()): raise ValueError('Service folder must not contain symlinks')
+    config=target/'vbit.conf.override'
+    old_config=config.read_text(encoding='utf-8') if header is not None and config.exists() else ''
+    config_lines=old_config.splitlines()
+    if header is not None:
+        config_lines=[line for line in config_lines if not re.match(r'^\s*header_template\s*=',line)]
+        config_lines.append('header_template='+header)
     target.mkdir(parents=True,exist_ok=True)
     # Mark ownership before installing; later runs can recover an interrupted initial install.
     marker.write_text('Managed by update-teletext.py\n',encoding='utf-8')
@@ -30,6 +39,12 @@ def install(archive, target):
         destination=target/name
         if destination.exists() and destination.read_bytes()==body: continue
         temporary=target/(name+'.tmp');temporary.write_bytes(body);os.replace(temporary,destination)
+    if header is not None:
+        updated_config='\n'.join(config_lines)+'\n'
+        if updated_config!=old_config:
+            backup=target/'.tellytext-vbit-header-before'
+            if config.exists() and not backup.exists(): backup.write_text(old_config,encoding='utf-8')
+            temporary=target/'vbit.conf.override.tmp';temporary.write_text(updated_config,encoding='utf-8');os.replace(temporary,config)
     for old in target.glob('*.tti'):
         if old.name not in data: old.unlink()
     temporary=target/'manifest.json.tmp';temporary.write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8');os.replace(temporary,target/'manifest.json')

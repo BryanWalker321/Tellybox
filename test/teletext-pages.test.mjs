@@ -1,7 +1,8 @@
+import {questions} from '../public/quiz-questions.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {newsPage,quizPage} from '../public/teletext-pages.mjs';
-import {createTeletextSnapshot,ttiFile} from '../lib/teletext-export.mjs';
+import {createTeletextSnapshot,ttiFile,ttiHeader} from '../lib/teletext-export.mjs';
 import {buildTeletext} from '../public/teletext.mjs';
 import {renderTeletextModel} from '../public/teletext-render.mjs';
 const stamp=Date.parse('2026-11-07T12:00:00Z'),config={brand:{name:'Example & Co',description:'Our station'},channels:[],epoch:'2026-01-01'};
@@ -25,3 +26,11 @@ test('snapshot exports every page, bounded rows and matching Fastext links witho
 });
 test('receiver view keeps outbound credits as plain text and has no website tuning links',()=>{const model={page:'150',heading:'Example',subpage:0,subpages:1,rows:[{text:'Source credit',sourceUrl:'https://example.org/story'},{text:'Channel',channel:'one'},{text:'101 News',page:'101'}],links:[]};const external=renderTeletextModel(config.brand,model,{external:true});assert.doesNotMatch(external,/<a |href=|data-tt-channel/);assert.match(external,/Source credit/);assert.match(external,/data-page="101"/);const website=renderTeletextModel(config.brand,model);assert.match(website,/href="https:\/\/example.org\/story"/);assert.match(website,/data-tt-channel="one"/);});
 test('How To Watch gives the station address as plain text in receiver files',()=>{const snapshot=createTeletextSnapshot(config,{feeds:{}},stamp),file=snapshot.files.get('160.tti').toString();assert.match(file,/TELLY-BOX.UK/);assert.doesNotMatch(file,/<a |href=/);const model=snapshot.pages.find(e=>e.page==='160').subpages[0];assert.match(renderTeletextModel(config.brand,model),/href="https:\/\/telly-box.uk"/);assert.doesNotMatch(renderTeletextModel(config.brand,model,{external:true}),/href=/);});
+
+test('native export matches branded frame and delegates the live date/time to VBIT',()=>{
+ const header=ttiHeader('Tellybox');assert.equal(header.replace(/\x1b[\x40-\x5f]/g,' ').length,32);assert.equal(header,'\x1bBTELLYBOX TEXT\x1bG%%a%d%%b %H:%M:%S');
+ for(const brand of ['X','An exceptionally long station name'])assert.equal(ttiHeader(brand).replace(/\x1b[\x40-\x5f]/g,' ').length,32);
+ const file=ttiFile('Tellybox',[quizPage('414',stamp)]).toString('ascii');assert.ok(file.includes('OL,0,'+header));assert.ok(file.includes('OL,1,\x1bD\x1b]\x1b@\x1b]\x1bW'));assert.match(file,/OL,3,.*YOUR WORLD AT THE TOUCH OF A BUTTON/);assert.match(file,/OL,4,.*BOX BAFFLER/);assert.match(file,/OL,23,.*THERE'S ALWAYS SOMETHING ON/);assert.match(file,/OL,24,/);
+});
+
+test("all quiz questions fit the native portrait layout without losing answer text",()=>{for(const question of questions){const model={...quizPage("401",stamp),question};const file=ttiFile("Tellybox",[model]).toString("ascii");assert.ok(file.includes("OL,24,"));}});

@@ -94,6 +94,16 @@ Once configured, the scheduled task refreshes news, sport, weather, holidays, qu
 
 For another self-hosted station, replace `https://telly-box.uk` in both the initial download command and the scheduled task with that station's address.
 
+### Live date and clock
+
+If you installed the updater before live-clock support, repeat step 1 to download the updated script, run step 2 once, then restart your existing VBIT service once. The updater installs the header in the dedicated service folder’s `vbit.conf.override`, preserving other settings and saving an existing file before changing its header. Older updater copies still refresh pages but do not install this header configuration.
+
+The exported header uses a green station name and white date/time, matching the website's header layout. Its date and `HH:MM:SS` clock are VBIT substitution tokens, not the time when the pages were downloaded. VBIT generates them during transmission from the receiver machine/server's own clock and timezone. They continue advancing between scheduled page downloads, including when the updater is offline.
+
+Set the machine clock and timezone to the viewer's desired local time and keep its system time synchronised. A launcher may override the timezone with `TZ`; the timezone of the VBIT process is what matters. VBIT uses its local date-name locale; `LC_TIME=C` selects English day/month abbreviations like the website. No five-minute clock updater is required.
+
+The native output includes a blue/yellow two-row mosaic masthead with a bordered T B mark, cyan strapline, yellow section heading, page counter, blue/yellow slogan and four-colour footer. Traditional Teletext is a 40-column, 25-row character display: its receiver supplies the font and selected-page field. Browser fonts, pixel spacing and the outlined browser logo cannot be reproduced pixel-for-pixel on every physical decoder. The page content, colours, navigation and local live date/time follow the same design.
+
 ### Update behaviour and receiver format
 
 The updater keeps the last installed pages if a download or validation fails. Monitor the manifest timestamp to detect a stopped updater. It updates individual pages atomically; across a complete refresh there can briefly be a mix of old and new pages. Day-to-day quiz changes should be refreshed promptly. The export publishes genuine three-digit continuation pages (usually starting in the 700s), so standard Fastext colour keys can select the next/previous screen without website links or a special receiver-side subpage API. Multi-screen indices are also transmitted as ten-second carousels. Continuation numbers are internal navigation addresses and can change when the feed changes. The service has the traditional 800-page address-space limit; unusually large operator story packs may need fewer or shorter articles. Different VBIT launchers may require their own reload configuration. Physical receiver and remote compatibility must be checked on that installation.
