@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.15-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.16-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -105,7 +105,7 @@ Screenshots show the self-hosted demo. Click an image to see its original deskto
 | [Discord](docs/DISCORD.md) | Your invite, optional sign-in and discussion |
 | [Providers](docs/PROVIDERS.md) | Online sources and playback checks |
 | [IPTV](docs/IPTV_RELIABILITY.md) | Live feeds and troubleshooting |
-| [Teletext](docs/TELETEXT.md) | Pages and navigation |
+| [Tellytext](docs/TELLYTEXT.md) | Pages and navigation |
 | [Testing](docs/TESTING.md) | Automated checks and release validation |
 
 For Kodi/IPTV, use your reachable station address plus `/channels.m3u` for the playlist and `/guide.xml` for XMLTV. No Discord account is needed for TV/IPTV.
@@ -132,7 +132,7 @@ See [Contributing](CONTRIBUTING.md). Original code uses the [MIT licence](LICENS
 
 These full-size desktop screenshots show [our hosted Tellybox installation](https://telly-box.uk), including its own branding and curated programming. The self-hosted starter includes demo programming for you to replace.
 
-### Teletext in fullscreen
+### Tellytext in fullscreen
 
 ![Teletext index fitted to the whole desktop screen](docs/screenshots/teletext-fullscreen.png)
 

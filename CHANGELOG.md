@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.16 - 7 November 2026
+
+- Rename the public guide to Tellytext and update its page map, colour navigation, index rotation, quiz, BBC summaries and receiver update instructions.
+- Remove research notes from the receiver setup guide and update documentation/website help links.
+
 ## 0.1.15 - 7 November 2026
 
 - Restore the visible page-number input on the main website alongside colour-key navigation. Keep the standalone receiver view controlled by number/colour keys without the extra input box.

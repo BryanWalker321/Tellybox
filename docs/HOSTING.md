@@ -186,7 +186,7 @@ In Settings, owners can enable Google Cast, AirPlay and screen-mirroring help se
 
 AirPlay uses the native picker on compatible Apple browsers/devices. Anyview/Miracast uses the phone or computer's operating-system mirroring controls; a website cannot silently initiate it. The sending device remains responsible for playback with mirroring. Support varies by device, browser and television. Automated interface checks do not establish physical-device compatibility.
 
-Teletext includes news, sport, London weather and a daily quiz, with UK dates, coloured-key controls and fullscreen viewing. Online feeds show their source and cached/stale status. See [Teletext](TELETEXT.md) and the [feature guide](FEATURES.md).
+Teletext includes news, sport, London weather and a daily quiz, with UK dates, coloured-key controls and fullscreen viewing. Online feeds show their source and cached/stale status. See [Tellytext](TELLYTEXT.md) and the [feature guide](FEATURES.md).
 
 ## Viewer counts and Discord links
 

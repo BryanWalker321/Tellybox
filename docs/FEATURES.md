@@ -34,11 +34,11 @@ Google Cast is an optional custom receiver with channel controls, a guide, phone
 
 AirPlay controls and screen-mirroring guidance are separate owner switches. Supported Safari devices use native AirPlay; Anyview/Miracast connections start through operating-system controls. Mirroring keeps the source device responsible for playback. These methods do not promise the same controls or compatibility. Automated sender/receiver tests pass; physical-device compatibility still requires testing. See [Cast setup and supported behaviour](CAST.md).
 
-## Teletext and daily quiz
+## Tellytext and daily quiz
 
-Teletext uses the owner's station name, coloured keys, page/subpage navigation and a fullscreen view that fits the available screen. The daily twelve-question Box Baffler! quiz starts at page 400, draws from a 144-question bank, resets after a wrong answer and changes at midnight UK time. Dates use UK formatting.
+Tellytext uses the owner's station name, coloured previous/next keys, ten-second rotating indices and three-digit page navigation and a fullscreen view that fits the available screen. The daily twelve-question Box Baffler! quiz starts at page 400, draws from a 1,200-question bank, opens a wrong-answer page after a mistake and changes at midnight UK time. Dates use UK formatting.
 
-BBC News, BBC Sport and London weather have dedicated pages with attribution, source links, pagination and cached/stale labels. See [Teletext pages and controls](TELETEXT.md).
+BBC News, BBC Sport and London weather have dedicated pages with attribution, source links, pagination and cached/stale labels. See [Tellytext pages and controls](TELLYTEXT.md).
 
 ## Community and managed updates
 
