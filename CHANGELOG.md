@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.1.17 - 7 November 2026
+
+- Ship a live VBIT updater ZIP with the current script and explicit one-time upgrade/five-minute scheduling instructions.
 
 - Improve channel running-order readability: white channel headings and times, yellow programme titles, and aligned continuation lines.
 

@@ -179,4 +179,6 @@ Programme search is available from the magnifying-glass icon or the card below t
 
 ### Receiver and standalone Tellytext
 
+For live VBIT reception, download the [VBIT updater package](https://telly-box.uk/tellytext-vbit-updater.zip) and follow the [step-by-step setup](docs/TELLYTEXT-RECEIVERS.md#live-vbit2-setup-step-by-step). It contains the updater software, not a frozen TTI archive. Viewers must schedule it on their own machine, recommended every five minutes.
+
 Open `/teletext.html` for a fitted, remote-friendly view. Traditional TTI pages, a verified service snapshot and a public JSON page API are available alongside the website. See [receiver setup and full-text source options](docs/TELLYTEXT-RECEIVERS.md). BBC RSS summaries remain the default. Owners can select the free Global Voices full-text news feed; football and other sport remain labelled BBC summaries. Multi-screen indices rotate every ten seconds and green/yellow navigate screens.

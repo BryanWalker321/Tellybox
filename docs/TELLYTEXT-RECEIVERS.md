@@ -19,6 +19,8 @@ Replace `https://your-station.example` with the station address.
 
 TTI and JSON endpoints support GET and HEAD. JSON/TTI snapshots are cached for at most one minute on the server. ETag conditional requests are supported. A `revision` query on a page download returns HTTP 409 if the manifest has changed; refresh the manifest in that case. The complete tar snapshot avoids mixing downloads from different revisions. The public page API permits cross-origin reads and contains no owner settings, credentials, media source URLs or account data.
 
+Download the [live VBIT updater package](https://telly-box.uk/tellytext-vbit-updater.zip) for the updater and setup instructions. Existing users should replace their old updater, run it once and restart VBIT once to enable the new local-clock header. Keep the five-minute scheduled task running.
+
 ## Live VBIT2 setup: step by step
 
 This is a one-time setup on the viewer's Linux or Raspberry Pi machine, with VBIT2 already installed. It downloads pages directly from **Telly-box.uk**. Python 3 and curl must be available; the updater needs no additional Python packages.
