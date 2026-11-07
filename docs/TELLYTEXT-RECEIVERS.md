@@ -19,25 +19,80 @@ Replace `https://your-station.example` with the station address.
 
 TTI and JSON endpoints support GET and HEAD. JSON/TTI snapshots are cached for at most one minute on the server. ETag conditional requests are supported. A `revision` query on a page download returns HTTP 409 if the manifest has changed; refresh the manifest in that case. The complete tar snapshot avoids mixing downloads from different revisions. The public page API permits cross-origin reads and contains no owner settings, credentials, media source URLs or account data.
 
-## VBIT2 setup
+## Live VBIT2 setup: step by step
 
-Download `update.py` from the station's `/teletext/update.py` address. Python 3 uses only its standard library; no extra packages are required. Run:
+This is a one-time setup on the viewer's Linux or Raspberry Pi machine, with VBIT2 already installed. It downloads pages directly from **Telly-box.uk**. Python 3 and curl must be available; the updater needs no additional Python packages.
+
+**You do not need the GitHub TTI ZIP for this setup.** That ZIP is a fixed offline snapshot. TTI files do not contain a live-feed connection and cannot update themselves. The scheduled updater below keeps the local VBIT pages current.
+
+### 1. Download the updater
+
+Run these commands as the same user who will run the scheduled updates:
 
 ```sh
-python3 update.py --url https://your-station.example --directory /home/pi/teletext/tellytext
+mkdir -p "$HOME/tellytext"
+curl -fL https://telly-box.uk/teletext/update.py -o "$HOME/tellytext/update.py"
 ```
 
-Use a dedicated, initially empty directory. The updater refuses a nonempty directory it does not own. It verifies every page's size and checksum before writing anything, replaces changed page files atomically and leaves unchanged pages untouched. It does not configure, restart or merge another Teletext service. Configure VBIT2's service directory to use that folder, for example:
+### 2. Download the current pages
 
 ```sh
-vbit2 --dir /home/pi/teletext/tellytext
+python3 "$HOME/tellytext/update.py" \
+  --url https://telly-box.uk \
+  --directory "$HOME/tellytext/pages"
 ```
 
-Use the receiver's existing VBIT2/VBIT-IV launcher and remote mapping. To refresh every five minutes, an example crontab entry is:
+The command should report `Installed … Teletext pages`. It creates the pages folder if needed. Use a dedicated, initially empty folder; do not unpack the GitHub ZIP there first or mix another service's pages into it. The updater refuses a nonempty folder it does not manage.
+
+### 3. Select that folder in your existing VBIT setup
+
+Set the page-directory argument in your existing VBIT2 launch command to:
+
+```sh
+vbit2 --dir "$HOME/tellytext/pages"
+```
+
+This shows the VBIT2 part of the command, not a complete inserter pipeline. Keep your existing output connection to VBIT-IV, raspi-teletext or your inserter, along with its other required options. If a launcher or service starts VBIT2, change its page directory there and restart that service once to select Tellytext. The updater does not configure or restart VBIT for you.
+
+### 4. Schedule updates every five minutes
+
+Open the current user's scheduled tasks:
+
+```sh
+crontab -e
+```
+
+Keep any existing entries and add this single line:
 
 ```cron
-*/5 * * * * /usr/bin/python3 /home/pi/update.py --url https://your-station.example --directory /home/pi/teletext/tellytext >> /home/pi/teletext-update.log 2>&1
+*/5 * * * * /usr/bin/python3 "$HOME/tellytext/update.py" --url https://telly-box.uk --directory "$HOME/tellytext/pages" >> "$HOME/tellytext/update.log" 2>&1
 ```
+
+Save and close the editor. This assumes Python 3 is installed at `/usr/bin/python3`; use the path returned by `command -v python3` if different. Cron must be installed and running on the receiver machine. Use the same user's crontab as in steps 1 and 2, so `$HOME` points to the same folder.
+
+### 5. Check the service and automatic refresh
+
+Start your existing receiver output and select **page 100** on the television. Use three-digit page numbers and the remote's coloured buttons to navigate.
+
+After at least five minutes, check the updater log:
+
+```sh
+tail -n 10 "$HOME/tellytext/update.log"
+```
+
+Look for a successful `Installed … Teletext pages` message. Check the latest downloaded snapshot time with:
+
+```sh
+python3 -c 'import json, pathlib; p = pathlib.Path.home() / "tellytext/pages/manifest.json"; print(json.loads(p.read_text())["generatedAt"])'
+```
+
+VBIT must pick up changed files in that folder. If downloads succeed but the television still shows old content, check your VBIT version/launcher's file-reload behaviour. Updating the files alone is not proof that a particular receiver pipeline has reloaded them.
+
+Once configured, the scheduled task refreshes news, sport, weather, holidays, quizzes and TV guides from the same page service used by the website. It also downloads pages for new channels automatically. The five-minute interval is the download schedule; upstream publishers have their own refresh times, so it does not guarantee a new story every five minutes.
+
+For another self-hosted station, replace `https://telly-box.uk` in both the initial download command and the scheduled task with that station's address.
+
+### Update behaviour and receiver format
 
 The updater keeps the last installed pages if a download or validation fails. Monitor the manifest timestamp to detect a stopped updater. It updates individual pages atomically; across a complete refresh there can briefly be a mix of old and new pages. Day-to-day quiz changes should be refreshed promptly. The export publishes genuine three-digit continuation pages (usually starting in the 700s), so standard Fastext colour keys can select the next/previous screen without website links or a special receiver-side subpage API. Multi-screen indices are also transmitted as ten-second carousels. Continuation numbers are internal navigation addresses and can change when the feed changes. The service has the traditional 800-page address-space limit; unusually large operator story packs may need fewer or shorter articles. Different VBIT launchers may require their own reload configuration. Physical receiver and remote compatibility must be checked on that installation.
 
