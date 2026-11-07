@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.15 - 7 November 2026
+
+- Restore the visible page-number input on the main website alongside colour-key navigation. Keep the standalone receiver view controlled by number/colour keys without the extra input box.
+
 ## 0.1.14 - 7 November 2026
 
 - Use green/yellow for previous/next screens throughout Teletext, including real Fastext continuation addresses for ordinary receivers.

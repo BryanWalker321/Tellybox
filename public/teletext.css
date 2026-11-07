@@ -50,4 +50,5 @@
 #tt-content .quiz-welcome{height:32cqw}
 #tt-content .tt-banner strong{transform:translateY(.65cqw)}
 #teletext .tt-subpages,#teletext .tt-controls label{display:none}
+#teletext:not(.tt-standalone) .tt-controls label{display:flex}
 #tt-content .tt-slogan{line-height:4.2cqw}

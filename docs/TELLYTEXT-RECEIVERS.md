@@ -51,7 +51,7 @@ TTI files use CRLF records, 7-bit escaped colour controls, 40 display positions,
 - F requests fullscreen; Escape leaves it.
 - `?keys=r,g,y,b` overrides the four letter shortcuts. For example, `?page=100&keys=F5,F6,F7,F8` suits a remote emitting those keys.
 
-Separate arrow controls and the page-number input box are hidden. Three-digit entry from a remote or keyboard remains available. Multi-screen news, sport, channel and listings indices rotate every ten seconds; pressing a colour key resets that timer. The standalone page fits the available screen immediately. True browser fullscreen requires a gesture, or a browser started in kiosk mode. Page-number inputs retain normal typing behaviour.
+Separate arrow controls remain hidden. The main website has a visible page-number input alongside the colour keys. The standalone receiver view hides that input box; three-digit entry from its remote or keyboard remains available. Multi-screen news, sport, channel and listings indices rotate every ten seconds; pressing a colour key resets that timer. The standalone page fits the available screen immediately. True browser fullscreen requires a gesture, or a browser started in kiosk mode. Page-number inputs retain normal typing behaviour.
 
 ## Page map and quiz
 
