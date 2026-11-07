@@ -2,7 +2,7 @@ import {renderPaperListings} from '/newspaper-guide.mjs';
 import {setupMobileMenu} from '/mobile-menu.mjs';
 import {createTvOutput} from '/tv-output.mjs';
 import {createStationCast} from '/cast-sender.mjs';
-import {createDailyQuiz,quizDay} from '/teletext-quiz.mjs';
+import {setupTeletextKeyboard} from '/teletext-keyboard.mjs';
 import {setupTeletextFullscreen} from '/teletext-fullscreen.mjs';
 import {buildTeletext} from '/teletext.mjs';
 import { createDirectory } from '/directory.mjs';
@@ -135,7 +135,7 @@ function updateProgramme(s) {
 function tick() {
   $('clock').textContent = new Date(now()).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' }).toUpperCase() + ' / ' + time(now());
   $('tt-clock').textContent = new Date(now()).toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'}).replace(/ /g,'')+' '+new Date(now()).toLocaleTimeString('en-GB',{hour12:false});
-  if(dailyQuiz&&isQuizPage()&&!$('teletext-view').hidden&&dailyQuiz.day!==quizDay(now()))renderTeletext();
+  if(isQuizPage()&&!$('teletext-view').hidden&&new Date(now()).getSeconds()===0)renderTeletext();
   if (!config || !channel) return;
   const s = current(channel)[0], programmeList = listed(channel), display = programmeList[0];
   updateProgramme(display);
@@ -185,34 +185,27 @@ $('picture').addEventListener('change', () => picture()); picture(false);
 try { localStorage.removeItem('tellybox-appearance'); } catch {}
 let teletextSources,teletextFeedRequest,teletextFeedCheck=0;
 async function refreshTeletextFeeds(){if(teletextFeedRequest||Date.now()-teletextFeedCheck<60000)return;teletextFeedCheck=Date.now();teletextFeedRequest=true;try{const response=await fetch('/api/teletext-feeds',{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!response.ok)throw Error();teletextSources=await response.json();}catch{teletextSources=teletextSources?{feeds:Object.fromEntries(Object.entries(teletextSources.feeds||{}).map(([k,v])=>[k,{...v,stale:true}]))}:{feeds:{}};}finally{teletextFeedRequest=false;if(!$('teletext-view').hidden&&!isQuizPage())renderTeletext();}}
-let dailyQuiz;
-const isQuizPage=()=>Number(ttPage)>=400&&Number(ttPage)<=413;
-function getDailyQuiz(){if(!dailyQuiz||dailyQuiz.day!==quizDay(now())){let saved;try{saved=JSON.parse(localStorage.getItem('tellybox-daily-quiz-v1'));}catch{}dailyQuiz=createDailyQuiz(now(),saved);}return dailyQuiz;}
-function saveQuiz(){try{localStorage.setItem('tellybox-daily-quiz-v1',JSON.stringify(dailyQuiz.snapshot()));}catch{}}
-function quizAction(action){const changed=dailyQuiz&&dailyQuiz.day!==quizDay(now());const quiz=getDailyQuiz();if(changed){ttPage='400';saveQuiz();renderTeletext();return;}if(action==='start'||action==='restart')ttPage=quiz.start(action==='restart');else{quiz.answer(Number(action));ttPage=quiz.page;}saveQuiz();renderTeletext();}
+const isQuizPage=()=>Number(ttPage)>=400&&Number(ttPage)<=414;
 function renderTeletext() {
   if (!config) return;
   if(!$('teletext-view').hidden)void refreshTeletextFeeds();
-  const quiz=isQuizPage()?getDailyQuiz():null;if(quiz){ttAuto=false;if(ttPage!=='400')ttPage=quiz.page;}
-  const page=buildTeletext(config,ttPage,now(),ttSubpage,quiz,teletextSources);ttSubpage=page.subpage;ttSubpages=page.subpages;
+  if(isQuizPage())ttAuto=false;
+  const page=buildTeletext(config,ttPage,now(),ttSubpage,null,teletextSources);ttSubpage=page.subpage;ttSubpages=page.subpages;
   $('tt-page').textContent='P'+ttPage;$('tt-content').innerHTML=page.html;
   const keys=[...document.querySelectorAll('#teletext .teletext-nav button')];
-  keys.forEach((key,i)=>{delete key.dataset.quizAnswer;delete key.dataset.quizAction;delete key.dataset.page;
-   if(quiz&&ttPage!=='400'&&quiz.index<12){key.dataset.quizAnswer=String(i);key.textContent=['A / Red','B / Green','C / Yellow','D / Blue'][i];}
-   else if(quiz){if(i===0||i===3)key.dataset.quizAction=i===0?'start':'restart';else key.dataset.page=i===1?'100':'601';key.textContent=[quiz.index===12?'Play again':quiz.index>0?'Continue':'Start','Index','TV now','Restart'][i];}
-   else{if(i<3)key.dataset.page=['100','601','602'][i];key.textContent=['Index','TV now','TV next','Auto: '+(ttAuto?'on':'off')][i];}
-  });
+  keys.forEach((key,i)=>{delete key.dataset.page;if(page.links){key.dataset.page=page.links[i].page;key.textContent=page.links[i].label;}else{if(i<3)key.dataset.page=['100','601','602'][i];key.textContent=['Index','TV now','TV next','Auto: '+(ttAuto?'on':'off')][i];}});
   $('tt-subpage').textContent=`${ttSubpage+1}/${ttSubpages}`;$('tt-previous').disabled=ttSubpage===0;$('tt-next').disabled=ttSubpage>=ttSubpages-1;
 }
 setupTeletextFullscreen();
 $('tt-previous').addEventListener('click',()=>{ttSubpage--;renderTeletext();});
 $('tt-next').addEventListener('click',()=>{ttSubpage++;renderTeletext();});
-$('teletext').addEventListener('click', e => { const answer=e.target.closest('[data-quiz-answer]'),action=e.target.closest('[data-quiz-action]');if(answer){quizAction(answer.dataset.quizAnswer);return;}if(action){quizAction(action.dataset.quizAction);return;}const page = e.target.closest('[data-page]'), ch = e.target.closest('[data-tt-channel]'); if (page) { ttPage = page.dataset.page; ttSubpage=0; renderTeletext(); } if (ch) { tune(config.channels.find(c => c.id === ch.dataset.ttChannel), true); location.hash = 'watch'; } });
+$('teletext').addEventListener('click', e => { const page = e.target.closest('[data-page]'), ch = e.target.closest('[data-tt-channel]'); if (page) { ttPage = page.dataset.page; ttSubpage=0; renderTeletext(); } if (ch) { tune(config.channels.find(c => c.id === ch.dataset.ttChannel), true); location.hash = 'watch'; } });
 $('tt-input').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); if (e.target.value.length === 3) { ttPage = e.target.value; ttSubpage=0; renderTeletext(); e.target.value = ''; } });
-$('tt-auto').addEventListener('click', () => { if(isQuizPage())return;ttAuto = !ttAuto; $('tt-auto').innerHTML = `<span class="tt-cyan">■</span> Auto: ${ttAuto ? 'on' : 'off'}`; });
+$('tt-auto').addEventListener('click', () => { if($('tt-auto').dataset.page)return;ttAuto = !ttAuto; $('tt-auto').innerHTML = `<span class="tt-cyan">■</span> Auto: ${ttAuto ? 'on' : 'off'}`; });
 setInterval(() => { if (ttAuto && !$('teletext-view').hidden) { const pages = ['100', '601', '602', '150']; const sequence=pages.flatMap(page=>Array.from({length:buildTeletext(config,page,now()).subpages},(_,subpage)=>({page,subpage}))),entry=sequence[Math.floor(now()/15000)%sequence.length];ttPage=entry.page;ttSubpage=entry.subpage;renderTeletext(); } }, 1000);
 let digits = '', digitTimer;
-document.addEventListener('keydown', e => { if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName)  || !config) return; if (e.key.toLowerCase() === 't') { location.hash = location.hash === '#teletext' ? 'watch' : 'teletext'; return; } if (!/^\d$/.test(e.key)) return; clearTimeout(digitTimer); digits += e.key; if (location.hash === '#teletext') { if (digits.length === 3) { ttPage = digits; ttSubpage=0; digits = ''; renderTeletext(); } } else digitTimer = setTimeout(() => { const c = config.channels.find(c => c.number === Number(digits)); digits = ''; if (c) { tune(c, true); location.hash = 'watch'; } }, 700); });
+setupTeletextKeyboard({active:()=>!$('teletext-view').hidden,go:page=>{ttPage=page;ttSubpage=0;renderTeletext();},colour:i=>document.querySelectorAll('#teletext .teletext-nav button')[i].click(),subpage:step=>{ttSubpage+=step;renderTeletext();},fullscreen:()=>$('tt-fullscreen').click()});
+document.addEventListener('keydown',e=>{if(!$('teletext-view').hidden||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)||!config)return;if(e.key.toLowerCase()==='t'){location.hash='teletext';return;}if(!/^\d$/.test(e.key))return;clearTimeout(digitTimer);digits+=e.key;digitTimer=setTimeout(()=>{const c=config.channels.find(c=>c.number===Number(digits));digits='';if(c){tune(c,true);location.hash='watch';}},700);});
 async function syncClock() {
   const before = Date.now();
   try { const response = await fetch('/api/time', { cache: 'no-store', signal: AbortSignal.timeout(5000) }); if (!response.ok) throw Error('Clock unavailable'); const data = await response.json(); if (!Number.isFinite(data.now)) throw Error('Invalid clock'); clockOffset = data.now - (before + Date.now()) / 2; }
@@ -237,6 +230,6 @@ try {
   await syncClock();
   try { localStorage.removeItem('tellybox-preview'); } catch {}
   install(stationDefault); status('Ready when you are. Switch on to join the live transmission.');
-  setInterval(tick, 1000); setInterval(() => { renderChannels(); renderGuide(); renderUpcoming(); if (!$('teletext-view').hidden&&(!isQuizPage()||dailyQuiz?.day!==quizDay(now()))) renderTeletext(); if(!$('directory-view').hidden||!$('channel-view').hidden)directory.render(); }, 30000); setInterval(syncClock, 300000); setInterval(refreshCatalogue,60000); setInterval(refreshHomeStats,60000);
+  setInterval(tick, 1000); setInterval(() => { renderChannels(); renderGuide(); renderUpcoming(); if (!$('teletext-view').hidden) renderTeletext(); if(!$('directory-view').hidden||!$('channel-view').hidden)directory.render(); }, 30000); setInterval(syncClock, 300000); setInterval(refreshCatalogue,60000); setInterval(refreshHomeStats,60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) { syncClock(); tick(); } });
 } catch (err) { status(`The station could not start: ${err.message}. Check catalogue.json and restart the server.`); $('player-message').textContent = 'The station catalogue is unavailable.'; $('start').disabled = true; }

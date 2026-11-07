@@ -148,7 +148,7 @@ These full-size desktop screenshots show [our hosted Tellybox installation](http
 
 ### Box Baffler! daily quiz
 
-Enter Teletext page **400** for a daily dozen from a 144-question bank. Use the coloured keys or tap an answer; one wrong answer sends you back to question one. The quiz changes at midnight UK time and works in fullscreen.
+Enter Teletext page **400** for a daily dozen from a 1,200-question bank. Use the coloured keys or tap an answer; one wrong answer opens page 414, where red restarts question one. The quiz changes at midnight UK time and works in fullscreen.
 
 ![Box Baffler intro with Bamber](docs/screenshots/quiz-intro.png)
 
@@ -156,9 +156,9 @@ Enter Teletext page **400** for a daily dozen from a 144-question bank. Use the 
 
 ### BBC feeds in Teletext
 
-- **101:** BBC News headlines.
-- **110:** BBC Sport headlines.
-- **120:** BBC Weather three-day forecast for London.
+- **101:** News index; stories and their supplied text on 102-121.
+- **123:** Sport index; football stories on 124-138 and other sport on 139-144.
+- **145:** BBC Weather three-day forecast for London.
 
 Use the subpage arrows for more headlines or forecast days. Pages include BBC attribution, article/source links and UK update times. Cached information is labelled when a feed is temporarily unavailable.
 
@@ -176,3 +176,7 @@ Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guide](C
 Vimeo video-page sources use the shared website/IPTV broadcast alongside YouTube, Dailymotion and direct/local files. See [provider setup](docs/PROVIDERS.md).
 
 Programme search is available from the magnifying-glass icon or the card below the channels. Find a programme and its next scheduled showing. See [programme search](docs/PROGRAMME_SEARCH.md).
+
+### Receiver and standalone Tellytext
+
+Open `/teletext.html` for a fitted, remote-friendly view. Traditional TTI pages, a verified service snapshot and a public JSON page API are available alongside the website. See [receiver setup and full-text source options](docs/TELLYTEXT-RECEIVERS.md). Default news/sport pages use labelled BBC RSS summaries; full article text requires a suitably licensed source.

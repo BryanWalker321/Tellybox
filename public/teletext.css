@@ -45,3 +45,6 @@
 #tt-content .quiz-host{object-fit:contain}
 #tt-content .tt-feed-story{display:block;text-decoration:none;color:inherit}#tt-content .tt-feed-story:hover{text-decoration:underline}#tt-content .tt-feed-story:focus-visible{outline:2px solid #fff;outline-offset:0}
 #tt-content .tt-feed-source{display:block;font:3cqw/3.6cqw Teletext50,monospace;white-space:nowrap;text-decoration:underline}
+
+#tt-content button.tt-feed-story{width:100%;text-align:left}
+#tt-content .quiz-welcome{height:32cqw}

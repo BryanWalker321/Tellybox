@@ -26,7 +26,7 @@ The station Teletext uses the name configured by its owner. It has a black backg
 | 601 | Television now |
 | 602 | Television next |
 
-Programme information comes from the same station catalogue and schedule as playback. Times use the viewer's local timezone. News and weather feeds are not included.
+Programme information comes from the same station catalogue and schedule as playback. Times use the viewer's local timezone. News, sport and weather use the feed pages described below.
 
 ## Credits
 
@@ -38,18 +38,16 @@ Select Fullscreen beneath the coloured keys. The whole page and its controls sca
 
 ## Box Baffler! daily quiz
 
-Page 400 is the start page, 401–412 are the twelve questions, and 413 is the completion page. A wrong answer returns you to question one; retries keep the same daily questions and answer positions. Page-number entry resumes your current question rather than skipping ahead. The red, green, yellow and blue keys select answers A–D; tapping the answer works too. The automatic page carousel pauses during the quiz.
+Page 400 introduces the quiz, 401-412 are question pages, 413 is success and 414 is a wrong answer. Answers are real colour-key page links. Red on 414 restarts at 401. Direct page-number entry opens that question, with no browser-only progress lock. The automatic carousel pauses during the quiz.
 
 Box Baffler! is an original quiz inspired by historical colour-key Teletext games, including Bamboozle. Bamber Boozler artwork is displayed from the owner-supplied host image, preserving its original pixels. The question bank is independently worded. See THIRD_PARTY_NOTICES.md for the character artwork notice.
 
-The included bank has 144 original question wordings across 12 subjects. A date-based rotation selects one question per subject, shared by all viewers, and changes at midnight in Europe/London, including daylight-saving time. The initial bank is exhausted over each twelve-day rotation block. Answers are shuffled deterministically for the day. Progress is stored only in the viewer's browser; the next day's quiz resets it. No account or external trivia API is needed.
+The bank has 1,200 independently worded questions across twelve balanced subjects. One question per subject is selected for every viewer each day, changing at Europe/London midnight. Each 100-day block exhausts the pool. Answers are shuffled for the day. No account or external trivia API is needed.
 
 The bank is in public/quiz-questions.mjs. Each item needs a unique ID, category, question and four distinct answers; the first answer in the source is correct before the daily shuffle. Keep all twelve subjects represented and review factual edits before publishing. Extra questions within an existing subject are included in its daily rotation.
 
 ## BBC News, Sport and London weather
 
-Page 101 displays BBC News RSS headlines; page 110 uses BBC Sport RSS; page 120 uses the BBC Weather three-day forecast feed for London (location 2643743). The index links to all three. Full headlines continue across subpages when necessary, with BBC source/article links. Times use Europe/London and DD/MM/YYYY.
+Page 101 is the news index, 102-121 hold up to twenty stories, 122 is reserved, 123 is the sport index, 124-138 are football, 139-144 are other sport and 145 is London's three-day weather. Each story shows its supplied text within Teletext and continues through subpages when needed. Default BBC stories are labelled RSS summaries; the RSS feeds do not supply full articles. BBC attribution and original-source links remain visible.
 
-The server uses only these fixed BBC feed URLs, caches successful results for ten minutes and shares concurrent requests. It retries failed updates after one minute, retaining the last successful information for at most 24 hours with an explicit cached warning. If no usable data is available, the page shows an unavailable message. The browser checks for updates once per minute while Teletext is open. No external JavaScript, tracking embeds or API key is needed.
-
-Feed data belongs to the BBC and is excluded from the application MIT license. Review the BBC RSS terms for your intended use, including any business-use requirements: https://www.bbc.co.uk/usingthebbc/terms/. Attribution and links remain visible on every feed page.
+[Receiver exports, keyboard controls, JSON schema and licensed full-text configuration](TELLYTEXT-RECEIVERS.md) describes the shared page system.

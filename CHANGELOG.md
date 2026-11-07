@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.13 - 7 November 2026
+
+- Expand Box Baffler to 1,200 questions and use the same colour-linked question, success and wrong-answer pages on web and receivers.
+- Add numbered news, football and other-sport stories with readable text, indices, subpages, source attribution and stable story slots. Move weather to page 145.
+- Add a fitted standalone Teletext view, configurable keyboard colour keys and focused-button page-number entry.
+- Export traditional TTI/Fastext pages, a verified service archive, a receiver updater and a public JSON page API.
+- Support attributed operator-supplied licensed full-text story packs; default BBC feeds remain explicitly labelled RSS summaries.
+- Add an optional hosted companion service so feed endpoints can be deployed independently of broadcast playback.
+
 ## 0.1.12 - 4 November 2026
 
 - Refill source buffers before either picture or sound runs dry.
