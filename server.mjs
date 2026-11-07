@@ -4,6 +4,7 @@ import {createCatalogueReader} from './lib/catalogue-reader.mjs';
 import {castSettings,viewingSettings} from './lib/cast.mjs';
 import {Updates} from './lib/updates.mjs';
 import {TeletextFeeds} from './lib/teletext-feeds.mjs';
+import {createTeletextHandler} from './lib/teletext-export.mjs';
 import http from 'node:http';
 import {randomUUID} from 'node:crypto';
 import { readFile, stat, realpath, mkdir, writeFile } from 'node:fs/promises';
@@ -51,6 +52,7 @@ await readConfig();
 async function sourceHealth(){try{return JSON.parse(await readFile(path.join(directory,'source-health.json'),'utf8'));}catch{return null;}}
 async function readConfig() { return catalogueReader(); }
 const catalogueResponse=createCatalogueResponse({getConfig:readConfig});
+const teletextExport=createTeletextHandler({getConfig:readConfig,getFeeds:()=>teletextFeeds.get()});
 await catalogueResponse.prime();
 const programmeSearch=createProgrammeSearchHandler({getConfig:readConfig,getDiscordInvite:()=>owner.runtime.DISCORD_INVITE_URL});
 let community;
@@ -79,6 +81,8 @@ const server = http.createServer(async (req, res) => {
     if (await community.handle(req, res, requestUrl)) return;
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
     const pathname = decodeURIComponent(requestUrl.pathname);
+    if(await teletextExport(req,res,requestUrl))return;
+    if(pathname==='/teletext'||pathname==='/teletext/'){res.writeHead(302,{Location:'/teletext.html','Cache-Control':'no-store'});return res.end();}
     // The receiver SDK talks to the Cast device's local IPC service.
     if(pathname==='/cast-receiver.html')res.setHeader('Content-Security-Policy',res.getHeader('Content-Security-Policy').replace("connect-src 'self'","connect-src 'self' ws://localhost:*")+"; worker-src 'self' blob:");
     if(pathname==='/cast-help.html'){res.writeHead(302,{Location:'/#tv','Cache-Control':'no-store'});return res.end();}

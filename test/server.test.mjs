@@ -15,6 +15,9 @@ test('HTTP server serves catalogue, time and byte-range media while isolating fi
     const ready = await Promise.race([once(child.stdout, 'data'), once(child, 'exit').then(() => { throw Error('Server exited before ready'); }), new Promise((_, reject) => { const t = setTimeout(() => reject(Error('Server start timed out')), 5000); t.unref(); })]);
     const url = ready[0].toString().match(/http:\/\/[^\s]+/)[0];
     assert.equal((await fetch(url)).status, 200);
+    const standalone=await fetch(url+'/teletext.html');assert.equal(standalone.status,200);assert.match(await standalone.text(),/tt-standalone/);
+    const receiverUpdater=await fetch(url+'/teletext/update.py');assert.equal(receiverUpdater.status,200);assert.match(await receiverUpdater.text(),/def install\(archive, target\)/);
+    const teletextRedirect=await fetch(url+'/teletext',{redirect:'manual'});assert.equal(teletextRedirect.status,302);assert.equal(teletextRedirect.headers.get('location'),'/teletext.html');
     const admin=await fetch(url+'/admin.html');assert.equal(admin.status,200);assert.ok((await admin.text()).includes('id="owner-login"'));assert.equal((await fetch(url+'/api/owner/settings')).status,401);
     const catalogue = await (await fetch(url + '/api/catalogue')).json(); assert.ok(catalogue.channels.length);
     const searchPage=await fetch(url+'/search.html');assert.equal(searchPage.status,200);assert.ok((await searchPage.text()).includes('programme-search-page'));
