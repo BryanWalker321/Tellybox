@@ -7,9 +7,9 @@ The station Teletext uses the name configured by its owner. It has a black backg
 - Red: main index (100).
 - Green: television now (601).
 - Yellow: television next (602).
-- Blue: toggle the automatic 15-second carousel.
+- Multi-screen indices rotate every ten seconds. Green/yellow select previous/next screens.
 - Enter any three-digit page number using the number field or keyboard.
-- Use the previous/next arrows for subpages on longer listings.
+- Use green/yellow for continuation screens; there are no separate arrow controls.
 - Select a channel in now/next listings to watch it.
 
 ## Pages
@@ -48,6 +48,6 @@ The bank is in public/quiz-questions.mjs. Each item needs a unique ID, category,
 
 ## BBC News, Sport and London weather
 
-Page 101 is the news index, 102-121 hold up to twenty stories, 122 is reserved, 123 is the sport index, 124-138 are football, 139-144 are other sport and 145 is London's three-day weather. Each story shows its supplied text within Teletext and continues through subpages when needed. Default BBC stories are labelled RSS summaries; the RSS feeds do not supply full articles. BBC attribution and original-source links remain visible.
+Page 101 is the news index, 102-121 hold up to twenty stories, 122 is reserved, 123 is the sport index, 124-138 are football, 139-144 are other sport and 145 is London's three-day weather. Each story shows its supplied text within Teletext and continues through subpages when needed. Default BBC stories are labelled RSS summaries; the BBC RSS feeds do not supply full articles. The optional Global Voices feed supplies attributed free full-text news. BBC attribution and original-source links remain visible.
 
 [Receiver exports, keyboard controls, JSON schema and licensed full-text configuration](TELLYTEXT-RECEIVERS.md) describes the shared page system.

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.14 - 7 November 2026
+
+- Use green/yellow for previous/next screens throughout Teletext, including real Fastext continuation addresses for ordinary receivers.
+- Rotate multi-screen news, sport, channel and listing indices every ten seconds, resetting the timer after a manual turn.
+- Remove separate arrow and page-number controls while retaining three-digit remote/keyboard entry.
+- Keep receiver views free of outbound clickable links; retain website source links.
+- Add optional free Global Voices full-text news with author/source/licence attribution and text-only formatting.
+- Align the yellow masthead and slogan text vertically in their blue banners.
+- Use the same validated catalogue and source-health holds for companion listings as the station player.
+
 ## 0.1.13 - 7 November 2026
 
 - Expand Box Baffler to 1,200 questions and use the same colour-linked question, success and wrong-answer pages on web and receivers.

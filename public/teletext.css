@@ -48,3 +48,6 @@
 
 #tt-content button.tt-feed-story{width:100%;text-align:left}
 #tt-content .quiz-welcome{height:32cqw}
+#tt-content .tt-banner strong{transform:translateY(.65cqw)}
+#teletext .tt-subpages,#teletext .tt-controls label{display:none}
+#tt-content .tt-slogan{line-height:4.2cqw}

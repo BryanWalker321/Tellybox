@@ -183,28 +183,28 @@ $('picture').value = stored('tellybox-picture') || 'crt';
 function picture(persist = true) { $('picture-key').textContent = $('picture').value === 'crt' ? 'CRT on' : 'CRT off'; $('picture-key').setAttribute('aria-pressed', String($('picture').value === 'crt')); $('screen').classList.toggle('crt', $('picture').value === 'crt'); if (persist) stored('tellybox-picture', $('picture').value); }
 $('picture').addEventListener('change', () => picture()); picture(false);
 try { localStorage.removeItem('tellybox-appearance'); } catch {}
-let teletextSources,teletextFeedRequest,teletextFeedCheck=0;
-async function refreshTeletextFeeds(){if(teletextFeedRequest||Date.now()-teletextFeedCheck<60000)return;teletextFeedCheck=Date.now();teletextFeedRequest=true;try{const response=await fetch('/api/teletext-feeds',{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!response.ok)throw Error();teletextSources=await response.json();}catch{teletextSources=teletextSources?{feeds:Object.fromEntries(Object.entries(teletextSources.feeds||{}).map(([k,v])=>[k,{...v,stale:true}]))}:{feeds:{}};}finally{teletextFeedRequest=false;if(!$('teletext-view').hidden&&!isQuizPage())renderTeletext();}}
+let teletextSources,teletextBook,teletextScreen,teletextTurnedAt=0,teletextFeedRequest,teletextFeedCheck=0;
+async function refreshTeletextFeeds(){if(teletextFeedRequest||Date.now()-teletextFeedCheck<60000)return;teletextFeedCheck=Date.now();teletextFeedRequest=true;try{const response=await fetch('/api/teletext',{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!response.ok)throw Error();teletextBook=await response.json();if(!teletextTurnedAt)teletextTurnedAt=now();}catch{if(teletextBook)teletextBook.offline=true;teletextSources=teletextSources?{feeds:Object.fromEntries(Object.entries(teletextSources.feeds||{}).map(([k,v])=>[k,{...v,stale:true}]))}:{feeds:{}};}finally{teletextFeedRequest=false;if(!$('teletext-view').hidden)renderTeletext();}}
 const isQuizPage=()=>Number(ttPage)>=400&&Number(ttPage)<=414;
 function renderTeletext() {
   if (!config) return;
   if(!$('teletext-view').hidden)void refreshTeletextFeeds();
   if(isQuizPage())ttAuto=false;
-  const page=buildTeletext(config,ttPage,now(),ttSubpage,null,teletextSources);ttSubpage=page.subpage;ttSubpages=page.subpages;
+  const entry=teletextBook?.pages.find(p=>p.page===ttPage);if(entry)ttSubpage=Math.max(0,Math.min(entry.subpages.length-1,ttSubpage));teletextScreen=entry?.subpages[ttSubpage];
+  const page=buildTeletext(config,ttPage,now(),ttSubpage,null,teletextSources,teletextScreen);if(!entry)ttSubpage=page.subpage;ttSubpages=entry?.subpages.length||page.subpages;
   $('tt-page').textContent='P'+ttPage;$('tt-content').innerHTML=page.html;
   const keys=[...document.querySelectorAll('#teletext .teletext-nav button')];
   keys.forEach((key,i)=>{delete key.dataset.page;if(page.links){key.dataset.page=page.links[i].page;key.textContent=page.links[i].label;}else{if(i<3)key.dataset.page=['100','601','602'][i];key.textContent=['Index','TV now','TV next','Auto: '+(ttAuto?'on':'off')][i];}});
-  $('tt-subpage').textContent=`${ttSubpage+1}/${ttSubpages}`;$('tt-previous').disabled=ttSubpage===0;$('tt-next').disabled=ttSubpage>=ttSubpages-1;
+  $('tt-subpage').textContent=`${(teletextScreen?.subpage??ttSubpage)+1}/${teletextScreen?.subpages||ttSubpages}`;$('tt-previous').disabled=ttSubpage===0;$('tt-next').disabled=ttSubpage>=ttSubpages-1;
 }
 setupTeletextFullscreen();
 $('tt-previous').addEventListener('click',()=>{ttSubpage--;renderTeletext();});
 $('tt-next').addEventListener('click',()=>{ttSubpage++;renderTeletext();});
-$('teletext').addEventListener('click', e => { const page = e.target.closest('[data-page]'), ch = e.target.closest('[data-tt-channel]'); if (page) { ttPage = page.dataset.page; ttSubpage=0; renderTeletext(); } if (ch) { tune(config.channels.find(c => c.id === ch.dataset.ttChannel), true); location.hash = 'watch'; } });
-$('tt-input').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); if (e.target.value.length === 3) { ttPage = e.target.value; ttSubpage=0; renderTeletext(); e.target.value = ''; } });
-$('tt-auto').addEventListener('click', () => { if($('tt-auto').dataset.page)return;ttAuto = !ttAuto; $('tt-auto').innerHTML = `<span class="tt-cyan">■</span> Auto: ${ttAuto ? 'on' : 'off'}`; });
-setInterval(() => { if (ttAuto && !$('teletext-view').hidden) { const pages = ['100', '601', '602', '150']; const sequence=pages.flatMap(page=>Array.from({length:buildTeletext(config,page,now()).subpages},(_,subpage)=>({page,subpage}))),entry=sequence[Math.floor(now()/15000)%sequence.length];ttPage=entry.page;ttSubpage=entry.subpage;renderTeletext(); } }, 1000);
+$('teletext').addEventListener('click', e => { const page = e.target.closest('[data-page]'), ch = e.target.closest('[data-tt-channel]'); if (page) { ttPage = page.dataset.page; ttSubpage=0;teletextTurnedAt=now();renderTeletext(); } if (ch) { tune(config.channels.find(c => c.id === ch.dataset.ttChannel), true); location.hash = 'watch'; } });
+$('tt-input').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); if (e.target.value.length === 3) { ttPage = e.target.value; ttSubpage=0;teletextTurnedAt=now();renderTeletext(); e.target.value = ''; } });
+setInterval(()=>{if(!$('teletext-view').hidden&&teletextScreen?.autoRotate&&now()-teletextTurnedAt>=10000){ttSubpage=(ttSubpage+1)%ttSubpages;teletextTurnedAt=now();renderTeletext();}},250);
 let digits = '', digitTimer;
-setupTeletextKeyboard({active:()=>!$('teletext-view').hidden,go:page=>{ttPage=page;ttSubpage=0;renderTeletext();},colour:i=>document.querySelectorAll('#teletext .teletext-nav button')[i].click(),subpage:step=>{ttSubpage+=step;renderTeletext();},fullscreen:()=>$('tt-fullscreen').click()});
+setupTeletextKeyboard({active:()=>!$('teletext-view').hidden,go:page=>{ttPage=page;ttSubpage=0;teletextTurnedAt=now();renderTeletext();},colour:i=>document.querySelectorAll('#teletext .teletext-nav button')[i].click(),subpage:step=>document.querySelectorAll('#teletext .teletext-nav button')[step<0?1:2].click(),fullscreen:()=>$('tt-fullscreen').click()});
 document.addEventListener('keydown',e=>{if(!$('teletext-view').hidden||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)||!config)return;if(e.key.toLowerCase()==='t'){location.hash='teletext';return;}if(!/^\d$/.test(e.key))return;clearTimeout(digitTimer);digits+=e.key;digitTimer=setTimeout(()=>{const c=config.channels.find(c=>c.number===Number(digits));digits='';if(c){tune(c,true);location.hash='watch';}},700);});
 async function syncClock() {
   const before = Date.now();

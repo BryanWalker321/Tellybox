@@ -5,7 +5,7 @@
 
 <p align="center">
 <a href="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml"><img src="https://github.com/BryanWalker321/Tellybox/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
-<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.13-dc572b" alt="Release"></a>
+<a href="https://github.com/BryanWalker321/Tellybox/releases"><img src="https://img.shields.io/badge/release-v0.1.14-dc572b" alt="Release"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js"></a>
 <a href="compose.yaml"><img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Code%20licence-MIT-f5c542" alt="MIT"></a>
@@ -179,4 +179,4 @@ Programme search is available from the magnifying-glass icon or the card below t
 
 ### Receiver and standalone Tellytext
 
-Open `/teletext.html` for a fitted, remote-friendly view. Traditional TTI pages, a verified service snapshot and a public JSON page API are available alongside the website. See [receiver setup and full-text source options](docs/TELLYTEXT-RECEIVERS.md). Default news/sport pages use labelled BBC RSS summaries; full article text requires a suitably licensed source.
+Open `/teletext.html` for a fitted, remote-friendly view. Traditional TTI pages, a verified service snapshot and a public JSON page API are available alongside the website. See [receiver setup and full-text source options](docs/TELLYTEXT-RECEIVERS.md). BBC RSS summaries remain the default. Owners can select the free Global Voices full-text news feed; football and other sport remain labelled BBC summaries. Multi-screen indices rotate every ten seconds and green/yellow navigate screens.

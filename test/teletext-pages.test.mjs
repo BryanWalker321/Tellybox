@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {newsPage,quizPage} from '../public/teletext-pages.mjs';
 import {createTeletextSnapshot,ttiFile} from '../lib/teletext-export.mjs';
 import {buildTeletext} from '../public/teletext.mjs';
+import {renderTeletextModel} from '../public/teletext-render.mjs';
 const stamp=Date.parse('2026-11-07T12:00:00Z'),config={brand:{name:'Example & Co',description:'Our station'},channels:[],epoch:'2026-01-01'};
 const items=Array.from({length:20},(_,i)=>({title:'Story '+i,description:'Complete supplied summary '+i+' '+('readable news text '.repeat(80)),url:'https://www.bbc.co.uk/news/articles/'+i,publishedAt:'2026-11-07T10:00:00Z'}));
 const sources={feeds:{news:{name:'BBC News',items,updatedAt:new Date(stamp).toISOString()},football:{name:'BBC Football',items:items.slice(0,15)},otherSport:{name:'BBC Sport',items:items.slice(0,6)}}};
@@ -22,3 +23,5 @@ test('snapshot exports every page, bounded rows and matching Fastext links witho
  for(const bytes of snapshot.files.values())for(const l of bytes.toString('ascii').split('\r\n')){if(l.startsWith('OL,')&&!l.startsWith('OL,0,')){const visible=l.replace(/^OL,\d+,/,'').replace(/\x1b[\x40-\x5f]/g,' ');assert.ok(visible.length<=40,'Long TTI row '+visible.length);}}
  assert.deepEqual(ttiFile('Example',[quizPage('414',stamp)]),ttiFile('Example',[quizPage('414',stamp)]));
 });
+test('receiver view keeps outbound credits as plain text and has no website tuning links',()=>{const model={page:'150',heading:'Example',subpage:0,subpages:1,rows:[{text:'Source credit',sourceUrl:'https://example.org/story'},{text:'Channel',channel:'one'},{text:'101 News',page:'101'}],links:[]};const external=renderTeletextModel(config.brand,model,{external:true});assert.doesNotMatch(external,/<a |href=|data-tt-channel/);assert.match(external,/Source credit/);assert.match(external,/data-page="101"/);const website=renderTeletextModel(config.brand,model);assert.match(website,/href="https:\/\/example.org\/story"/);assert.match(website,/data-tt-channel="one"/);});
+test('How To Watch gives the station address as plain text in receiver files',()=>{const snapshot=createTeletextSnapshot(config,{feeds:{}},stamp),file=snapshot.files.get('160.tti').toString();assert.match(file,/TELLY-BOX.UK/);assert.doesNotMatch(file,/<a |href=/);const model=snapshot.pages.find(e=>e.page==='160').subpages[0];assert.match(renderTeletextModel(config.brand,model),/href="https:\/\/telly-box.uk"/);assert.doesNotMatch(renderTeletextModel(config.brand,model,{external:true}),/href=/);});
