@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.16 - Unreleased
+## 0.1.16 - 7 November 2026
 
 - Add Tonight on Tellybox, daily Channel Spotlight, yesterday's quiz answers and a page-linked Daily Word Challenge.
 - Add BBC finance and entertainment summaries, UK regional weather with native Teletext mosaic map, and real Hays Travel holiday offers with a mosaic beach cover.
