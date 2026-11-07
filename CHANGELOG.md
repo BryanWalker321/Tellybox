@@ -1,7 +1,11 @@
 # Changelog
 
-## 0.1.16 - 7 November 2026
+## 0.1.16 - Unreleased
 
+- Add Tonight on Tellybox, daily Channel Spotlight, yesterday's quiz answers and a page-linked Daily Word Challenge.
+- Add BBC finance and entertainment summaries, UK regional weather with native Teletext mosaic map, and real Hays Travel holiday offers with a mosaic beach cover.
+- Refresh the GitHub television-guide screenshot from the current live design.
+- Hold stock/index prices pending a suitable source, as requested.
 - Rename the public guide to Tellytext and update its page map, colour navigation, index rotation, quiz, BBC summaries and receiver update instructions.
 - Remove research notes from the receiver setup guide and update documentation/website help links.
 

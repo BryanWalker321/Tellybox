@@ -17,15 +17,16 @@ export function quizPage(page,stamp=Date.now()){
  return result;
 }
 export function newsPage(page,data,requested=0){
- const n=Number(page);if(!(n>=101&&n<=145))return null;
+ const n=Number(page);if(!(n>=101&&n<=145)&&!(n>=210&&n<=230)&&!(n>=250&&n<=270))return null;
  let key,index,heading;
- if(n===145){key='weather';heading='LONDON WEATHER';}
+ if(n>=210){key=n<=230?'finance':'entertainment';heading=n===210?'FINANCE INDEX':n===250?'ENTERTAINMENT INDEX':key==='finance'?'FINANCE NEWS':'ENTERTAINMENT NEWS';index=n-(key==='finance'?211:251);}
+ else if(n===145){key='weather';heading='LONDON WEATHER';}
  else if(n===101||n>=102&&n<=122){key='news';heading=n===101?'NEWS INDEX':'NEWS';index=n-102;}
  else{key=n>=124&&n<=138?'football':'otherSport';heading=n===123?'SPORT INDEX':key==='football'?'FOOTBALL':'OTHER SPORT';index=key==='football'?n-124:n-139;}
  const feed=data?.feeds?.[key],all=data?.feeds||{};
  const result={page:String(page),heading,rows:[],subpage:0,subpages:1,links:[link(n<123?'News index':'Sport index',n<123?101:123),link('Previous',n===102||n===124? n-1:Math.max(n<123?101:123,n-1)),link('Next',Math.min(n<123?121:144,n+1)),link('Main index',100)]};
  let content=[];
- if(n===101||n===123){const entries=n===101?(all.news?.pages||all.news?.items||[]).slice(0,20).map((item,i)=>({item,page:102+i})):[...(all.football?.pages||all.football?.items||[]).slice(0,15).map((item,i)=>({item,page:124+i})),...(all.otherSport?.pages||all.otherSport?.items||[]).slice(0,6).map((item,i)=>({item,page:139+i}))];
+ if([101,123,210,250].includes(n)){const entries=n>=210?(all[key]?.pages||all[key]?.items||[]).slice(0,20).map((item,i)=>({item,page:n+1+i})):n===101?(all.news?.pages||all.news?.items||[]).slice(0,20).map((item,i)=>({item,page:102+i})):[...(all.football?.pages||all.football?.items||[]).slice(0,15).map((item,i)=>({item,page:124+i})),...(all.otherSport?.pages||all.otherSport?.items||[]).slice(0,6).map((item,i)=>({item,page:139+i}))];
   for(const {item,page:target} of entries){if(!item)continue;const title=wrap(item.title,34);content.push(...title.map((s,i)=>({text:i===0?String(target)+' '+s:'    '+s,colour:'yellow',page:String(target)})),{text:''});}
   result.links=[link('Main index',100),link('News',101),link('Sport',123),link('Weather',145)];
   if(n===123&&[all.football,all.otherSport].some(f=>f?.stale))result.stale=true;

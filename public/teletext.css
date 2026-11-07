@@ -17,7 +17,7 @@
 #tt-content .tt-index-link{display:flex;justify-content:space-between;width:100%;height:3.6cqw;line-height:3.6cqw;text-align:left;white-space:pre}
 #tt-content .tt-index-link span:last-child{color:#fff;margin-left:1ch}#tt-content .tt-index-columns{display:grid;grid-template-columns:1fr 1fr;gap:2ch}#tt-content .tt-index-columns>div{min-width:0}
 #tt-content .tt-programme-link{display:block;width:100%;text-align:left;color:#fff;height:7.2cqw}
-#tt-content .tt-feature{display:grid;grid-template-columns:1fr 32cqw;align-items:center;height:25.2cqw}#tt-content .tt-mosaic{width:28cqw;height:21cqw;align-self:center;image-rendering:pixelated}
+#tt-content .tt-feature{display:grid;grid-template-columns:1fr 32cqw;align-items:center;height:10.8cqw}#tt-content .tt-mosaic{width:14cqw;height:10.5cqw;align-self:center;image-rendering:pixelated}
 #tt-content .tt-slogan{height:3.6cqw;line-height:3.6cqw;background:#00f;color:#ff0;white-space:pre;overflow:hidden;text-align:center}
 #teletext .tt-white{color:#fff}#teletext .tt-red{color:#f00}#teletext .tt-green{color:#0f0}#teletext .tt-yellow{color:#ff0}#teletext .tt-cyan{color:#0ff}
 #teletext .teletext-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:16px 0 12px}#teletext .teletext-nav button{border:0;border-radius:0;box-shadow:none;background:#000;font:18px/1.2 Teletext50,monospace;padding:6px 2px;min-height:44px;border-bottom:8px solid #f00;color:#fff;white-space:nowrap}#teletext .teletext-nav button:nth-child(2){border-color:#0f0}#teletext .teletext-nav button:nth-child(3){border-color:#ff0}#teletext .teletext-nav button:nth-child(4){border-color:#00f}#teletext .teletext-nav button span{display:none}#teletext .teletext-nav button:hover{background:#222}
@@ -52,3 +52,5 @@
 #teletext .tt-subpages,#teletext .tt-controls label{display:none}
 #teletext:not(.tt-standalone) .tt-controls label{display:flex}
 #tt-content .tt-slogan{line-height:4.2cqw}
+
+#tt-content .tt-mosaic-row{display:block;width:100%;height:3.6cqw;shape-rendering:crispEdges}

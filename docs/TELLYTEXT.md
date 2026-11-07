@@ -1,6 +1,6 @@
 # Tellytext
 
-Tellytext is Tellybox's Teletext service: station information, BBC news and sport summaries, London weather, TV guides and the daily Box Baffler! quiz. The website and traditional receiver feed share the same page information and colour-key destinations.
+Tellytext is Tellybox's Teletext service: station information, BBC news and sport summaries, London and UK weather, finance and entertainment news, holiday offers, TV guides and daily games. The website and traditional receiver feed share the same page information and colour-key destinations.
 
 The screen uses a black background, period colours, Teletext50 typography and original mosaic artwork. Station owners retain their configured name and branding.
 
@@ -33,16 +33,30 @@ On a conventional receiver, use its number buttons for three-digit page entry an
 | 124-138 | Up to fifteen football stories |
 | 139-144 | Up to six other-sport stories |
 | 145 | London three-day weather |
+| 146 | UK weather mosaic map and regional forecast temperatures |
+| 147 | UK regional forecast details |
 | 150 | Station information |
 | 160 | How To Watch, including TELLY-BOX.UK |
+| 170 | Tonight on Tellybox (18:00-midnight UK) |
+| 180 | Daily Channel Spotlight |
 | 199 | Help and index |
 | 200 | Channel directory |
+| 210 | Finance news index |
+| 211-230 | BBC Business summaries |
+| 250 | Entertainment news index |
+| 251-270 | BBC Entertainment summaries |
 | 300 | TV listings index |
 | 301 onwards | Channel running orders |
 | 400 | Box Baffler! introduction |
 | 401-412 | Quiz questions |
 | 413 | Quiz completed |
 | 414 | Wrong-answer page |
+| 450 | Yesterday's quiz answers |
+| 460 | Daily Word Challenge |
+| 461-462 | Word challenge result pages |
+| 500 | Tellytext Holidays beach mosaic |
+| 501 | Holiday offer index |
+| 502-510 | Holiday offer details |
 | 601 | Television now |
 | 602 | Television next |
 
@@ -89,3 +103,13 @@ See [VBIT setup, downloads and update instructions](TELLYTEXT-RECEIVERS.md).
 ## Credits
 
 [PagesFromCeefax](https://github.com/robsonjb1/PagesFromCeefax) and historical Teletext screens were visual references. No source code, logos or artwork from that GPL project are included. The renderer and mosaic artwork are original Tellybox code. Teletext50 fonts are CC0/public domain; see [third-party notices](../THIRD_PARTY_NOTICES.md) and the [font licence](../public/fonts/Teletext50-LICENSE.txt).
+
+## More daily pages
+
+Tonight shows up to three evening programmes per channel, with the running order for more. Channel Spotlight selects an available channel each UK day. Yesterday's Quiz Answers contains the previous day's full questions and correct answers. Daily Word Challenge has six scrambled letters, a clue and four colour-key answers; its correct and wrong-answer screens are genuine receiver pages.
+
+UK weather keeps the London forecast and adds a schematic mosaic map, forecast maximum or minimum temperatures and detailed regional forecasts from BBC Weather. Missing values show `--`; cached values are marked. These are forecasts, not current observations. The map and holiday cover use original G1 mosaic artwork in both website and VBIT output.
+
+Finance and entertainment use BBC supplied summaries. Stock/index prices are held pending a suitable public-display and redistribution source; no subscription or provider account is required by this update.
+
+Tellytext Holidays reads factual offer fields from Hays Travel's public last-minute page: hotel, from price per person, duration, board, departure basis, operator and local fees when supplied. It checks hourly, labels cached offers and suppresses prices after six hours without a successful check. Confirm exact dates, occupancy, all charges and availability with Hays Travel before booking. Tellytext does not sell the holidays. Website source links open the agent; external outputs contain plain text. Upstream page changes may temporarily make offers unavailable.
