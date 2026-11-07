@@ -30,7 +30,9 @@ test('How To Watch gives the station address as plain text in receiver files',()
 test('native export matches branded frame and delegates the live date/time to VBIT',()=>{
  const header=ttiHeader('Tellybox');assert.equal(header.replace(/\x1b[\x40-\x5f]/g,' ').length,32);assert.equal(header,'\x1bBTELLYBOX TEXT\x1bG%%a%d%%b %H:%M:%S');
  for(const brand of ['X','An exceptionally long station name'])assert.equal(ttiHeader(brand).replace(/\x1b[\x40-\x5f]/g,' ').length,32);
- const file=ttiFile('Tellybox',[quizPage('414',stamp)]).toString('ascii');assert.ok(file.includes('OL,0,'+header));assert.ok(file.includes('OL,1,\x1bD\x1b]\x1b@\x1b]\x1bW'));assert.match(file,/OL,3,.*YOUR WORLD AT THE TOUCH OF A BUTTON/);assert.match(file,/OL,4,.*BOX BAFFLER/);assert.match(file,/OL,23,.*THERE'S ALWAYS SOMETHING ON/);assert.match(file,/OL,24,/);
+ const file=ttiFile('Tellybox',[quizPage('414',stamp)]).toString('ascii');assert.ok(file.includes('OL,0,'+header));assert.ok(file.includes('OL,1,\x1bD\x1b]\x1b@\x1b]\x1bW'));assert.match(file,/OL,4,.*YOUR WORLD AT THE TOUCH OF A BUTTON/);assert.match(file,/OL,5,.*BOX BAFFLER/);assert.match(file,/OL,23,.*ALWAYS SOMETHING ON/);assert.match(file,/OL,24,/);
 });
 
 test("all quiz questions fit the native portrait layout without losing answer text",()=>{for(const question of questions){const model={...quizPage("401",stamp),question};const file=ttiFile("Tellybox",[model]).toString("ascii");assert.ok(file.includes("OL,24,"));}});
+
+test('native slogan is centred in the blue band with balanced margins',()=>{const file=ttiFile('Tellybox',[quizPage('414',stamp)]).toString('ascii'),line=file.split('\r\n').find(s=>s.startsWith('OL,23,')).slice(6).replace(/\x1b[\x40-\x5f]/g,' '),caption='TELLYBOX: ALWAYS SOMETHING ON';assert.equal(line.length,40);const start=line.indexOf(caption);assert.equal(start-1,40-start-caption.length);});

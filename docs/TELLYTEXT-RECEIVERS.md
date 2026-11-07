@@ -102,7 +102,7 @@ The exported header uses a green station name and white date/time, matching the 
 
 Set the machine clock and timezone to the viewer's desired local time and keep its system time synchronised. A launcher may override the timezone with `TZ`; the timezone of the VBIT process is what matters. VBIT uses its local date-name locale; `LC_TIME=C` selects English day/month abbreviations like the website. No five-minute clock updater is required.
 
-The native output includes a blue/yellow two-row mosaic masthead with a bordered T B mark, cyan strapline, yellow section heading, page counter, blue/yellow slogan and four-colour footer. Traditional Teletext is a 40-column, 25-row character display: its receiver supplies the font and selected-page field. Browser fonts, pixel spacing and the outlined browser logo cannot be reproduced pixel-for-pixel on every physical decoder. The page content, colours, navigation and local live date/time follow the same design.
+The native output includes a blue/yellow three-row mosaic masthead with a bordered T B mark, cyan strapline, yellow section heading, page counter, blue/yellow slogan and four-colour footer. The native slogan uses the owner-approved shorter wording `TELLYBOX: ALWAYS SOMETHING ON` so it can be centred with equal margins after the colour-control positions; the website retains its full wording. Traditional Teletext is a 40-column, 25-row character display: its receiver supplies the font and selected-page field. Browser fonts, pixel spacing and the outlined browser logo cannot be reproduced pixel-for-pixel on every physical decoder. The page content, colours, navigation and local live date/time follow the same design.
 
 ### Update behaviour and receiver format
 
