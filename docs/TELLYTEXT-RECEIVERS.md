@@ -23,6 +23,8 @@ TTI and JSON endpoints support GET and HEAD. JSON/TTI snapshots are cached for a
 
 This is a one-time setup on the viewer's Linux or Raspberry Pi machine, with VBIT2 already installed. It downloads pages directly from **Telly-box.uk**. Python 3 and curl must be available; the updater needs no additional Python packages.
 
+**Automatic updates must be configured by the viewer on their VBIT machine. Set the updater to run every five minutes (step 4). Without that scheduled task, downloaded pages stay unchanged. Tellybox does not remotely configure this for you.**
+
 **You do not need the GitHub TTI ZIP for this setup.** That ZIP is a fixed offline snapshot. TTI files do not contain a live-feed connection and cannot update themselves. The scheduled updater below keeps the local VBIT pages current.
 
 ### 1. Download the updater
