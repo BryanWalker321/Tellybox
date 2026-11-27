@@ -30,7 +30,7 @@ test('a transient provider failure recovers inside the current programme instead
  let attempts=0;
  const resolver={resolve:async()=>{attempts++;if(attempts===1)throw Object.assign(Error('Temporary provider failure'),{code:'temporary'});return{duration:12,streams:[{url:file,video:true,audio:false}]};}};
  const relay=new RelayManager({mediaRoot:dir,testCard:path.resolve('public/test-card-f.jpg'),ffmpeg,resolver,sourceRetryMs:2500});
- const channel={id:'recovery',programmes:[{id:'p',title:'Recoverable programme',duration:30,url:'https://www.youtube.com/watch?v=abcdefghijk'}]};
+ const channel={id:'recovery',programmes:[{id:'p',title:'Recoverable programme',duration:30,url:'https://www.dailymotion.com/video/x12345'}]};
  const epoch=new Date().toISOString();
  try{
   const state=await relay.ensure(channel,epoch);

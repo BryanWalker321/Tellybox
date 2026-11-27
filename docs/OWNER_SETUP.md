@@ -38,7 +38,6 @@ Saved secrets are never returned to the browser. Leaving a secret blank preserve
 
 ## Owner access and storage
 
-**YouTube / IPTV** offers optional private session upload, disconnect and a real HLS playback sample check. Follow its on-screen export steps or [provider authentication instructions](PROVIDERS.md#optional-private-youtube-authentication). Upload only from localhost or your HTTPS station address. The server never asks for your Google password; the private session file is stored separately in `data/youtube-cookies.txt`, never in the catalogue or release downloads.
 
 Under **Owner access**, change your password using the current one. Other owner sessions are revoked. Owner sessions expire after eight hours and on server restart; **Lock owner settings** signs out the current session. Passwords are stored as salted scrypt hashes. Owner endpoints require authentication and same-origin/CSRF checks for writes.
 

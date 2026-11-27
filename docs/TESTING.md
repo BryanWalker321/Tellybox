@@ -31,7 +31,7 @@ Browser checks cover owner-configured Discord invites (including clearing them),
 
 ## Vimeo verification — 25 October 2026
 
-Local self-hosted suite: 138 tests, 136 passed, zero failed, two expected curated-edition skips. Tests cover Vimeo URL/host validation, unlisted privacy hashes, YouTube cookie isolation, private/live/DRM rejection, header filtering, cache invalidation, duplicate footage identities and omission of Vimeo watch pages from direct-file playlists.
+Local self-hosted suite: 138 tests, 136 passed, zero failed, two expected curated-edition skips. Tests cover Vimeo URL/host validation, unlisted privacy hashes, private/live/DRM rejection, header filtering, cache invalidation, duplicate footage identities and omission of Vimeo watch pages from direct-file playlists.
 
 On the hosted Linux VPS, City Bound and Morning Paper resolved and produced HLS with decodable H.264 video and AAC audio. A continuous 38-second IPTV client sample crossed Vimeo programme, advert and countdown boundaries with one encoder timeline and no decoder/timestamp errors. A separate sample through the running station's activated Vimeo path passed video/audio decoding while the existing 11 channel encoder identities stayed unchanged. These are short samples, not a complete viewing of every film or a physical Kodi/Cast hardware test.
 

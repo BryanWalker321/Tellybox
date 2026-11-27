@@ -5,10 +5,10 @@ test('Vimeo recognises video and unlisted/player URLs, rejecting unrelated hosts
  for(const url of ['http://vimeo.com/38997076','https://vimeo.com.evil.test/38997076','https://user:password@vimeo.com/38997076','https://vimeo.com:444/38997076','https://vimeo.com/channels/staffpicks','https://vimeo.com/ondemand/12345','https://player.vimeo.com/38997076','https://vimeo.com/38997076?h=','https://vimeo.com/38997076/not-a-hash'])assert.equal(providerOf(url),null,url);
  assert.equal(mediaIdentity(urls[0]),mediaIdentity(urls[2]));
 });
-test('Vimeo resolution and descriptions use the general runtime without YouTube cookies and invalidate failed cached streams',async()=>{
- const calls=[];const resolver=new ProviderResolver({python:'public-python',youtubePython:'private-youtube-python',cookieFile:'/private/youtube-cookies',run:async(exe,args,options)=>{calls.push({exe,args,cookie:options.env.YOUTUBE_COOKIE_FILE});return {stdout:JSON.stringify({description:'Archive documentary',streams:[{url:'https://cdn.example.test/sample.mp4',video:true,audio:true}]})};}});
- await resolver.resolve(urls[1]);await resolver.resolve(urls[1]);assert.equal(calls.length,1);assert.equal(calls[0].exe,'public-python');assert.equal(calls[0].cookie,'');assert.ok(calls[0].args.includes(urls[1]));
- resolver.invalidate(urls[1]);await resolver.resolve(urls[1]);assert.equal(calls.length,2);assert.equal(await resolver.describe(urls[2]),'Archive documentary');assert.equal(calls[2].cookie,'');
+test('Vimeo resolution and descriptions use the general runtime and invalidate failed cached streams',async()=>{
+ const calls=[];const resolver=new ProviderResolver({python:'public-python',run:async(exe,args)=>{calls.push({exe,args});return {stdout:JSON.stringify({description:'Archive documentary',streams:[{url:'https://cdn.example.test/sample.mp4',video:true,audio:true}]})};}});
+ await resolver.resolve(urls[1]);await resolver.resolve(urls[1]);assert.equal(calls.length,1);assert.equal(calls[0].exe,'public-python');assert.ok(calls[0].args.includes(urls[1]));
+ resolver.invalidate(urls[1]);await resolver.resolve(urls[1]);assert.equal(calls.length,2);assert.equal(await resolver.describe(urls[2]),'Archive documentary');
  const failed=new ProviderResolver({run:async()=>{throw Error('temporary failure');}});await assert.rejects(failed.resolve(urls[0]));assert.equal(failed.cache.size,0);
 });
 const python=process.env.PROVIDER_PYTHON||(process.platform==='win32'?'python':'python3');const available=spawnSync(python,['-c','import yt_dlp'],{stdio:'ignore',windowsHide:true}).status===0;

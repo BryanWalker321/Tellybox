@@ -25,7 +25,7 @@ test('repeat policy retains clock boundaries, whole fillers and uninterrupted ch
  c.playout.repeat='stop';assert.throws(()=>validateCatalogue({brand:{name:'Test'},epoch,channels:[c]}),/repeat/);
 });
 test('programme tools deduplicate canonical media without losing excerpts or modifying the input plan',()=>{
- const a={title:'Episode 10',url:'https://youtu.be/abcdefghijk',duration:300},b={title:'Episode 2',url:'https://www.youtube.com/watch?v=abcdefghijk&list=example',duration:300};
+ const a={title:'Episode 10',url:'https://archive.org/download/example/video.mp4',duration:300},b={title:'Episode 2',url:'https://archive.org/download/example/video.mp4',duration:300};
  assert.equal(mediaKey(a),mediaKey(b));assert.equal(sortPlan([a,b],'duplicates').length,1);assert.equal(sortPlan([a,{...b,sourceOffset:300}],'duplicates').length,2);
  const input=[a,b];assert.deepEqual(sortPlan(input,'title').map(p=>p.title),['Episode 2','Episode 10']);assert.deepEqual(input,[a,b]);assert.equal(sortPlan(input,'random',()=>0).length,2);
 });

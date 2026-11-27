@@ -18,8 +18,8 @@ test('source descriptions are plain text and metadata requests stay on supported
 
 test('missing or title-only descriptions stay empty and provider lookups use the public watch URL',async()=>{
  let calls=0;
- const service=new ProgrammeDescriptions({provider:{describe:async url=>{calls++;assert.equal(url,'https://www.youtube.com/watch?v=abcdefghijk');return 'Episode title';}}});
- const p={title:'Episode title',url:'https://www.youtube.com/watch?v=abcdefghijk'};
+ const service=new ProgrammeDescriptions({provider:{describe:async url=>{calls++;assert.equal(url,'https://www.dailymotion.com/video/x12345');return 'Episode title';}}});
+ const p={title:'Episode title',url:'https://www.dailymotion.com/video/x12345'};
  assert.equal(await service.get(p),'');assert.equal(await service.get(p),'');assert.equal(calls,1);
  assert.equal(await service.get({...p,description:'Owner-written synopsis.'}),'Owner-written synopsis.');
 });

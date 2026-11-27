@@ -9,7 +9,7 @@ test('uncertain original dates must have a valid range wholly before the UK cuto
 });
 
 test('owner-approved playlist sources are explicit date exceptions without relaxing other recordings',()=>{
-  const config={brand:{name:'Test'},epoch:'2026-01-01T00:00:00Z',editorial:{beforeYear:2000,approvedSources:['https://www.youtube.com/watch?v=5DYSwaa23tI']},channels:[{id:'test',number:1,name:'Test',colour:'#123456',programmes:[{id:'approved',title:'Owner-approved recording',url:'https://www.youtube.com/watch?v=5DYSwaa23tI',duration:60,originalYear:2001}]}]};
+  const config={brand:{name:'Test'},epoch:'2026-01-01T00:00:00Z',editorial:{beforeYear:2000,approvedSources:['https://archive.org/download/fixture/5DYSwaa23tI.mp4']},channels:[{id:'test',number:1,name:'Test',colour:'#123456',programmes:[{id:'approved',title:'Owner-approved recording',url:'https://archive.org/download/fixture/5DYSwaa23tI.mp4',duration:60,originalYear:2001}]}]};
   assert.equal(validateCatalogue(config),config);
   delete config.channels[0].programmes[0].originalYear;
   assert.equal(validateCatalogue(config),config,'an approved undated recording need not be assigned an invented year');

@@ -49,7 +49,7 @@ Managed updates are installed from the Updates tab after the installation has ad
 
 ## Vimeo sources
 
-Add public Vimeo video-page URLs alongside YouTube, Dailymotion, Internet Archive and local media. The server resolves the public player and feeds the same continuous HLS broadcast to website/IPTV viewers. No separate Vimeo SDK or viewer login is needed. See [provider setup](PROVIDERS.md) for supported URLs, native dependencies and restrictions.
+Add public Vimeo video-page URLs alongside Dailymotion, Internet Archive and local media. The server resolves the public player and feeds the same continuous HLS broadcast to website/IPTV viewers. No separate Vimeo SDK or viewer login is needed. See [provider setup](PROVIDERS.md) for supported URLs, native dependencies and restrictions.
 
 
 ## Magazine-style newspaper listings

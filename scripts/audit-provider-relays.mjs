@@ -1,4 +1,4 @@
-import { readFile, writeFile, stat } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { RelayManager } from '../lib/relay.mjs';
@@ -7,16 +7,14 @@ const catalogue = JSON.parse(await readFile(process.argv[2] || 'data/catalogue.j
 const reportPath = process.argv[3] || 'docs/provider-relay-audit.json';
 const sources = new Map();
 for (const channel of catalogue.channels) for (const p of [...channel.programmes, ...(channel.schedule?.breaks || [])]) if (!p.playbackDisabled && providerOf(p.url) && !sources.has(p.url)) sources.set(p.url, p);
-const candidate = path.resolve(process.env.YOUTUBE_COOKIE_FILE || path.join(process.env.DATA_DIR || 'data','youtube-cookies.txt'));
-let cookieFile = ''; try { if ((await stat(candidate)).isFile()) cookieFile = candidate; } catch (err) { if (err.code !== 'ENOENT') throw err; }
-const relay = new RelayManager({mediaRoot:path.resolve('media'), testCard:path.resolve('public/test-card-f.jpg'), resolver:new ProviderResolver({cookieFile})});
+const relay = new RelayManager({mediaRoot:path.resolve('media'), testCard:path.resolve('public/test-card-f.jpg'), resolver:new ProviderResolver()});
 const limit = process.argv[4] === undefined ? sources.size : Number(process.argv[4]);
 if (!Number.isInteger(limit) || limit < 0) throw Error('Optional fourth argument must be a source limit.');
 const selected = [...sources.values()].slice(0,limit), selectedUrls = new Set(selected.map(p=>p.url));
 let previous; if (process.env.PROVIDER_AUDIT_RESUME === '1') { try { previous=JSON.parse(await readFile(reportPath,'utf8')); } catch(e) { if(e.code!=='ENOENT')throw e; } }
 const completed = new Map((previous?.results || []).filter(r=>selectedUrls.has(r.url)).map(r=>[r.url,r]));
 const queue = selected.filter(p=>!completed.has(p.url));
-const report = {startedAt:previous?.startedAt || new Date().toISOString(), resumedAt:previous?new Date().toISOString():undefined, total:sources.size, requested:selected.length, authentication:cookieFile?'configured-session':'anonymous', results:[...completed.values()]};
+const report = {startedAt:previous?.startedAt || new Date().toISOString(), resumedAt:previous?new Date().toISOString():undefined, total:sources.size, requested:selected.length, results:[...completed.values()]};
 let cursor = 0, consecutiveFailures = 0, halted = false, nextStart = Date.now(), saving = Promise.resolve();
 async function pacedStart() { const stamp=Math.max(nextStart,Date.now());nextStart=stamp+8000; const wait=stamp-Date.now();if(wait>0)await new Promise(resolve=>setTimeout(resolve,wait));return !halted; }
 async function save() { const text=JSON.stringify(report,null,2);saving=saving.then(()=>writeFile(reportPath,text));await saving; }

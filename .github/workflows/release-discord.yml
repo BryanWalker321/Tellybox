@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   announce:
-    if: ${{ !github.event.release.prerelease && !github.event.release.draft }}
+    if: ${{ !github.event.release.prerelease && !github.event.release.draft && !contains(github.event.release.body, '<!-- no-discord -->') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

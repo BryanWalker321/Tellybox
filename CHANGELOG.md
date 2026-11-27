@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.18
+
+- Removed YouTube as a media provider. Existing YouTube records are skipped when reading older station catalogues. New YouTube media URLs are rejected when saving programming.
+- Dailymotion, Vimeo, direct files and local media remain supported.
+
 ## 0.1.17 - 7 November 2026
 
 - Ship a live VBIT updater ZIP with the current script and explicit one-time upgrade/five-minute scheduling instructions.

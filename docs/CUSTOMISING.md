@@ -20,7 +20,7 @@ In the full catalogue editor, a channel can opt into `"playout": {"shuffleSeries
 
 ## Programme descriptions
 
-A programme may have a plain-text `description` in the catalogue. Otherwise the viewer requests available source text from Internet Archive, YouTube or Dailymotion. The server uses cached public metadata first, then a bounded source lookup. It returns only description text, never private sessions or temporary media addresses. Long descriptions have a Read more control on the channel page; missing or title-only descriptions are hidden. The original source link remains available. Rights metadata remains in the owner catalogue. A curated description cache is separate from the catalogue so descriptions do not inflate the settings editor.
+A programme may have a plain-text `description` in the catalogue. Otherwise the viewer requests available source text from Internet Archive, Dailymotion or Vimeo. The server uses cached public metadata first, then a bounded source lookup. It returns only description text, never private sessions or temporary media addresses. Long descriptions have a Read more control on the channel page; missing or title-only descriptions are hidden. The original source link remains available. Rights metadata remains in the owner catalogue. A curated description cache is separate from the catalogue so descriptions do not inflate the settings editor.
 
 
 ## Main programmes and short clips

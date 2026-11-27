@@ -19,7 +19,6 @@ import { RelayManager } from './lib/relay.mjs';
 import {ContinuousRelay} from './lib/continuous-relay.mjs';
 import { Community } from './lib/community.mjs';
 import { Owner } from './lib/owner.mjs';
-import { checkProviderPlayback } from './lib/provider-check.mjs';
 import { iptvNetworkInfo } from './lib/network.mjs';
 import { ProgrammeDescriptions } from './lib/descriptions.mjs';
 
@@ -57,7 +56,7 @@ await catalogueResponse.prime();
 const programmeSearch=createProgrammeSearchHandler({getConfig:readConfig,getDiscordInvite:()=>owner.runtime.DISCORD_INVITE_URL});
 let community;
 const updates=new Updates({directory,root});
-const owner = await Owner.create({ updates,directory, configPath, mediaRoot, onSettings: env => { community?.configure(env); relay.resolver.configure({cookieFile: env.YOUTUBE_COOKIE_FILE}); }, checkYoutube: url => checkProviderPlayback(relay, url) });
+const owner = await Owner.create({ updates,directory, configPath, mediaRoot, onSettings: env => community?.configure(env) });
 community = new Community({ directory, getConfig: readConfig, env: owner.runtime });
 function mediaBase(req) {
   const configured = (owner.runtime.PUBLIC_BASE_URL || '').replace(/\/$/, '');
@@ -73,7 +72,7 @@ function within(base, target) { return target.startsWith(base + path.sep); }
 const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://www.google.com https://cast.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; media-src 'self' https: http: blob:; connect-src 'self' https://www.gstatic.com https://cast.gstatic.com https://*.googleapis.com; frame-src https://www.gstatic.com https://www.google.com https://www.youtube-nocookie.com https://www.youtube.com https://www.dailymotion.com https://geo.dailymotion.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://cast.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; media-src 'self' https: http: blob:; connect-src 'self' https://www.gstatic.com https://cast.gstatic.com https://*.googleapis.com; frame-src https://www.gstatic.com https://www.google.com https://www.dailymotion.com https://geo.dailymotion.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'");
   try {
     const requestUrl = new URL(req.url, 'http://localhost');
     if(requestUrl.pathname==='/api/programme-search'){await programmeSearch(req,res,requestUrl);return;}

@@ -15,7 +15,7 @@ test('a failed holding card never logs signed provider addresses from the preced
   resolver:{resolve:async()=>({streams:[{url:'http://127.0.0.1:1/video?token=fictional-sensitive-query',video:true,audio:false}]})}});
  const messages=[], previous=console.error;console.error=(...args)=>messages.push(args.join(' '));
  try{
-  await assert.rejects(relay.file({id:'failed-card',programmes:[{id:'fixture',title:'Fixture',duration:60,url:'https://www.youtube.com/watch?v=y9CsvDblsr0'}]},new Date().toISOString(),'index.m3u8'),/holding-screen configuration/);
+  await assert.rejects(relay.file({id:'failed-card',programmes:[{id:'fixture',title:'Fixture',duration:60,url:'https://www.dailymotion.com/video/x12345'}]},new Date().toISOString(),'index.m3u8'),/holding-screen configuration/);
   assert.ok(messages.length);
   assert.ok(!messages.join(' ').includes('fictional-sensitive-query'));
   assert.ok(!messages.join(' ').includes('127.0.0.1:1'));
@@ -43,10 +43,10 @@ test('FFmpeg relays local video, off-air cards and failed-source cards into play
       assert.equal(decoded.status, 0, decoded.stderr.toString());
     }
     relay.resolver = {resolve:async()=>({streams:[{url:file,video:true,audio:false}]})};
-    assert.equal((await checkProviderPlayback(relay,'https://www.youtube.com/watch?v=y9CsvDblsr0',ffmpeg)).result,'passed');
+    assert.equal((await checkProviderPlayback(relay,'https://www.dailymotion.com/video/x12345',ffmpeg)).result,'passed');
     assert.ok([...relay.states.keys()].every(id=>!id.startsWith('owner-check-')), 'sample relays are removed after verification');
     relay.resolver = {resolve:async()=>({streams:[{url:path.join(dir,'missing.mp4'),video:true,audio:false}]})};
-    await assert.rejects(checkProviderPlayback(relay,'https://www.youtube.com/watch?v=y9CsvDblsr0',ffmpeg),/footage/,'a technical card must never count as programme playback');
+    await assert.rejects(checkProviderPlayback(relay,'https://www.dailymotion.com/video/x12345',ffmpeg),/footage/,'a technical card must never count as programme playback');
   } finally { await relay.close(); if (dir.startsWith(path.join(tmpdir(), 'tellybox-test-'))) await rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 250 }); }
 });
 

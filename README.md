@@ -74,7 +74,7 @@ The default port mapping accepts connections only from the server computer. Foll
 
 ### Without Docker
 
-Install **Node.js 22.13+** and **FFmpeg**, with `ffmpeg` and `ffprobe` on PATH. Clone the repository, then run `npm start`. Open **http://127.0.0.1:4173**, claim the station using its printed key and follow steps 4–5 above. No npm dependency installation is needed. Keep the server running. See [Providers](docs/PROVIDERS.md) for optional YouTube/Dailymotion tools and [Hosting](docs/HOSTING.md) for automatic startup.
+Install **Node.js 22.13+** and **FFmpeg**, with `ffmpeg` and `ffprobe` on PATH. Clone the repository, then run `npm start`. Open **http://127.0.0.1:4173**, claim the station using its printed key and follow steps 4–5 above. No npm dependency installation is needed. Keep the server running. See [Providers](docs/PROVIDERS.md) for optional Dailymotion/Vimeo tools and [Hosting](docs/HOSTING.md) for automatic startup.
 
 ## Updates
 
@@ -173,7 +173,7 @@ The **Watch on TV** control offers an AirPlay video picker in supported Safari b
 
 Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guide](CONTRIBUTING.md). Report vulnerabilities through the private route in our [security policy](SECURITY.md). Our [accessibility statement](ACCESSIBILITY.md) describes current support, known limitations and how to report barriers.
 
-Vimeo video-page sources use the shared website/IPTV broadcast alongside YouTube, Dailymotion and direct/local files. See [provider setup](docs/PROVIDERS.md).
+Vimeo video-page sources use the shared website/IPTV broadcast alongside Dailymotion and direct/local files. See [provider setup](docs/PROVIDERS.md).
 
 Programme search is available from the magnifying-glass icon or the card below the channels. Find a programme and its next scheduled showing. See [programme search](docs/PROGRAMME_SEARCH.md).
 

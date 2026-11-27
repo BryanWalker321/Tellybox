@@ -1,6 +1,6 @@
 export function mediaKey(p){
  let source=p.url;
- try{const u=new URL(p.url,'http://station.invalid');if(['www.youtube.com','youtube.com','m.youtube.com'].includes(u.hostname)&&u.searchParams.get('v'))source='youtube:'+u.searchParams.get('v');else if(u.hostname==='youtu.be')source='youtube:'+u.pathname.slice(1);else source=u.href.replace('http://station.invalid','');}catch{}
+ try{const u=new URL(p.url,'http://station.invalid');source=u.href.replace('http://station.invalid','');}catch{}
  return `${source}|${p.sourceOffset||0}`;
 }
 export function uniqueMedia(items){const seen=new Set();return items.filter(p=>{const key=mediaKey(p);if(seen.has(key))return false;seen.add(key);return true;});}
