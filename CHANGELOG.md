@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.19 - 27 November 2026
+
+- Fixed the owner settings screen after removing the YouTube controls and removed obsolete provider documentation.
+
 ## 0.1.18
 
 - Removed YouTube as a media provider. Existing YouTube records are skipped when reading older station catalogues. New YouTube media URLs are rejected when saving programming.
