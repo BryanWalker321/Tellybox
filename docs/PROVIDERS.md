@@ -40,4 +40,4 @@ Vimeo follows the same server-side FFmpeg/shared HLS route as Dailymotion, inclu
 
 Store the original video page in the catalogue, not a temporary CDN URL. Stream resolution is cached briefly and refreshed after expiry/failure. Test duration, audio, video, seeking and programme transitions from the actual server before scheduling; metadata alone is not proof of playback. Remote owners can remove or restrict their videos. An accessible upload does not establish permission to rebroadcast it.
 
-Existing catalogues may retain old YouTube URLs on disk for rollback. Those sources are excluded from playout, and new YouTube media URLs are rejected when saving programming.
+Older catalogues may retain unsupported URLs on disk for rollback. Playout skips those entries, and programming validation rejects new URLs from retired providers.

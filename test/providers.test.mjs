@@ -12,7 +12,7 @@ function legacy(){
 }
 test('legacy catalogues load without YouTube while new YouTube sources are rejected',()=>{
  const original=legacy();
- assert.throws(()=>validateCatalogue(structuredClone(original),{rejectRemovedSources:true}),/YouTube playback sources/);
+ assert.throws(()=>validateCatalogue(structuredClone(original),{rejectRemovedSources:true}),/This media source is no longer supported/);
  const result=validateCatalogue(structuredClone(original));
  assert.deepEqual(result.channels[0].programmes.map(p=>p.id),['local']);
  assert.deepEqual(result.channels[0].schedule.breaks,[]);

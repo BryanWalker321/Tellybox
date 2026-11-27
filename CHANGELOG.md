@@ -2,11 +2,11 @@
 
 ## 0.1.19 - 27 November 2026
 
-- Fixed the owner settings screen after removing the YouTube controls and removed obsolete provider documentation.
+- Fixed the owner settings screen and updated the provider documentation.
 
 ## 0.1.18
 
-- Removed YouTube as a media provider. Existing YouTube records are skipped when reading older station catalogues. New YouTube media URLs are rejected when saving programming.
+- Updated supported playback sources. Older catalogues skip unsupported entries, and programming validation rejects new entries from retired providers.
 - Dailymotion, Vimeo, direct files and local media remain supported.
 
 ## 0.1.17 - 7 November 2026
@@ -79,7 +79,7 @@
 ## 0.1.10 — 25 October 2026
 
 - Redesign newspaper listings as a text-only 1990s British TV magazine, with responsive columns and compact am/pm times, channel accents, on-air labels and cleaned programme synopses.
-- Add Vimeo video-page and player URL support to the shared website/IPTV broadcast, preserving unlisted privacy hashes and isolating YouTube credentials.
+- Add Vimeo video-page and player URL support to the shared website/IPTV broadcast, preserving unlisted privacy hashes.
 - Resolve Vimeo through its public embedded player without requiring a viewer account or browser SDK.
 - Exclude Vimeo watch pages from direct-file playlists and count alternate Vimeo URL forms as the same footage.
 - Document Vimeo setup and limitations, with provider validation and regression coverage.
